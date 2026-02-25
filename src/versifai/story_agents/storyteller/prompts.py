@@ -410,8 +410,7 @@ and appendices.
 - Chart reference style: {cfg.output_format.chart_reference_style}
 
 The final document should be a self-contained Markdown file that tells a
-compelling, evidence-grounded story about geographic disparities in the
-Medicare Advantage Stars methodology.
+compelling, evidence-grounded story about the research findings.
 """
 
 

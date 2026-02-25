@@ -55,7 +55,7 @@ class FileGroup:
     """
     A logical grouping of related files within a Volume subfolder.
 
-    For example, all Medicare Advantage enrollment CSVs across multiple years
+    For example, all NOAA weather station CSVs across multiple years
     might be grouped together under a single FileGroup.
     """
 

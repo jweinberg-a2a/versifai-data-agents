@@ -88,7 +88,7 @@ class LiteratureReviewTool(BaseTool):
                 "query": {
                     "type": "string",
                     "description": (
-                        "For 'search': search terms (e.g., 'medicare advantage geographic disparities SVI'). "
+                        "For 'search': search terms (e.g., 'urban heat island effect temperature disparities'). "
                         "For 'fetch_article': the URL to fetch."
                     ),
                 },

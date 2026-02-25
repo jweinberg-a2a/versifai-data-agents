@@ -31,16 +31,16 @@ class TestCiteSource:
         tool = CiteSourceTool()
         tool.execute(
             operation="add",
-            title="Medicare Advantage Data",
-            author="CMS",
+            title="NOAA Weather Station Data",
+            author="NOAA",
             year="2023",
-            url="https://cms.gov",
+            url="https://noaa.gov",
         )
         result = tool.execute(operation="format")
         assert result.success is True
         bib_text = result.data.get("bibliography", result.data.get("text", ""))
-        assert "Medicare Advantage Data" in bib_text
-        assert "CMS" in bib_text
+        assert "NOAA Weather Station Data" in bib_text
+        assert "NOAA" in bib_text
 
     def test_search_by_keyword(self):
         tool = CiteSourceTool()

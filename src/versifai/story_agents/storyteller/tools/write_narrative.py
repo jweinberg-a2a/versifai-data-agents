@@ -22,10 +22,12 @@ class WriteNarrativeTool(BaseTool):
         output_path: str,
         output_filename: str = "narrative_report.md",
         include_toc: bool = True,
+        report_title: str = "Research Analysis Report",
     ) -> None:
         self._output_path = output_path
         self._output_filename = output_filename
         self._include_toc = include_toc
+        self._report_title = report_title
         self._sections: dict[str, str] = {}  # section_id -> markdown content
         self._section_order: list[str] = []  # ordered section IDs
         self._section_sequence: dict[str, int] = {}  # section_id -> sequence number
@@ -209,7 +211,7 @@ class WriteNarrativeTool(BaseTool):
         parts = []
 
         # Title
-        parts.append("# Medicare Advantage Stars: A Geographic Disparity Analysis\n")
+        parts.append(f"# {self._report_title}\n")
         parts.append(f"*Generated {datetime.now().strftime('%Y-%m-%d')}*\n")
 
         # Table of contents

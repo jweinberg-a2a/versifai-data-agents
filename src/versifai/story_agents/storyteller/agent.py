@@ -137,6 +137,7 @@ class StoryTellerAgent(BaseAgent):
             output_path=self._narrative_run_path,
             output_filename=cfg.output_format.filename,
             include_toc=cfg.output_format.include_toc,
+            report_title=cfg.name or "Research Analysis Report",
         )
         self._evaluate_evidence_tool = EvaluateEvidenceTool(
             min_significance_for_lead=cfg.evidence_threshold.min_significance_for_lead,

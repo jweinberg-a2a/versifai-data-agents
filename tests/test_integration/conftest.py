@@ -130,7 +130,7 @@ def findings_inflated_text_weak_stats():
             "title": "GROUNDBREAKING: Income perfectly predicts enrollment",
             "finding": (
                 "We discovered a HIGHLY SIGNIFICANT and DEFINITIVE relationship "
-                "between county income and Medicare Advantage enrollment rates. "
+                "between county elevation and average annual rainfall. "
                 "This is the most important finding in the entire analysis and "
                 "PROVES a direct causal link. The evidence is OVERWHELMING and "
                 "IRREFUTABLE."
