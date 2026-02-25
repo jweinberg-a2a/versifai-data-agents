@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/logo.png" alt="Versifai" width="400" style="background-color: white; padding: 20px; border-radius: 8px;">
+  <img src="docs/assets/logo.png" alt="Versifai" width="400">
 </p>
 
 <p align="center"><strong>Agentic AI framework for autonomous data engineering, science, and storytelling.</strong></p>
