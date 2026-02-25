@@ -1,8 +1,6 @@
 <p align="center">
-  <img src="docs/assets/logo.png" alt="Versifai Logo" width="400">
+  <img src="docs/assets/logo.png" alt="Versifai" width="400" style="background-color: white; padding: 20px; border-radius: 8px;">
 </p>
-
-<h1 align="center">Versifai</h1>
 
 <p align="center"><strong>Agentic AI framework for autonomous data engineering, science, and storytelling.</strong></p>
 
