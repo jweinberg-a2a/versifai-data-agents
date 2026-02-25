@@ -1,0 +1,146 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "versifai"
+version = "0.1.0"
+description = "Agentic AI framework for autonomous data engineering, science, and storytelling"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.10"
+authors = [
+    { name = "VersifAI Contributors" },
+]
+keywords = [
+    "ai",
+    "agents",
+    "data-engineering",
+    "data-science",
+    "llm",
+    "claude",
+    "automation",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: Other/Proprietary License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+dependencies = [
+    "litellm>=1.40.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+data = [
+    "pandas>=1.5.0",
+    "pyarrow>=10.0.0",
+    "openpyxl>=3.0.0",
+    "beautifulsoup4>=4.12.0",
+    "lxml>=4.9.0",
+    "pypdf>=4.0.0",
+]
+science = [
+    "pandas>=1.5.0",
+    "pyarrow>=10.0.0",
+    "matplotlib>=3.7.0",
+    "seaborn>=0.12.0",
+    "scikit-learn>=1.3.0",
+    "statsmodels>=0.14.0",
+    "scipy>=1.11.0",
+]
+story = [
+    "beautifulsoup4>=4.12.0",
+    "lxml>=4.9.0",
+]
+databricks = [
+    "databricks-sdk>=0.20.0",
+]
+dev = [
+    "ruff>=0.4.0",
+    "mypy>=1.10.0",
+    "pytest>=8.0.0",
+    "pytest-cov>=5.0.0",
+    "pre-commit>=3.5.0",
+]
+all = [
+    "versifai[data,science,story,databricks,dev]",
+]
+
+[project.urls]
+Homepage = "https://github.com/versifai/versifai"
+Documentation = "https://github.com/versifai/versifai#readme"
+Repository = "https://github.com/versifai/versifai"
+Issues = "https://github.com/versifai/versifai/issues"
+Changelog = "https://github.com/versifai/versifai/blob/main/CHANGELOG.md"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/versifai"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+src = ["src"]
+
+[tool.ruff.lint]
+select = [
+    "E",     # pycodestyle errors
+    "W",     # pycodestyle warnings
+    "F",     # pyflakes
+    "I",     # isort
+    "N",     # pep8-naming
+    "UP",    # pyupgrade
+    "B",     # flake8-bugbear
+    "SIM",   # flake8-simplify
+    "TCH",   # flake8-type-checking
+]
+ignore = [
+    "E501",  # line too long (handled by formatter)
+    "B008",  # do not perform function calls in argument defaults
+    "SIM108", # use ternary operator
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["versifai"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+check_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = [
+    "anthropic.*",
+    "litellm.*",
+    "pyspark.*",
+    "databricks.*",
+    "matplotlib.*",
+    "seaborn.*",
+    "sklearn.*",
+    "statsmodels.*",
+    "scipy.*",
+    "pymc.*",
+    "arviz.*",
+    "PIL.*",
+    "bs4.*",
+    "lxml.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
