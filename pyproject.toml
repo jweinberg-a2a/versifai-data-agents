@@ -69,11 +69,11 @@ docs = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/versifai/versifai"
+Homepage = "https://github.com/jweinberg-a2a/versifai-data-agents"
 Documentation = "https://jweinberg-a2a.github.io/versifai-data-agents/"
-Repository = "https://github.com/versifai/versifai"
-Issues = "https://github.com/versifai/versifai/issues"
-Changelog = "https://github.com/versifai/versifai/blob/main/CHANGELOG.md"
+Repository = "https://github.com/jweinberg-a2a/versifai-data-agents"
+Issues = "https://github.com/jweinberg-a2a/versifai-data-agents/issues"
+Changelog = "https://github.com/jweinberg-a2a/versifai-data-agents/blob/main/CHANGELOG.md"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/versifai"]
