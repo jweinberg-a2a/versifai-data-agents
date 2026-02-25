@@ -8,7 +8,6 @@ Also provides a tool to list existing tables and execute SQL.
 from __future__ import annotations
 
 import os
-from typing import Any, Optional
 
 import pandas as pd
 
@@ -482,6 +481,7 @@ class ExecuteSQLTool(BaseTool):
 
         # Fallback to SDK — use long timeout + async polling for DDL/CTAS
         import os
+
         from databricks.sdk import WorkspaceClient
 
         client = WorkspaceClient(
@@ -665,6 +665,7 @@ class ListCatalogTablesTool(BaseTool):
             pass
 
         import os
+
         from databricks.sdk import WorkspaceClient
 
         client = WorkspaceClient(

@@ -8,9 +8,7 @@ unique counts, min/max, distributions, and sample values.
 from __future__ import annotations
 
 import os
-from typing import Optional
 
-import numpy as np
 import pandas as pd
 
 from versifai.core.tools.base import BaseTool, ToolResult
@@ -61,8 +59,8 @@ class DataProfilerTool(BaseTool):
         self,
         file_path: str,
         sample_size: int = 500,
-        encoding: Optional[str] = None,
-        separator: Optional[str] = None,
+        encoding: str | None = None,
+        separator: str | None = None,
         **kwargs,
     ) -> ToolResult:
         if not os.path.isfile(file_path):
@@ -109,8 +107,8 @@ class DataProfilerTool(BaseTool):
         )
 
     def _load_sample(
-        self, file_path: str, sample_size: int, encoding: Optional[str], separator: Optional[str]
-    ) -> Optional[pd.DataFrame]:
+        self, file_path: str, sample_size: int, encoding: str | None, separator: str | None
+    ) -> pd.DataFrame | None:
         ext = os.path.splitext(file_path)[1].lower().lstrip(".")
 
         if ext in ("xlsx", "xls"):
@@ -136,7 +134,7 @@ class DataProfilerTool(BaseTool):
             try:
                 sep = separator
                 if not sep:
-                    with open(file_path, "r", encoding=enc) as f:
+                    with open(file_path, encoding=enc) as f:
                         line = f.readline()
                     if "\t" in line:
                         sep = "\t"

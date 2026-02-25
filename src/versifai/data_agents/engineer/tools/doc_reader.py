@@ -12,10 +12,8 @@ from __future__ import annotations
 
 import os
 import re
-from typing import Optional
 
 from versifai.core.tools.base import BaseTool, ToolResult
-
 
 # File extensions considered documentation
 DOC_EXTENSIONS = {
@@ -140,7 +138,7 @@ class DocumentationReaderTool(BaseTool):
     def _read_text(self, file_path: str) -> tuple[str, str]:
         for enc in ["utf-8", "latin-1", "cp1252"]:
             try:
-                with open(file_path, "r", encoding=enc) as f:
+                with open(file_path, encoding=enc) as f:
                     return f.read(), "text"
             except UnicodeDecodeError:
                 continue

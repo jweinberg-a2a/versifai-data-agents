@@ -104,10 +104,25 @@ select = [
     "TCH",   # flake8-type-checking
 ]
 ignore = [
-    "E501",  # line too long (handled by formatter)
-    "B008",  # do not perform function calls in argument defaults
+    "E501",   # line too long (handled by formatter)
+    "B008",   # do not perform function calls in argument defaults
     "SIM108", # use ternary operator
+    "SIM105", # use contextlib.suppress (preference, not a bug)
+    "B905",   # zip() without strict= (adding strict can break runtime)
+    "TC001",  # move application import into TYPE_CHECKING block
+    "TC002",  # move third-party import into TYPE_CHECKING block
+    "TC003",  # move stdlib import into TYPE_CHECKING block
 ]
+
+[tool.ruff.lint.per-file-ignores]
+# Data science code conventionally uses uppercase X, X_train, etc.
+"src/versifai/science_agents/scientist/tools/model_fitting.py" = ["N803", "N806"]
+"src/versifai/science_agents/scientist/tools/statistical_analysis.py" = ["N806"]
+"src/versifai/science_agents/scientist/tools/validate_statistics.py" = ["N806"]
+"src/versifai/science_agents/scientist/tools/log_model.py" = ["N806"]
+"src/versifai/core/tools/visualization.py" = ["N806"]
+# Tests import to verify importability, not to use
+"tests/**" = ["F401"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["versifai"]
@@ -144,3 +159,6 @@ python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 addopts = "-v --tb=short"
+markers = [
+    "integration: marks tests that require an LLM API key and make real LLM calls (deselect with '-m \"not integration\"')",
+]

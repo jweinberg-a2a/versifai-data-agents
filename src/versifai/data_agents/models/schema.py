@@ -4,9 +4,8 @@ Data models for target schema definitions designed by the agent.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Optional
 import json
+from dataclasses import dataclass, field
 
 
 @dataclass
@@ -35,7 +34,7 @@ class ColumnDefinition:
         }
 
     @classmethod
-    def from_dict(cls, d: dict) -> "ColumnDefinition":
+    def from_dict(cls, d: dict) -> ColumnDefinition:
         return cls(**{k: v for k, v in d.items() if k in cls.__dataclass_fields__})
 
 
@@ -58,7 +57,7 @@ class TargetSchema:
     historical_mappings: dict[str, dict[str, str]] = field(default_factory=dict)
 
     @property
-    def fips_column(self) -> Optional[str]:
+    def fips_column(self) -> str | None:
         """Return the name of the FIPS column, if any."""
         for col in self.columns:
             if col.is_fips:
@@ -69,7 +68,7 @@ class TargetSchema:
     def column_names(self) -> list[str]:
         return [c.target_name for c in self.columns]
 
-    def get_column(self, target_name: str) -> Optional[ColumnDefinition]:
+    def get_column(self, target_name: str) -> ColumnDefinition | None:
         for col in self.columns:
             if col.target_name == target_name:
                 return col
@@ -86,7 +85,7 @@ class TargetSchema:
         }
 
     @classmethod
-    def from_dict(cls, d: dict) -> "TargetSchema":
+    def from_dict(cls, d: dict) -> TargetSchema:
         cols = [ColumnDefinition.from_dict(c) for c in d.get("columns", [])]
         return cls(
             source_name=d["source_name"],

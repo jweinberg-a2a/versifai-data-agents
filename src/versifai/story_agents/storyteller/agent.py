@@ -14,34 +14,11 @@ import json
 import logging
 import os
 from datetime import datetime
+
 from versifai.core.agent import BaseAgent
+from versifai.core.display import AgentDisplay
 from versifai.core.llm import LLMClient
 from versifai.core.memory import AgentMemory
-from versifai.core.tools.catalog_writer import SilverOnlyExecuteSQLTool, ListCatalogTablesTool
-from versifai.core.tools.dynamic_tool_builder import DynamicToolBuilderTool
-from versifai.core.tools.registry import ToolRegistry
-from versifai.core.tools.web_scraper import WebScraperTool
-from versifai.core.tools.web_search import WebSearchTool
-from versifai.core.tools.visualization import CreateVisualizationTool
-from versifai.core.tools.save_note import SaveNoteTool
-from versifai.core.tools.view_chart import ViewChartTool
-from versifai.story_agents.storyteller.config import StorytellerConfig
-from versifai.story_agents.storyteller.prompts import (
-    build_storyteller_system_prompt,
-    build_inventory_prompt,
-    build_evidence_evaluation_prompt,
-    build_section_prompt,
-    build_coherence_prompt,
-    build_finalization_prompt,
-    build_editor_system_prompt,
-    build_editor_review_prompt,
-)
-from versifai.story_agents.storyteller.tools.cite_source import CiteSourceTool
-from versifai.story_agents.storyteller.tools.evaluate_evidence import EvaluateEvidenceTool
-from versifai.story_agents.storyteller.tools.read_chart import ReadChartTool
-from versifai.story_agents.storyteller.tools.read_findings import ReadFindingsTool
-from versifai.story_agents.storyteller.tools.read_table import ReadTableTool
-from versifai.story_agents.storyteller.tools.write_narrative import WriteNarrativeTool
 from versifai.core.run_manager import (
     RunState,
     init_run_directory,
@@ -50,7 +27,31 @@ from versifai.core.run_manager import (
     save_run_state,
     write_run_metadata,
 )
-from versifai.core.display import AgentDisplay
+from versifai.core.tools.catalog_writer import ListCatalogTablesTool, SilverOnlyExecuteSQLTool
+from versifai.core.tools.dynamic_tool_builder import DynamicToolBuilderTool
+from versifai.core.tools.registry import ToolRegistry
+from versifai.core.tools.save_note import SaveNoteTool
+from versifai.core.tools.view_chart import ViewChartTool
+from versifai.core.tools.visualization import CreateVisualizationTool
+from versifai.core.tools.web_scraper import WebScraperTool
+from versifai.core.tools.web_search import WebSearchTool
+from versifai.story_agents.storyteller.config import StorytellerConfig
+from versifai.story_agents.storyteller.prompts import (
+    build_coherence_prompt,
+    build_editor_review_prompt,
+    build_editor_system_prompt,
+    build_evidence_evaluation_prompt,
+    build_finalization_prompt,
+    build_inventory_prompt,
+    build_section_prompt,
+    build_storyteller_system_prompt,
+)
+from versifai.story_agents.storyteller.tools.cite_source import CiteSourceTool
+from versifai.story_agents.storyteller.tools.evaluate_evidence import EvaluateEvidenceTool
+from versifai.story_agents.storyteller.tools.read_chart import ReadChartTool
+from versifai.story_agents.storyteller.tools.read_findings import ReadFindingsTool
+from versifai.story_agents.storyteller.tools.read_table import ReadTableTool
+from versifai.story_agents.storyteller.tools.write_narrative import WriteNarrativeTool
 
 logger = logging.getLogger("agent.storyteller")
 
@@ -677,7 +678,7 @@ class StoryTellerAgent(BaseAgent):
                 f"Writing {len(to_run)} of {len(all_sections)} sections"
             )
 
-            for i, section in enumerate(to_run, 1):
+            for _i, section in enumerate(to_run, 1):
                 self._display.phase(
                     f"Section {section.sequence}: {section.title}"
                 )

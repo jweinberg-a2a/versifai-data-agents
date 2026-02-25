@@ -8,11 +8,10 @@ Databricks — no data rewrite occurs.
 
 from __future__ import annotations
 
-import re
 from typing import TYPE_CHECKING
 
-from versifai.core.tools.base import BaseTool, ToolResult
 from versifai._utils.naming import to_snake_case
+from versifai.core.tools.base import BaseTool, ToolResult
 
 if TYPE_CHECKING:
     from versifai.data_agents.engineer.config import ProjectConfig
@@ -29,7 +28,7 @@ class RenameColumnsTool(BaseTool):
     downstream consumers.
     """
 
-    def __init__(self, cfg: "ProjectConfig | None" = None) -> None:
+    def __init__(self, cfg: ProjectConfig | None = None) -> None:
         super().__init__()
         if cfg is None:
             raise ValueError("cfg is required. See examples/ for sample configurations.")
@@ -177,6 +176,7 @@ class RenameColumnsTool(BaseTool):
             pass
 
         import os
+
         from databricks.sdk import WorkspaceClient
 
         client = WorkspaceClient(

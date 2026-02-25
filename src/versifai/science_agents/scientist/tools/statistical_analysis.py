@@ -13,7 +13,6 @@ and returns structured results with interpretations.
 
 from __future__ import annotations
 
-import json
 import warnings
 from typing import Any
 
@@ -675,7 +674,6 @@ class StatisticalAnalysisTool(BaseTool):
             bayesian_proportion — Compare two proportions (Beta-Binomial).
             bayesian_correlation — Test correlation strength (Fisher-z).
         """
-        from scipy import stats as sp_stats
 
         prior = prior or {}
         n_samples = 10_000
@@ -1169,7 +1167,7 @@ class StatisticalAnalysisTool(BaseTool):
             "recommendation": (
                 f"Assumptions are met for {method} analysis."
                 if all_passed
-                else f"Some assumptions violated — review individual checks and consider alternatives."
+                else "Some assumptions violated — review individual checks and consider alternatives."
             ),
         }
 

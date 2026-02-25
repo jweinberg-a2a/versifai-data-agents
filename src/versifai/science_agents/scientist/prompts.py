@@ -43,7 +43,7 @@ def _format_table_schemas(
 
 
 def build_scientist_system_prompt(
-    cfg: "ResearchConfig",
+    cfg: ResearchConfig,
     table_schemas: dict[str, list[tuple[str, str]]] | None = None,
 ) -> str:
     """Build the DataScientistAgent system prompt from research config."""
@@ -459,7 +459,7 @@ to fetch and analyze them when validating your findings:
 
 
 def build_orientation_prompt(
-    cfg: "ResearchConfig",
+    cfg: ResearchConfig,
     available_tables: set[str] | None = None,
     table_schemas: dict[str, list[tuple[str, str]]] | None = None,
 ) -> str:
@@ -501,7 +501,7 @@ the **Table Schemas** section of your system prompt.
 2. When you encounter unfamiliar columns, query the `data_catalog` table for definitions.
 3. Be efficient — don't profile every table upfront, explore as needed."""
     else:
-        inventory_section = f"""\
+        inventory_section = """\
 ### Step 1: Inventory
 1. Call `list_catalog_tables` to see all available tables.
 2. When you encounter unfamiliar columns, query the `data_catalog` table for definitions.
@@ -564,8 +564,8 @@ join strategy will be, and any data quality concerns you spotted.
 
 
 def build_silver_construction_prompt(
-    cfg: "ResearchConfig",
-    dataset_spec: "SilverDatasetSpec",
+    cfg: ResearchConfig,
+    dataset_spec: SilverDatasetSpec,
     available_tables: set[str] | None = None,
     table_schemas: dict[str, list[tuple[str, str]]] | None = None,
 ) -> str:
@@ -759,7 +759,7 @@ value ranges for numeric columns, and any data quality notes.
 
 
 def build_analysis_prompt(
-    cfg: "ResearchConfig", question: "ResearchQuestion",
+    cfg: ResearchConfig, question: ResearchQuestion,
 ) -> str:
     """Phase 3: Investigate a specific research question."""
     proj = cfg.project
@@ -902,8 +902,8 @@ def build_analysis_prompt(
 
 
 def build_theme_analysis_prompt(
-    cfg: "ResearchConfig",
-    theme: "AnalysisTheme",
+    cfg: ResearchConfig,
+    theme: AnalysisTheme,
     available_tables: set[str] | None = None,
     table_schemas: dict[str, list[tuple[str, str]]] | None = None,
     existing_notes: str = "",
@@ -1174,8 +1174,8 @@ Titles should state the finding, not just label axes.
 
 
 def build_validation_prompt(
-    cfg: "ResearchConfig",
-    theme: "AnalysisTheme",
+    cfg: ResearchConfig,
+    theme: AnalysisTheme,
     findings_for_theme: list[dict],
     chart_files: list[str],
     table_files: list[str],
@@ -1513,7 +1513,7 @@ calling `save_note` with theme_id='{theme.id}' containing:
 """
 
 
-def build_synthesis_prompt(cfg: "ResearchConfig", findings_text: str) -> str:
+def build_synthesis_prompt(cfg: ResearchConfig, findings_text: str) -> str:
     """Phase 4: Synthesize all findings into a coherent narrative."""
     return f"""\
 ## Phase 4: Synthesis & Validation

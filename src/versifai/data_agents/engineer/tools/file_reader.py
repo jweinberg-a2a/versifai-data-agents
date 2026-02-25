@@ -11,12 +11,10 @@ peeking at structure. Uses format-specific metadata APIs for row counts.
 from __future__ import annotations
 
 import os
-from typing import Any, Optional
 
 import pandas as pd
 
 from versifai.core.tools.base import BaseTool, ToolResult
-
 
 # Encodings to try in order when reading CSV-like files
 _ENCODING_FALLBACKS = ["utf-8", "latin-1", "cp1252", "iso-8859-1"]
@@ -78,9 +76,9 @@ class FileReaderTool(BaseTool):
         self,
         file_path: str,
         n_rows: int = 10,
-        encoding: Optional[str] = None,
-        separator: Optional[str] = None,
-        sheet_name: Optional[str] = None,
+        encoding: str | None = None,
+        separator: str | None = None,
+        sheet_name: str | None = None,
         skip_rows: int = 0,
         **kwargs,
     ) -> ToolResult:
@@ -113,8 +111,8 @@ class FileReaderTool(BaseTool):
         self,
         file_path: str,
         n_rows: int,
-        encoding: Optional[str],
-        separator: Optional[str],
+        encoding: str | None,
+        separator: str | None,
         skip_rows: int,
     ) -> ToolResult:
         encodings_to_try = [encoding] if encoding else _ENCODING_FALLBACKS
@@ -125,7 +123,7 @@ class FileReaderTool(BaseTool):
                 # First, try to detect the separator if not provided
                 sep = separator
                 if not sep:
-                    with open(file_path, "r", encoding=enc) as f:
+                    with open(file_path, encoding=enc) as f:
                         first_line = f.readline()
                     if "\t" in first_line:
                         sep = "\t"
@@ -174,7 +172,7 @@ class FileReaderTool(BaseTool):
         return ToolResult(success=False, error=f"Failed to read CSV with all encodings. Last error: {last_error}")
 
     def _read_excel(
-        self, file_path: str, n_rows: int, sheet_name: Optional[str], skip_rows: int
+        self, file_path: str, n_rows: int, sheet_name: str | None, skip_rows: int
     ) -> ToolResult:
         sheet = sheet_name if sheet_name else 0
 

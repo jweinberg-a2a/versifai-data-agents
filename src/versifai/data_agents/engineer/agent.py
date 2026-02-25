@@ -14,43 +14,46 @@ from __future__ import annotations
 
 import json
 import logging
-import traceback
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING
 
+from versifai.core.config import (
+    MAX_ACCEPTANCE_ITERATIONS,
+    MAX_TURNS_PER_SOURCE,
+)
+from versifai.core.display import AgentDisplay
 from versifai.core.llm import LLMClient
 from versifai.core.memory import AgentMemory
+from versifai.core.tools.catalog_writer import (
+    CatalogWriterTool,
+    ExecuteSQLTool,
+    ListCatalogTablesTool,
+)
+from versifai.core.tools.column_renamer import RenameColumnsTool
+from versifai.core.tools.dynamic_tool_builder import DynamicToolBuilderTool
+from versifai.core.tools.registry import ToolRegistry
+from versifai.core.tools.web_search import WebSearchTool
 from versifai.data_agents.analyst.agent import DataAnalystAgent
 from versifai.data_agents.analyst.prompts import ANALYST_FEEDBACK_PROMPT_TEMPLATE
 from versifai.data_agents.engineer.prompts import (
-    build_system_prompt,
+    build_catalog_prompt,
     build_discovery_prompt,
-    build_source_processing_prompt,
     build_incremental_source_prompt,
     build_rename_prompt,
-    build_validation_prompt,
-    build_catalog_prompt,
+    build_source_processing_prompt,
+    build_system_prompt,
 )
-from versifai.core.config import (
-    MAX_ACCEPTANCE_ITERATIONS,
-    MAX_AGENT_TURNS,
-    MAX_TURNS_PER_SOURCE,
-)
-from versifai.data_agents.models.state import AgentState, SourceStatus
-from versifai.core.tools.base import ToolResult
-from versifai.core.tools.catalog_writer import CatalogWriterTool, ExecuteSQLTool, ListCatalogTablesTool
-from versifai.core.tools.column_renamer import RenameColumnsTool
 from versifai.data_agents.engineer.tools.data_profiler import DataProfilerTool
 from versifai.data_agents.engineer.tools.data_transformer import DataTransformerTool
-from versifai.data_agents.engineer.tools.doc_reader import DocumentationReaderTool, ScanForDocumentationTool
-from versifai.core.tools.dynamic_tool_builder import DynamicToolBuilderTool
+from versifai.data_agents.engineer.tools.doc_reader import (
+    DocumentationReaderTool,
+    ScanForDocumentationTool,
+)
 from versifai.data_agents.engineer.tools.file_extractor import FileExtractorTool
 from versifai.data_agents.engineer.tools.file_reader import FileReaderTool
-from versifai.core.tools.registry import ToolRegistry
 from versifai.data_agents.engineer.tools.schema_designer import SchemaDesignerTool
 from versifai.data_agents.engineer.tools.volume_explorer import VolumeExplorerTool
-from versifai.core.tools.web_search import WebSearchTool
-from versifai.core.display import AgentDisplay
+from versifai.data_agents.models.state import AgentState
 
 if TYPE_CHECKING:
     from versifai.data_agents.engineer.config import ProjectConfig
@@ -79,7 +82,7 @@ class DataEngineerAgent:
 
     def __init__(
         self,
-        cfg: "ProjectConfig | None" = None,
+        cfg: ProjectConfig | None = None,
         dbutils=None,
         volume_path: str | None = None,
     ) -> None:
@@ -254,7 +257,7 @@ class DataEngineerAgent:
             else:
                 # ── Phase 1: Discovery ──────────────────────────────────
                 self._display.phase("Phase 1: Discovery")
-                discovery_result = self._run_phase(
+                self._run_phase(
                     prompt=build_discovery_prompt(cfg),
                     max_turns=MAX_TURNS_PER_SOURCE,
                 )

@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from versifai.data_agents.engineer.config import ProjectConfig
 
 
-def build_system_prompt(cfg: "ProjectConfig") -> str:
+def build_system_prompt(cfg: ProjectConfig) -> str:
     """Build the data engineer system prompt from project config."""
     return f"""\
 You are a senior Data Engineer AI agent with 15+ years of experience working with
@@ -338,7 +338,7 @@ Do NOT ask the human for:
 """
 
 
-def build_discovery_prompt(cfg: "ProjectConfig") -> str:
+def build_discovery_prompt(cfg: ProjectConfig) -> str:
     """Build the Phase 1 discovery prompt."""
     multi_table_summary = _format_multi_table_summary(cfg)
 
@@ -381,7 +381,7 @@ happens next.
 """
 
 
-def _format_multi_table_summary(cfg: "ProjectConfig") -> str:
+def _format_multi_table_summary(cfg: ProjectConfig) -> str:
     """Format multi-table source hints for the discovery prompt."""
     lines = []
     for hint in cfg.source_processing_hints:
@@ -394,7 +394,7 @@ def _format_multi_table_summary(cfg: "ProjectConfig") -> str:
 
 
 def build_source_processing_prompt(
-    cfg: "ProjectConfig",
+    cfg: ProjectConfig,
     source_name: str,
     source_path: str,
     file_list: str,
@@ -514,7 +514,7 @@ Remember: only include columns that actually exist in the source data.
 
 
 def build_incremental_source_prompt(
-    cfg: "ProjectConfig",
+    cfg: ProjectConfig,
     source_name: str,
     source_path: str,
     existing_table: str,
@@ -580,7 +580,7 @@ Remember: use mode='append' — do NOT overwrite the existing data.
 """
 
 
-def build_rename_prompt(cfg: "ProjectConfig") -> str:
+def build_rename_prompt(cfg: ProjectConfig) -> str:
     """Build the prompt for retroactive column renaming on existing tables."""
     return f"""\
 ## Retroactive Column Rename — Fix Cryptic Names on Existing Tables
@@ -650,7 +650,7 @@ using the source documentation.
 """
 
 
-def build_validation_prompt(cfg: "ProjectConfig") -> str:
+def build_validation_prompt(cfg: ProjectConfig) -> str:
     """Build the engineer's self-validation prompt."""
     return f"""\
 All data sources have been processed. Now do a final quality check, like a senior
@@ -669,7 +669,7 @@ data engineer reviewing before a production release:
 """
 
 
-def build_catalog_prompt(cfg: "ProjectConfig") -> str:
+def build_catalog_prompt(cfg: ProjectConfig) -> str:
     """Build the prompt for creating/updating the data_catalog metadata table."""
     return f"""\
 ## Build Data Catalog — Document Every Column in Every Table

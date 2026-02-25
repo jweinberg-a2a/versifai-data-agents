@@ -113,7 +113,7 @@ class StorytellerConfig:
     narrative_output_path: str = ""
 
     # ── Project config (catalog, schema, join key, etc.) ─────────
-    project: "ProjectConfig" = field(default_factory=lambda: _default_project())
+    project: ProjectConfig = field(default_factory=lambda: _default_project())
 
     # ── Narrative arc ─────────────────────────────────────────────
     narrative_sections: list[NarrativeSection] = field(default_factory=list)
@@ -139,7 +139,7 @@ class StorytellerConfig:
     run_id: str = ""  # Empty = write directly to narrative_output_path (backward compat)
 
     # ── Dependencies on prior agent runs ──────────────────────────
-    dependencies: list["AgentDependency"] = field(default_factory=list)
+    dependencies: list[AgentDependency] = field(default_factory=list)
 
     # ── Compatibility properties ─────────────────────────────────
 
@@ -200,7 +200,7 @@ class StorytellerConfig:
 # Lazy import helper
 # ---------------------------------------------------------------------------
 
-def _default_project() -> "ProjectConfig":
+def _default_project() -> ProjectConfig:
     """Lazy default — returns an empty ProjectConfig.
 
     Callers should always pass an explicit project config; this exists

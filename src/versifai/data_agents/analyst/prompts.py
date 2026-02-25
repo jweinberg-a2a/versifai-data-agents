@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from versifai.data_agents.engineer.config import ProjectConfig
 
 
-def build_analyst_system_prompt(cfg: "ProjectConfig") -> str:
+def build_analyst_system_prompt(cfg: ProjectConfig) -> str:
     """Build the analyst system prompt from project config."""
     return f"""\
 You are a senior Data Analyst AI agent specializing in {cfg.analyst_specialty}.
@@ -195,7 +195,7 @@ of {cfg.join_key.data_type}. Values like 1001 are missing the leading zero. Fix:
 
 
 def build_analyst_initial_prompt(
-    cfg: "ProjectConfig",
+    cfg: ProjectConfig,
     table_inventory: list[dict] | None = None,
     user_hints: str = "",
 ) -> str:
@@ -420,7 +420,7 @@ they write smart SQL that checks multiple things at once.
 
 
 def _format_table_inventory(
-    cfg: "ProjectConfig", inventory: list[dict],
+    cfg: ProjectConfig, inventory: list[dict],
 ) -> str:
     """Format the pre-built table inventory as a readable text block."""
     sections: list[str] = []
@@ -470,7 +470,7 @@ def _format_table_inventory(
     return "\n".join(sections)
 
 
-def _build_related_column_checks(cfg: "ProjectConfig") -> str:
+def _build_related_column_checks(cfg: ProjectConfig) -> str:
     """Build checks for related geographic columns."""
     lines = []
     for col in cfg.join_key.related_columns:
@@ -480,7 +480,7 @@ def _build_related_column_checks(cfg: "ProjectConfig") -> str:
     return "\n".join(lines)
 
 
-def _build_metadata_checks(cfg: "ProjectConfig") -> str:
+def _build_metadata_checks(cfg: ProjectConfig) -> str:
     """Build metadata column existence checks."""
     lines = []
     for col in cfg.metadata_columns:

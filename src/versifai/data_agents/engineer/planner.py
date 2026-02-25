@@ -8,12 +8,9 @@ to structure the agent's initial discovery phase.
 
 from __future__ import annotations
 
-import os
 import re
-from typing import Any
 
 from versifai.data_agents.models.source import DataSource, FileGroup, FileInfo
-
 
 # Heuristic mapping of subfolder/filename patterns to data source names
 SOURCE_PATTERNS = {

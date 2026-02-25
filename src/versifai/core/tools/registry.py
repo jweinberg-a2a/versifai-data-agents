@@ -4,8 +4,6 @@ Tool registry: maps tool names to instances and provides Claude-formatted defini
 
 from __future__ import annotations
 
-from typing import Optional
-
 from versifai.core.tools.base import BaseTool, ToolResult
 
 
@@ -21,7 +19,7 @@ class ToolRegistry:
             raise ValueError(f"Tool '{tool.name}' is already registered.")
         self._tools[tool.name] = tool
 
-    def get(self, name: str) -> Optional[BaseTool]:
+    def get(self, name: str) -> BaseTool | None:
         """Retrieve a tool by name."""
         return self._tools.get(name)
 

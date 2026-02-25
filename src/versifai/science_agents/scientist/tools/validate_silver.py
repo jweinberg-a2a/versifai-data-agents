@@ -15,9 +15,6 @@ the base bronze tables — never patching silver in place.
 
 from __future__ import annotations
 
-from typing import Any
-
-import numpy as np
 import pandas as pd
 
 from versifai.core.tools.base import BaseTool, ToolResult
@@ -230,7 +227,7 @@ class ValidateSilverTool(BaseTool):
             )
 
         dupes = df[df.duplicated(subset=primary_key_columns, keep=False)]
-        dupe_count = len(dupes) // 2 if len(dupes) > 0 else 0  # pairs
+        len(dupes) // 2 if len(dupes) > 0 else 0  # pairs
         n_unique = df.drop_duplicates(subset=primary_key_columns).shape[0]
 
         if len(dupes) == 0:
@@ -682,7 +679,8 @@ class ValidateSilverTool(BaseTool):
         try:
             from versifai._utils.fips import validate_fips
         except ImportError:
-            validate_fips = lambda x: isinstance(x, str) and len(x) == 5 and x.isdigit()
+            def validate_fips(x):
+                return isinstance(x, str) and len(x) == 5 and x.isdigit()
 
         vals = df[col].dropna().astype(str)
         invalid = vals[~vals.apply(validate_fips)]

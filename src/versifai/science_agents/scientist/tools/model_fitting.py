@@ -12,8 +12,6 @@ predictions, and interpretive summaries.
 
 from __future__ import annotations
 
-import json
-import warnings
 from typing import Any
 
 import numpy as np
@@ -205,8 +203,8 @@ class ModelFittingTool(BaseTool):
         y_std = (y - y.mean()) / y.std()
         try:
             beta_model = sm.OLS(y_std, sm.add_constant(X_std)).fit()
-            for i, col in enumerate(feature_columns):
-                coefs[i + 1]["beta_weight"] = round(float(beta_model.params.iloc[i + 1]), 4)
+            for idx, _col in enumerate(feature_columns):
+                coefs[idx + 1]["beta_weight"] = round(float(beta_model.params.iloc[idx + 1]), 4)
         except Exception:
             pass
 
@@ -247,8 +245,11 @@ class ModelFittingTool(BaseTool):
     def _logistic_regression(self, df, target_column, feature_columns, **kwargs) -> ToolResult:
         from sklearn.linear_model import LogisticRegression
         from sklearn.metrics import (
-            accuracy_score, precision_score, recall_score, f1_score,
-            roc_auc_score, classification_report,
+            accuracy_score,
+            f1_score,
+            precision_score,
+            recall_score,
+            roc_auc_score,
         )
         from sklearn.model_selection import train_test_split
         from sklearn.preprocessing import StandardScaler
@@ -312,9 +313,9 @@ class ModelFittingTool(BaseTool):
     # ------------------------------------------------------------------
 
     def _random_forest(self, df, target_column, feature_columns, params, **kwargs) -> ToolResult:
-        from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
+        from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+        from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
         from sklearn.model_selection import train_test_split
-        from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 
         if not target_column or not feature_columns:
             return ToolResult(success=False, error="'target_column' and 'feature_columns' are required.")
@@ -395,9 +396,9 @@ class ModelFittingTool(BaseTool):
     # ------------------------------------------------------------------
 
     def _gradient_boosting(self, df, target_column, feature_columns, params, **kwargs) -> ToolResult:
-        from sklearn.ensemble import GradientBoostingRegressor, GradientBoostingClassifier
+        from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
+        from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
         from sklearn.model_selection import train_test_split
-        from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 
         if not target_column or not feature_columns:
             return ToolResult(success=False, error="'target_column' and 'feature_columns' are required.")
@@ -795,14 +796,14 @@ class ModelFittingTool(BaseTool):
         user_priors, params, clean, target_column,
     ) -> ToolResult:
         """Full MCMC Bayesian regression using PyMC."""
-        import pymc as pm
         import arviz as az
+        import pymc as pm
 
         n_draws = params.get("n_draws", 2000)
         n_tune = params.get("n_tune", 1000)
         n_chains = params.get("n_chains", 2)
 
-        with pm.Model() as model:
+        with pm.Model():
             # Priors for coefficients
             betas = []
             for i, feat in enumerate(feature_columns):
@@ -945,8 +946,8 @@ class ModelFittingTool(BaseTool):
         user_priors, clean, target_column,
     ) -> ToolResult:
         """Fallback Bayesian regression using sklearn BayesianRidge."""
-        from sklearn.linear_model import BayesianRidge
         from scipy import stats as sp_stats
+        from sklearn.linear_model import BayesianRidge
 
         model = BayesianRidge(compute_score=True)
         model.fit(X_scaled, y)
@@ -1064,9 +1065,9 @@ class ModelFittingTool(BaseTool):
     # ------------------------------------------------------------------
 
     def _cross_validate(self, df, target_column, feature_columns, params, **kwargs) -> ToolResult:
+        from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
+        from sklearn.linear_model import Lasso, LinearRegression, Ridge
         from sklearn.model_selection import cross_val_score
-        from sklearn.linear_model import LinearRegression, Ridge, Lasso
-        from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
         from sklearn.preprocessing import StandardScaler
 
         if not target_column or not feature_columns:

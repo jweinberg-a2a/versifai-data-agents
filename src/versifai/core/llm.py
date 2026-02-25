@@ -8,11 +8,11 @@ tracking, and provider-specific optimizations (e.g., Anthropic prompt caching).
 
 from __future__ import annotations
 
+import json
 import logging
-import os
 import time
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import Any
 
 import litellm
 
@@ -103,6 +103,87 @@ class LLMClient:
         return "claude" in self._model.lower()
 
     # ------------------------------------------------------------------
+    # Message format conversion
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def _convert_messages_for_litellm(messages: list[dict]) -> list[dict]:
+        """Convert Anthropic-native messages to OpenAI format for LiteLLM.
+
+        The agent memory stores messages using Anthropic content-block format:
+          - Assistant: ``{"role": "assistant", "content": [{type: "text"}, {type: "tool_use"}]}``
+          - Tool result: ``{"role": "user", "content": [{type: "tool_result"}]}``
+
+        LiteLLM expects OpenAI format:
+          - Assistant: ``{"role": "assistant", "content": "...", "tool_calls": [...]}``
+          - Tool result: ``{"role": "tool", "tool_call_id": "...", "content": "..."}``
+
+        This method converts at the LLM boundary so the rest of the framework
+        can use the richer Anthropic format internally.
+        """
+        converted: list[dict] = []
+
+        for msg in messages:
+            role = msg.get("role", "")
+            content = msg.get("content", "")
+
+            # --- Assistant messages with tool_use blocks ---
+            if role == "assistant" and isinstance(content, list):
+                text_parts: list[str] = []
+                tool_calls: list[dict] = []
+
+                for block in content:
+                    if not isinstance(block, dict):
+                        continue
+                    if block.get("type") == "text":
+                        text_parts.append(block.get("text", ""))
+                    elif block.get("type") == "tool_use":
+                        tool_calls.append({
+                            "id": block["id"],
+                            "type": "function",
+                            "function": {
+                                "name": block["name"],
+                                "arguments": json.dumps(block.get("input", {})),
+                            },
+                        })
+
+                new_msg: dict[str, Any] = {
+                    "role": "assistant",
+                    "content": "\n".join(text_parts) or None,
+                }
+                if tool_calls:
+                    new_msg["tool_calls"] = tool_calls
+                converted.append(new_msg)
+
+            # --- User messages that are actually tool results ---
+            elif role == "user" and isinstance(content, list):
+                is_tool_result = (
+                    content
+                    and isinstance(content[0], dict)
+                    and content[0].get("type") == "tool_result"
+                )
+
+                if is_tool_result:
+                    for block in content:
+                        result_content = block.get("content", "")
+                        if isinstance(result_content, list):
+                            result_content = json.dumps(result_content)
+                        converted.append({
+                            "role": "tool",
+                            "tool_call_id": block.get("tool_use_id", ""),
+                            "content": str(result_content),
+                        })
+                else:
+                    # Regular user message with content blocks — pass through
+                    converted.append(msg)
+
+            # --- Everything else (plain user/system messages) ---
+            else:
+                converted.append(msg)
+
+        return converted
+
+    # ------------------------------------------------------------------
     # Main send method
     # ------------------------------------------------------------------
 
@@ -121,7 +202,7 @@ class LLMClient:
         Parameters
         ----------
         messages : list[dict]
-            Conversation history in OpenAI message format.
+            Conversation history (Anthropic or OpenAI format — auto-converted).
         system : str
             System prompt text.
         tools : list[dict]
@@ -133,6 +214,9 @@ class LLMClient:
         LLMResponse
             Normalized response with content blocks and usage stats.
         """
+        # Convert messages from Anthropic-native to OpenAI format for LiteLLM
+        converted_messages = self._convert_messages_for_litellm(messages)
+
         # Build kwargs for litellm.completion
         kwargs: dict[str, Any] = {
             "model": self._model,
@@ -148,7 +232,7 @@ class LLMClient:
         # Provider-specific optimizations
         if self._is_anthropic:
             # Anthropic prompt caching: mark system + last tool for caching
-            kwargs["messages"] = [{"role": "system", "content": system}] + messages
+            kwargs["messages"] = [{"role": "system", "content": system}] + converted_messages
             if tools:
                 # LiteLLM passes cache_control through for Anthropic
                 cached_tools = list(tools)
@@ -157,10 +241,10 @@ class LLMClient:
                 kwargs["tools"] = cached_tools
         else:
             # OpenAI and others: system goes in messages
-            kwargs["messages"] = [{"role": "system", "content": system}] + messages
+            kwargs["messages"] = [{"role": "system", "content": system}] + converted_messages
 
         # Retry loop with exponential backoff
-        last_error: Optional[Exception] = None
+        last_error: Exception | None = None
 
         for attempt in range(self._retry_attempts):
             try:
@@ -221,8 +305,6 @@ class LLMClient:
             # Tool calls
             if msg.tool_calls:
                 for tc in msg.tool_calls:
-                    import json
-
                     args = tc.function.arguments
                     if isinstance(args, str):
                         try:

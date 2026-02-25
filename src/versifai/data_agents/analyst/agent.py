@@ -12,21 +12,18 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import datetime
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING
 
+from versifai.core.display import AgentDisplay
+from versifai.core.llm import LLMClient
+from versifai.core.memory import AgentMemory
+from versifai.core.tools.catalog_writer import ExecuteSQLTool, ListCatalogTablesTool
+from versifai.core.tools.dynamic_tool_builder import DynamicToolBuilderTool
+from versifai.core.tools.registry import ToolRegistry
 from versifai.data_agents.analyst.prompts import (
     build_analyst_initial_prompt,
     build_analyst_system_prompt,
 )
-from versifai.core.llm import LLMClient
-from versifai.core.memory import AgentMemory
-from versifai.core.config import MAX_TURNS_PER_SOURCE
-from versifai.core.tools.base import ToolResult
-from versifai.core.tools.catalog_writer import ExecuteSQLTool, ListCatalogTablesTool
-from versifai.core.tools.dynamic_tool_builder import DynamicToolBuilderTool
-from versifai.core.tools.registry import ToolRegistry
-from versifai.core.display import AgentDisplay
 
 if TYPE_CHECKING:
     from versifai.data_agents.engineer.config import ProjectConfig
@@ -54,7 +51,7 @@ class DataAnalystAgent:
 
     def __init__(
         self,
-        cfg: "ProjectConfig | None" = None,
+        cfg: ProjectConfig | None = None,
         dbutils=None,
         max_turns: int = 80,
         table_inventory: list[dict] | None = None,

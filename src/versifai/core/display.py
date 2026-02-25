@@ -13,7 +13,6 @@ import os
 import re
 import textwrap
 from datetime import datetime
-from typing import Optional
 
 logger = logging.getLogger("agent.display")
 
@@ -172,7 +171,7 @@ class AgentDisplay:
             if self._dbutils:
                 self._dbutils.notebook.displayHTML(content)
             else:
-                from IPython.display import display, HTML
+                from IPython.display import HTML, display
                 display(HTML(content))
         except Exception:
             pass
@@ -217,7 +216,7 @@ class AgentDisplay:
             )
         else:
             wrapped = textwrap.fill(display_text, width=88, initial_indent="  ", subsequent_indent="  ")
-            print(f"\n  [Reasoning]")
+            print("\n  [Reasoning]")
             print(wrapped)
         logger.debug(f"THINKING: {thought[:200]}")
 
@@ -355,7 +354,7 @@ class AgentDisplay:
         self,
         question: str,
         context: str = "",
-        options: Optional[list[str]] = None,
+        options: list[str] | None = None,
     ) -> str:
         """
         Pause the agent and ask the human operator a question.
@@ -395,7 +394,7 @@ class AgentDisplay:
 
         # Always print to stdout so the question is visible in all contexts
         print(f"\n{'='*60}")
-        print(f"  AGENT NEEDS YOUR INPUT")
+        print("  AGENT NEEDS YOUR INPUT")
         print(f"{'='*60}")
         print(f"  {question}")
         if context:

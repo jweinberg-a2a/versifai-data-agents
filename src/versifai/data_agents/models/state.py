@@ -5,9 +5,8 @@ Agent state tracking: source processing status and overall progress.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from enum import Enum
 from datetime import datetime
-from typing import Optional
+from enum import Enum
 
 
 class SourceStatus(str, Enum):
@@ -36,8 +35,8 @@ class SourceState:
     files_processed: int = 0
     files_total: int = 0
     rows_loaded: int = 0
-    started_at: Optional[datetime] = None
-    completed_at: Optional[datetime] = None
+    started_at: datetime | None = None
+    completed_at: datetime | None = None
     table_name: str = ""
 
     def record_error(self, error: str) -> None:
@@ -56,9 +55,9 @@ class AgentState:
     """
 
     sources: dict[str, SourceState] = field(default_factory=dict)
-    current_source: Optional[str] = None
+    current_source: str | None = None
     total_turns: int = 0
-    started_at: Optional[datetime] = None
+    started_at: datetime | None = None
     phase: str = "discovery"  # discovery | processing | validation | complete
 
     def get_or_create_source(self, name: str) -> SourceState:

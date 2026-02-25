@@ -14,9 +14,10 @@ import json
 import logging
 import os
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING
 
 from versifai.core.agent import BaseAgent
+from versifai.core.display import AgentDisplay
 from versifai.core.llm import LLMClient
 from versifai.core.memory import AgentMemory
 from versifai.core.run_manager import (
@@ -27,31 +28,29 @@ from versifai.core.run_manager import (
     save_run_state,
     write_run_metadata,
 )
-from versifai.core.tools.base import ToolResult
-from versifai.core.tools.catalog_writer import SilverOnlyExecuteSQLTool, ListCatalogTablesTool
+from versifai.core.tools.catalog_writer import ListCatalogTablesTool, SilverOnlyExecuteSQLTool
 from versifai.core.tools.dynamic_tool_builder import DynamicToolBuilderTool
 from versifai.core.tools.registry import ToolRegistry
+from versifai.core.tools.save_note import SaveNoteTool
+from versifai.core.tools.view_chart import ViewChartTool
+from versifai.core.tools.visualization import CreateVisualizationTool
 from versifai.core.tools.web_scraper import WebScraperTool
+from versifai.core.tools.web_search import WebSearchTool
 from versifai.science_agents.scientist.prompts import (
-    build_scientist_system_prompt,
     build_orientation_prompt,
+    build_scientist_system_prompt,
     build_silver_construction_prompt,
-    build_theme_analysis_prompt,
     build_synthesis_prompt,
+    build_theme_analysis_prompt,
     build_validation_prompt,
 )
-from versifai.core.tools.web_search import WebSearchTool
 from versifai.science_agents.scientist.tools.check_confounders import CheckConfoundersTool
-from versifai.core.tools.visualization import CreateVisualizationTool
 from versifai.science_agents.scientist.tools.literature_review import LiteratureReviewTool
 from versifai.science_agents.scientist.tools.model_fitting import ModelFittingTool
 from versifai.science_agents.scientist.tools.save_finding import SaveFindingTool
-from versifai.core.tools.save_note import SaveNoteTool
 from versifai.science_agents.scientist.tools.statistical_analysis import StatisticalAnalysisTool
 from versifai.science_agents.scientist.tools.validate_silver import ValidateSilverTool
 from versifai.science_agents.scientist.tools.validate_statistics import ValidateStatisticsTool
-from versifai.core.tools.view_chart import ViewChartTool
-from versifai.core.display import AgentDisplay
 
 if TYPE_CHECKING:
     from versifai.science_agents.scientist.config import ResearchConfig
@@ -81,7 +80,7 @@ class DataScientistAgent(BaseAgent):
 
     def __init__(
         self,
-        cfg: "ResearchConfig | None" = None,
+        cfg: ResearchConfig | None = None,
         dbutils=None,
     ) -> None:
         if cfg is None:
@@ -483,7 +482,7 @@ class DataScientistAgent(BaseAgent):
                 f"({len(all_themes)} themes)"
             )
             themes_skipped = 0
-            for i, theme in enumerate(all_themes, 1):
+            for _i, theme in enumerate(all_themes, 1):
                 # Smart resume: skip themes that already have findings
                 if state and theme.id in state["completed_themes"]:
                     self._display.step(
@@ -841,7 +840,7 @@ class DataScientistAgent(BaseAgent):
             present = [t for t in theme.required_tables if t.lower() in
                        {s.lower() for s in silver_tables + bronze_tables}]
             theme_tables = (
-                f"\n### Primary Tables for This Theme\n"
+                "\n### Primary Tables for This Theme\n"
                 + "\n".join(f"- `{proj.full_schema}.{t}`" for t in present)
             )
 
@@ -978,7 +977,7 @@ rebuild silver tables, do NOT save findings. Just create the charts and tables.
                 f"Theme Analysis ({len(themes_to_run)} of {len(all_themes)} themes)"
             )
 
-            for i, theme in enumerate(themes_to_run, 1):
+            for _i, theme in enumerate(themes_to_run, 1):
                 self._display.phase(
                     f"Theme {theme.sequence}/{len(all_themes)}: "
                     f"{theme.title} — {theme.question[:80]}..."

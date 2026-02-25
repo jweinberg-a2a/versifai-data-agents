@@ -11,7 +11,6 @@ from typing import Any
 
 from versifai.core.tools.base import BaseTool, ToolResult
 
-
 # Evidence strength tiers
 TIERS = {
     "DEFINITIVE": "p < 0.001, large effect size (d > 0.8 or r > 0.5), replicated",
@@ -83,7 +82,7 @@ class EvaluateEvidenceTool(BaseTool):
         effect_size = finding.get("effect_size", "")
         p_value = finding.get("p_value")
         title = finding.get("title", "")
-        description = finding.get("description", "")
+        finding.get("description", "")
 
         # Parse effect size magnitude
         effect_magnitude = "unknown"

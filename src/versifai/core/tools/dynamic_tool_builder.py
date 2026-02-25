@@ -16,15 +16,14 @@ import json
 import logging
 import os
 import re
-import traceback
+from collections.abc import Callable
 from datetime import datetime
-from typing import Any, Callable, Optional
 
 import pandas as pd
 
+from versifai._utils.fips import pad_fips_series
 from versifai.core.tools.base import BaseTool, ToolResult
 from versifai.core.tools.registry import ToolRegistry
-from versifai._utils.fips import pad_fips_series
 
 logger = logging.getLogger("agent.dynamic_tools")
 
@@ -79,14 +78,14 @@ class DynamicTool(BaseTool):
         tool_description: str,
         tool_parameters: dict,
         execute_code: str,
-        extra_scope: Optional[dict] = None,
+        extra_scope: dict | None = None,
     ) -> None:
         self._name = tool_name
         self._description = tool_description
         self._parameters = tool_parameters
         self._execute_code = execute_code
         self._extra_scope = extra_scope or {}
-        self._compiled_fn: Optional[Callable] = None
+        self._compiled_fn: Callable | None = None
         self._compile()
 
     def _compile(self) -> None:

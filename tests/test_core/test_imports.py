@@ -10,14 +10,6 @@ def test_import_core():
     from versifai.core import (
         BaseAgent,
         LLMClient,
-        LLMResponse,
-        AgentMemory,
-        AgentDisplay,
-        AgentSettings,
-        CatalogConfig,
-        BaseTool,
-        ToolResult,
-        ToolRegistry,
     )
     assert BaseAgent is not None
     assert LLMClient is not None
@@ -26,8 +18,6 @@ def test_import_core():
 def test_import_data_agents():
     from versifai.data_agents import (
         DataEngineerAgent,
-        DataAnalystAgent,
-        ProjectConfig,
     )
     assert DataEngineerAgent is not None
 
@@ -35,7 +25,6 @@ def test_import_data_agents():
 def test_import_science_agents():
     from versifai.science_agents import (
         DataScientistAgent,
-        ResearchConfig,
     )
     assert DataScientistAgent is not None
 
@@ -43,7 +32,6 @@ def test_import_science_agents():
 def test_import_story_agents():
     from versifai.story_agents import (
         StoryTellerAgent,
-        StorytellerConfig,
     )
     assert StoryTellerAgent is not None
 

@@ -7,7 +7,6 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Optional
 
 
 @dataclass
@@ -18,18 +17,18 @@ class FileInfo:
     name: str
     extension: str
     size_bytes: int
-    modified_at: Optional[datetime] = None
+    modified_at: datetime | None = None
 
     # Populated after inspection
     is_archive: bool = False
-    extracted_to: Optional[str] = None
-    encoding: Optional[str] = None
-    row_count: Optional[int] = None
-    column_count: Optional[int] = None
+    extracted_to: str | None = None
+    encoding: str | None = None
+    row_count: int | None = None
+    column_count: int | None = None
     columns: list[str] = field(default_factory=list)
 
     @classmethod
-    def from_path(cls, path: str) -> "FileInfo":
+    def from_path(cls, path: str) -> FileInfo:
         """Build a FileInfo from a filesystem path."""
         stat = os.stat(path)
         name = os.path.basename(path)
@@ -92,7 +91,7 @@ class FileGroup:
     def total_size_mb(self) -> float:
         return round(sum(f.size_bytes for f in self.files) / (1024 * 1024), 2)
 
-    def most_recent_data_file(self) -> Optional[FileInfo]:
+    def most_recent_data_file(self) -> FileInfo | None:
         """Return the data file with the latest modification date."""
         candidates = self.data_files or self.files
         if not candidates:

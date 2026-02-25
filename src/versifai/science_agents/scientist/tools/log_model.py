@@ -16,9 +16,8 @@ import json
 import logging
 import os
 import tempfile
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
-import numpy as np
 import pandas as pd
 
 from versifai.core.tools.base import BaseTool, ToolResult
@@ -38,7 +37,7 @@ class LogModelTool(BaseTool):
     a Unity Catalog registry name, registers the model there.
     """
 
-    def __init__(self, cfg: "ResearchConfig") -> None:
+    def __init__(self, cfg: ResearchConfig) -> None:
         super().__init__()
         self._cfg = cfg
 

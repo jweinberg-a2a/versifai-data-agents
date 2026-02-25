@@ -32,7 +32,6 @@ import secrets
 from dataclasses import dataclass, field
 from datetime import datetime
 
-
 # ---------------------------------------------------------------------------
 # Run ID generation
 # ---------------------------------------------------------------------------
@@ -260,7 +259,7 @@ class RunState:
         }
 
     @classmethod
-    def from_dict(cls, data: dict) -> "RunState":
+    def from_dict(cls, data: dict) -> RunState:
         return cls(
             status=data.get("status", "running"),
             entry_point=data.get("entry_point", "run"),

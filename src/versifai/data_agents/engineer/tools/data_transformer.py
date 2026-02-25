@@ -10,14 +10,13 @@ from __future__ import annotations
 
 import os
 from datetime import datetime
-from typing import Any, Optional
 
 import pandas as pd
 
-from versifai.data_agents.models.schema import TargetSchema
-from versifai.core.tools.base import BaseTool, ToolResult
-from versifai._utils.fips import pad_county_fips, pad_state_fips, pad_fips_series
+from versifai._utils.fips import pad_fips_series
 from versifai._utils.naming import to_snake_case
+from versifai.core.tools.base import BaseTool, ToolResult
+from versifai.data_agents.models.schema import TargetSchema
 
 
 class DataTransformerTool(BaseTool):
@@ -161,16 +160,16 @@ class DataTransformerTool(BaseTool):
     def _execute(
         self,
         source_name: str,
-        file_path: Optional[str] = None,
-        source_year: Optional[int] = None,
-        source_period_start: Optional[str] = None,
-        column_overrides: Optional[dict[str, str]] = None,
-        encoding: Optional[str] = None,
-        separator: Optional[str] = None,
+        file_path: str | None = None,
+        source_year: int | None = None,
+        source_period_start: str | None = None,
+        column_overrides: dict[str, str] | None = None,
+        encoding: str | None = None,
+        separator: str | None = None,
         skip_rows: int = 0,
-        sheet_name: Optional[str] = None,
+        sheet_name: str | None = None,
         append: bool = True,
-        files: Optional[list[dict]] = None,
+        files: list[dict] | None = None,
         **kwargs,
     ) -> ToolResult:
         # Get the target schema
@@ -208,14 +207,13 @@ class DataTransformerTool(BaseTool):
             return ToolResult(success=False, error=f"Failed to load file: {file_path}")
 
         original_row_count = len(df)
-        original_columns = list(df.columns)
+        list(df.columns)
 
         # Build the source→target column mapping
         col_map = self._build_column_mapping(schema, df.columns.tolist(), column_overrides)
 
         # Transform
         transformed = pd.DataFrame()
-        unmapped_source = []
         unmapped_target = []
 
         for col_def in schema.columns:
@@ -277,7 +275,7 @@ class DataTransformerTool(BaseTool):
                 period_date = None
 
         meta_map = {col.name: col for col in self._cfg.metadata_columns}
-        for meta_name, meta_col in meta_map.items():
+        for meta_name, _meta_col in meta_map.items():
             if "file" in meta_name and "name" in meta_name:
                 transformed[meta_name] = file_name
             elif "period" in meta_name and "start" in meta_name:
@@ -344,12 +342,12 @@ class DataTransformerTool(BaseTool):
         self,
         files: list[dict],
         source_name: str,
-        schema: "TargetSchema",
-        column_overrides: Optional[dict[str, str]] = None,
-        encoding: Optional[str] = None,
-        separator: Optional[str] = None,
+        schema: TargetSchema,
+        column_overrides: dict[str, str] | None = None,
+        encoding: str | None = None,
+        separator: str | None = None,
         skip_rows: int = 0,
-        sheet_name: Optional[str] = None,
+        sheet_name: str | None = None,
     ) -> ToolResult:
         """Process multiple files in a single tool call.
 
@@ -607,10 +605,10 @@ class DataTransformerTool(BaseTool):
     def _scan_batch_headers(
         self,
         files: list[dict],
-        encoding: Optional[str],
-        separator: Optional[str],
+        encoding: str | None,
+        separator: str | None,
         skip_rows: int,
-        sheet_name: Optional[str],
+        sheet_name: str | None,
     ) -> list[dict]:
         """Quick-scan file headers to detect schema differences before batch processing.
 
@@ -647,7 +645,7 @@ class DataTransformerTool(BaseTool):
                         try:
                             sep = separator
                             if not sep:
-                                with open(fp, "r", encoding=enc) as f:
+                                with open(fp, encoding=enc) as f:
                                     line = f.readline()
                                 sep = "\t" if "\t" in line else ("|" if "|" in line else ",")
                             df_header = pd.read_csv(
@@ -671,7 +669,7 @@ class DataTransformerTool(BaseTool):
                 })
         return header_info
 
-    def get_staged(self, source_name: str) -> Optional[pd.DataFrame]:
+    def get_staged(self, source_name: str) -> pd.DataFrame | None:
         """Retrieve staged DataFrame for a source."""
         return self._staged.get(source_name)
 
@@ -814,9 +812,9 @@ class DataTransformerTool(BaseTool):
         )
 
     def _load_file(
-        self, file_path: str, encoding: Optional[str], separator: Optional[str],
-        skip_rows: int, sheet_name: Optional[str],
-    ) -> Optional[pd.DataFrame]:
+        self, file_path: str, encoding: str | None, separator: str | None,
+        skip_rows: int, sheet_name: str | None,
+    ) -> pd.DataFrame | None:
         ext = os.path.splitext(file_path)[1].lower().lstrip(".")
 
         if ext in ("xlsx", "xls"):
@@ -834,7 +832,7 @@ class DataTransformerTool(BaseTool):
             try:
                 sep = separator
                 if not sep:
-                    with open(file_path, "r", encoding=enc) as f:
+                    with open(file_path, encoding=enc) as f:
                         line = f.readline()
                     if "\t" in line:
                         sep = "\t"
@@ -855,7 +853,7 @@ class DataTransformerTool(BaseTool):
         self,
         schema: TargetSchema,
         source_columns: list[str],
-        overrides: Optional[dict[str, str]],
+        overrides: dict[str, str] | None,
     ) -> dict[str, str]:
         """
         Build a mapping from target_name → source_column_name.

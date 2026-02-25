@@ -11,12 +11,12 @@ from __future__ import annotations
 import base64
 import io
 import os
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 import pandas as pd
 
-from versifai.core.tools.base import BaseTool, ToolResult
 from versifai.core.display import AgentDisplay
+from versifai.core.tools.base import BaseTool, ToolResult
 
 if TYPE_CHECKING:
     from versifai.science_agents.scientist.config import ResearchConfig
@@ -37,7 +37,7 @@ class CreateVisualizationTool(BaseTool):
 
     def __init__(
         self,
-        cfg: "ResearchConfig | None" = None,
+        cfg: ResearchConfig | None = None,
         display: AgentDisplay | None = None,
         notes_path: str = "",
     ) -> None:
@@ -49,7 +49,7 @@ class CreateVisualizationTool(BaseTool):
         self._charts_created: list[str] = []
         self._notes_path = notes_path
 
-    def _fetch_sql_data(self, sql: str) -> Optional[pd.DataFrame]:
+    def _fetch_sql_data(self, sql: str) -> pd.DataFrame | None:
         """Execute a SQL query and return ALL rows as a DataFrame.
 
         Tries Spark first (native in Databricks), then falls back to the
@@ -71,6 +71,7 @@ class CreateVisualizationTool(BaseTool):
         # Fallback to SDK
         try:
             import os
+
             from databricks.sdk import WorkspaceClient
 
             client = WorkspaceClient(
@@ -162,7 +163,7 @@ class CreateVisualizationTool(BaseTool):
         existing = ""
         if os.path.isfile(filepath):
             try:
-                with open(filepath, "r") as f:
+                with open(filepath) as f:
                     existing = f.read()
             except OSError:
                 pass
@@ -840,8 +841,8 @@ class CreateVisualizationTool(BaseTool):
         color_scale: str,
     ) -> ToolResult:
         """Render two side-by-side US county choropleth maps for comparison."""
-        from plotly.subplots import make_subplots
         import plotly.graph_objects as go
+        from plotly.subplots import make_subplots
 
         if fips_column not in df.columns:
             return ToolResult(
@@ -948,29 +949,29 @@ class CreateVisualizationTool(BaseTool):
 
         import matplotlib
         matplotlib.use("Agg")
-        import matplotlib.pyplot as plt
         import matplotlib.colors as mcolors
         import matplotlib.patches as mpatches
+        import matplotlib.pyplot as plt
         import matplotlib.ticker as mticker
         import numpy as np
         import seaborn as sns
 
         try:
-            import plotly.graph_objects as go
             import plotly.express as px
+            import plotly.graph_objects as go
             from plotly.subplots import make_subplots
         except ImportError:
             go = px = make_subplots = None
 
         try:
-            import scipy.stats as scipy_stats
             import scipy.cluster.hierarchy as scipy_hierarchy
+            import scipy.stats as scipy_stats
         except ImportError:
             scipy_stats = scipy_hierarchy = None
 
         try:
-            from sklearn.preprocessing import StandardScaler, MinMaxScaler
             from sklearn.cluster import KMeans
+            from sklearn.preprocessing import MinMaxScaler, StandardScaler
         except ImportError:
             StandardScaler = MinMaxScaler = KMeans = None
 

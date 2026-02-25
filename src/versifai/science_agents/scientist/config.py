@@ -131,7 +131,7 @@ class ResearchConfig:
     visualization_guidance: str = ""
 
     # ── Project config (catalog, schema, join key, etc.) ─────────
-    project: "ProjectConfig" = field(default_factory=lambda: _default_project())
+    project: ProjectConfig = field(default_factory=lambda: _default_project())
 
     # ── Results storage ──────────────────────────────────────────
     results_volume_path: str = ""
@@ -150,7 +150,7 @@ class ResearchConfig:
     run_id: str = ""  # Empty = write directly to results_volume_path (backward compat)
 
     # ── Dependencies on prior agent runs ──────────────────────────
-    dependencies: list["AgentDependency"] = field(default_factory=list)
+    dependencies: list[AgentDependency] = field(default_factory=list)
 
     # ── MLflow integration ────────────────────────────────────────
     mlflow_experiment: str = ""       # e.g. "/Shared/versifai/expansion_propensity"
@@ -245,7 +245,7 @@ class ResearchConfig:
 # Lazy import helper
 # ---------------------------------------------------------------------------
 
-def _default_project() -> "ProjectConfig":
+def _default_project() -> ProjectConfig:
     """Lazy default — returns an empty ProjectConfig.
 
     Callers should always pass an explicit project config; this exists

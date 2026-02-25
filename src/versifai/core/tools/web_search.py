@@ -11,8 +11,7 @@ documentation pages from known portals configured in ProjectConfig.
 from __future__ import annotations
 
 import re
-from typing import TYPE_CHECKING, Optional
-from urllib.parse import quote_plus
+from typing import TYPE_CHECKING
 
 import requests
 
@@ -23,7 +22,7 @@ if TYPE_CHECKING:
 
 
 class WebSearchTool(BaseTool):
-    def __init__(self, cfg: "ProjectConfig | None" = None) -> None:
+    def __init__(self, cfg: ProjectConfig | None = None) -> None:
         super().__init__()
         if cfg is None:
             raise ValueError("cfg is required. See examples/ for sample configurations.")
@@ -71,7 +70,7 @@ class WebSearchTool(BaseTool):
         }
 
     def _execute(
-        self, query: str, url: Optional[str] = None, max_chars: int = 10000, **kwargs
+        self, query: str, url: str | None = None, max_chars: int = 10000, **kwargs
     ) -> ToolResult:
         headers = {
             "User-Agent": (

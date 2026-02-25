@@ -11,10 +11,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from versifai.story_agents.storyteller.config import StorytellerConfig, NarrativeSection
+    from versifai.story_agents.storyteller.config import NarrativeSection, StorytellerConfig
 
 
-def build_storyteller_system_prompt(cfg: "StorytellerConfig") -> str:
+def build_storyteller_system_prompt(cfg: StorytellerConfig) -> str:
     """Build the system prompt that stays constant across all phases."""
     return f"""\
 You are an expert science writer and policy analyst. Your job is to transform
@@ -154,7 +154,7 @@ section's needs, but start from this pool:
 
 
 def build_inventory_prompt(
-    cfg: "StorytellerConfig",
+    cfg: StorytellerConfig,
     inventory: dict,
     focus_visuals: list[str] | None = None,
 ) -> str:
@@ -215,7 +215,7 @@ Save your inventory to a note using `save_note` (e.g., "storyteller_inventory.md
 
 
 def build_evidence_evaluation_prompt(
-    cfg: "StorytellerConfig",
+    cfg: StorytellerConfig,
     inventory: dict,
     focus_visuals: list[str] | None = None,
 ) -> str:
@@ -259,8 +259,8 @@ When done, provide a structured bill of materials for each section.
 
 
 def build_section_prompt(
-    cfg: "StorytellerConfig",
-    section: "NarrativeSection",
+    cfg: StorytellerConfig,
+    section: NarrativeSection,
     inventory: dict,
     focus_visuals: list[str] | None = None,
 ) -> str:
@@ -348,7 +348,7 @@ def build_section_prompt(
 """
 
 
-def build_coherence_prompt(cfg: "StorytellerConfig") -> str:
+def build_coherence_prompt(cfg: StorytellerConfig) -> str:
     """Build the prompt for Phase 4: Coherence pass."""
     return f"""\
 ## Phase 4: Coherence Pass
@@ -382,7 +382,7 @@ When done, summarize what you fixed and confirm the document is ready for assemb
 """
 
 
-def build_finalization_prompt(cfg: "StorytellerConfig") -> str:
+def build_finalization_prompt(cfg: StorytellerConfig) -> str:
     """Build the prompt for Phase 5: Final assembly."""
     return f"""\
 ## Phase 5: Finalization
@@ -422,7 +422,7 @@ Medicare Advantage Stars methodology.
 # ══════════════════════════════════════════════════════════════════════
 
 
-def build_editor_system_prompt(cfg: "StorytellerConfig") -> str:
+def build_editor_system_prompt(cfg: StorytellerConfig) -> str:
     """Build the system prompt for the editor review session.
 
     This replaces the writer system prompt when the agent is operating
@@ -518,7 +518,7 @@ would benefit from one, flag it. Every visual must earn its place.
 
 
 def build_editor_review_prompt(
-    cfg: "StorytellerConfig",
+    cfg: StorytellerConfig,
     inventory: dict,
     instructions: str,
     section_summaries: list[dict],

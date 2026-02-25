@@ -276,7 +276,7 @@ results = agent.run()
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `CLAUDE_TOKEN` | yes | Anthropic API key |
+| `ANTHROPIC_API_KEY` | yes | Anthropic API key |
 | `DATABRICKS_HOST` | no | Workspace URL (auto-detected in notebooks) |
 | `DATABRICKS_TOKEN` | no | PAT token (auto-detected in notebooks) |
 

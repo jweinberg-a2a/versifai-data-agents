@@ -10,9 +10,8 @@ from __future__ import annotations
 
 import json
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Optional
 
 logger = logging.getLogger("agent.memory")
 
@@ -31,7 +30,7 @@ class DecisionRecord:
     source_name: str
     decision: str
     reasoning: str
-    tool_used: Optional[str] = None
+    tool_used: str | None = None
 
 
 class AgentMemory:

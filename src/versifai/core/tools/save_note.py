@@ -14,7 +14,6 @@ from __future__ import annotations
 
 import os
 from datetime import datetime
-from typing import Any
 
 from versifai.core.tools.base import BaseTool, ToolResult
 
@@ -102,7 +101,7 @@ class SaveNoteTool(BaseTool):
             existing = ""
             if os.path.isfile(filepath):
                 try:
-                    with open(filepath, "r") as f:
+                    with open(filepath) as f:
                         existing = f.read()
                 except OSError:
                     pass

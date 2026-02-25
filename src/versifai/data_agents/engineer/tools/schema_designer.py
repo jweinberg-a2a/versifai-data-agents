@@ -7,18 +7,17 @@ standards and join key requirements, and stores it in the agent's schema registr
 
 from __future__ import annotations
 
-import re
 from typing import TYPE_CHECKING, Any
 
-from versifai.data_agents.models.schema import ColumnDefinition, TargetSchema
-from versifai.core.tools.base import BaseTool, ToolResult
 from versifai._utils.naming import to_snake_case
+from versifai.core.tools.base import BaseTool, ToolResult
+from versifai.data_agents.models.schema import ColumnDefinition, TargetSchema
 
 if TYPE_CHECKING:
     from versifai.data_agents.engineer.config import ProjectConfig
 
 
-def _build_metadata_columns(cfg: "ProjectConfig") -> list[ColumnDefinition]:
+def _build_metadata_columns(cfg: ProjectConfig) -> list[ColumnDefinition]:
     """Build metadata ColumnDefinitions from ProjectConfig."""
     return [
         ColumnDefinition(
@@ -42,7 +41,7 @@ class SchemaDesignerTool(BaseTool):
     join key column, and stores the schema for later use in transformation.
     """
 
-    def __init__(self, cfg: "ProjectConfig | None" = None) -> None:
+    def __init__(self, cfg: ProjectConfig | None = None) -> None:
         super().__init__()
         # In-memory schema registry — shared across the agent session
         self._schemas: dict[str, TargetSchema] = {}

@@ -9,16 +9,11 @@ future agents all share the same loop without code duplication.
 from __future__ import annotations
 
 import logging
-import os
-from typing import TYPE_CHECKING, Any
 
+from versifai.core.display import AgentDisplay
 from versifai.core.llm import LLMClient
 from versifai.core.memory import AgentMemory
 from versifai.core.tools.registry import ToolRegistry
-from versifai.core.display import AgentDisplay
-
-if TYPE_CHECKING:
-    pass
 
 logger = logging.getLogger("agent.base")
 
@@ -343,9 +338,10 @@ class BaseAgent:
         if not image_path or not image_path.lower().endswith(".png"):
             return ""
         try:
-            from PIL import Image
             import base64
             import io
+
+            from PIL import Image
 
             img = Image.open(image_path)
             # Resize if wider than max_width, maintaining aspect ratio

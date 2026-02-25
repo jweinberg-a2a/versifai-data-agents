@@ -23,8 +23,6 @@ Usage in a notebook::
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Optional
-
 
 # ---------------------------------------------------------------------------
 # Building blocks — standalone Lego pieces
@@ -159,7 +157,7 @@ class ProjectConfig:
         """Fully qualified schema name."""
         return f"{self.catalog}.{self.schema}"
 
-    def get_source_hint(self, source_name: str) -> Optional[SourceProcessingHint]:
+    def get_source_hint(self, source_name: str) -> SourceProcessingHint | None:
         """Find a matching SourceProcessingHint for a given source directory name."""
         name_lower = source_name.lower()
         for hint in self.source_processing_hints:
@@ -173,7 +171,7 @@ class ProjectConfig:
         if not hint:
             return ""
         lines = [
-            f"\n## IMPORTANT: Multi-Table Source Processing Instructions",
+            "\n## IMPORTANT: Multi-Table Source Processing Instructions",
             f"\n**{hint.description}**\n",
         ]
         if hint.multi_table:

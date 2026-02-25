@@ -21,12 +21,10 @@ programmatically by other tools (e.g., LiteratureReviewTool).
 
 from __future__ import annotations
 
-import json
 import logging
 import re
 import xml.etree.ElementTree as ET
-from typing import Any
-from urllib.parse import urljoin, urlparse, quote_plus
+from urllib.parse import quote_plus, urlparse
 
 import requests
 
@@ -659,6 +657,7 @@ class WebScraperTool(BaseTool):
         """Extract text from a PDF document."""
         try:
             import io
+
             from pypdf import PdfReader
 
             reader = PdfReader(io.BytesIO(content))

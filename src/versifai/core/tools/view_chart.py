@@ -13,7 +13,6 @@ filename, so the agent can discover what exists before viewing.
 from __future__ import annotations
 
 import os
-from typing import Any
 
 from versifai.core.tools.base import BaseTool, ToolResult
 
@@ -100,7 +99,7 @@ class ViewChartTool(BaseTool):
         elif full_path.lower().endswith(".csv"):
             # For CSVs, read and return the content as text
             try:
-                with open(full_path, "r") as f:
+                with open(full_path) as f:
                     content = f.read()
                 # Truncate very large CSVs
                 if len(content) > 10000:
@@ -127,7 +126,7 @@ class ViewChartTool(BaseTool):
     def _get_available_files(self) -> list[str]:
         """Gather all files from charts and tables directories."""
         files = []
-        for path, prefix in [(self._charts_path, ""), (self._tables_path, "")]:
+        for path, _prefix in [(self._charts_path, ""), (self._tables_path, "")]:
             if path and os.path.isdir(path):
                 files.extend(sorted(os.listdir(path)))
         return sorted(set(files))

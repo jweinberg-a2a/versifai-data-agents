@@ -15,10 +15,9 @@ evidence base and identifying novel contributions.
 
 from __future__ import annotations
 
-import json
 import logging
 import re
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 from urllib.parse import quote_plus
 
 import requests
@@ -47,7 +46,7 @@ class LiteratureReviewTool(BaseTool):
 
     def __init__(
         self,
-        cfg: "ResearchConfig | None" = None,
+        cfg: ResearchConfig | None = None,
         web_scraper: WebScraperTool | None = None,
     ) -> None:
         super().__init__()
