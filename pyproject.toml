@@ -63,10 +63,14 @@ dev = [
     "pytest-cov>=5.0.0",
     "pre-commit>=3.5.0",
 ]
+docs = [
+    "mkdocs-material>=9.5",
+    "mkdocstrings[python]>=0.24",
+]
 
 [project.urls]
 Homepage = "https://github.com/versifai/versifai"
-Documentation = "https://github.com/versifai/versifai#readme"
+Documentation = "https://jweinberg-a2a.github.io/versifai-data-agents/"
 Repository = "https://github.com/versifai/versifai"
 Issues = "https://github.com/versifai/versifai/issues"
 Changelog = "https://github.com/versifai/versifai/blob/main/CHANGELOG.md"

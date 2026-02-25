@@ -1,0 +1,102 @@
+site_name: Versifai
+site_url: https://jweinberg-a2a.github.io/versifai-data-agents/
+site_description: Agentic AI framework for autonomous data engineering, science, and storytelling.
+repo_url: https://github.com/jweinberg-a2a/versifai-data-agents
+repo_name: jweinberg-a2a/versifai-data-agents
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  logo: assets/logo.png
+  favicon: assets/IconOnly_NoBuffer.png
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: deep purple
+      accent: purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: deep purple
+      accent: purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - content.code.copy
+    - content.code.annotate
+    - search.suggest
+    - search.highlight
+    - toc.follow
+  icon:
+    repo: fontawesome/brands/github
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Architecture: architecture.md
+  - Agent Guides:
+      - Data Engineer: data-engineer.md
+      - Data Scientist: data-scientist.md
+      - StoryTeller: storyteller.md
+      - Building Custom Agents: custom-agents.md
+  - Tool Reference: tool-inventory.md
+  - API Reference:
+      - Core Framework: api/core.md
+      - Data Agents: api/data-agents.md
+      - Science Agents: api/science-agents.md
+      - Story Agents: api/story-agents.md
+  - Contributing: contributing.md
+  - Changelog: changelog.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.snippets:
+      base_path: ["."]
+  - toc:
+      permalink: true
+  - attr_list
+  - md_in_html
+  - tables
+
+plugins:
+  - search
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          paths: [src]
+          options:
+            show_source: true
+            show_root_heading: true
+            show_root_full_path: false
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            members_order: source
+            docstring_style: google
+            merge_init_into_class: true
+            show_signature_annotations: true
+            separate_signature: true
+            signature_crossrefs: true
+            filters:
+              - "!^_"
+              - "^__init__$"
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/jweinberg-a2a/versifai-data-agents
