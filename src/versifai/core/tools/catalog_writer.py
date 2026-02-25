@@ -541,7 +541,9 @@ class ExecuteSQLTool(BaseTool):
         ):
             time.sleep(poll_interval)
             poll_elapsed += poll_interval
-            result = client.statement_execution.get_statement(result.statement_id)
+            result = client.statement_execution.get_statement(
+                result.statement_id  # type: ignore[arg-type]
+            )
 
         # Check for failure or still running
         if result.status and result.status.state:
@@ -569,7 +571,9 @@ class ExecuteSQLTool(BaseTool):
 
         rows = []
         if result.result and result.result.data_array:
-            col_names = [c.name for c in result.manifest.schema.columns] if result.manifest else []
+            schema = result.manifest.schema if result.manifest else None
+            cols = schema.columns if schema else None
+            col_names = [c.name for c in cols] if cols else []
             for row in result.result.data_array[:100]:
                 if col_names:
                     rows.append(dict(zip(col_names, row)))
@@ -710,7 +714,9 @@ class ListCatalogTablesTool(BaseTool):
 
         tables = []
         if result.result and result.result.data_array:
-            col_names = [c.name for c in result.manifest.schema.columns] if result.manifest else []
+            schema = result.manifest.schema if result.manifest else None
+            cols = schema.columns if schema else None
+            col_names = [c.name for c in cols] if cols else []
             for row in result.result.data_array:
                 tables.append(dict(zip(col_names, row)) if col_names else row)
 
