@@ -1,0 +1,64 @@
+/* ── Primary color override ─────────────────────────────────────────── */
+
+:root,
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color: #f7fafc;
+  --md-primary-fg-color--light: #f7fafc;
+  --md-primary-fg-color--dark: #e2e8f0;
+  --md-primary-bg-color: #1a202c;
+  --md-primary-bg-color--light: #2d3748;
+  --md-accent-fg-color: #4a6fa5;
+  --md-accent-fg-color--transparent: rgba(74, 111, 165, 0.1);
+}
+
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: #2d3748;
+  --md-primary-fg-color--light: #4a5568;
+  --md-primary-fg-color--dark: #1a202c;
+  --md-primary-bg-color: #f7fafc;
+  --md-primary-bg-color--light: #e2e8f0;
+  --md-accent-fg-color: #63b3ed;
+  --md-accent-fg-color--transparent: rgba(99, 179, 237, 0.1);
+}
+
+/* Header text/icons need to be dark on the light header */
+[data-md-color-scheme="default"] .md-header {
+  color: #1a202c;
+}
+
+[data-md-color-scheme="default"] .md-header__title,
+[data-md-color-scheme="default"] .md-header__topic,
+[data-md-color-scheme="default"] .md-header-nav__button,
+[data-md-color-scheme="default"] .md-header .md-logo,
+[data-md-color-scheme="default"] .md-header .md-search__icon,
+[data-md-color-scheme="default"] .md-header .md-icon {
+  color: #1a202c;
+}
+
+/* Search bar styling for light header */
+[data-md-color-scheme="default"] .md-search__form {
+  background-color: rgba(0, 0, 0, 0.07);
+}
+
+[data-md-color-scheme="default"] .md-search__input::placeholder {
+  color: #4a5568;
+}
+
+/* Tabs bar (if used) */
+[data-md-color-scheme="default"] .md-tabs {
+  background-color: #edf2f7;
+  color: #1a202c;
+}
+
+[data-md-color-scheme="default"] .md-tabs__link {
+  color: #4a5568;
+}
+
+[data-md-color-scheme="default"] .md-tabs__link--active {
+  color: #1a202c;
+}
+
+/* Subtle bottom border on header for definition */
+[data-md-color-scheme="default"] .md-header {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}

@@ -4,10 +4,8 @@ hide:
 ---
 
 <p align="center">
-  <img src="assets/logo.png" alt="Versifai" width="400">
+  <img src="assets/FullLogo_Transparent_NoBuffer.png" alt="Versifai" width="400">
 </p>
-
-# Versifai
 
 **Agentic AI framework for autonomous data engineering, science, and storytelling.**
 
