@@ -58,8 +58,9 @@ class TestEvaluate:
         result = tool.execute(operation="evaluate", finding=finding)
         assert result.success is True
         tier = result.data.get("tier", result.data.get("classification", "")).upper()
-        assert tier in ("WEAK", "CONTEXTUAL"), \
+        assert tier in ("WEAK", "CONTEXTUAL"), (
             f"Text 'highly significant' should not override p=0.45. Got tier={tier}"
+        )
 
     def test_suggestive_tier(self, tool):
         """p < 0.05 but not highly significant → SUGGESTIVE."""
@@ -89,7 +90,7 @@ class TestFalseClaimDetection:
         finding = {
             "title": "MASSIVE breakthrough in enrollment prediction!",
             "finding": "We discovered an ENORMOUS and UNPRECEDENTED effect that PROVES "
-                       "a causal link between income and enrollment rates.",
+            "a causal link between income and enrollment rates.",
             "p_value": 0.9,
             "effect_size": "negligible (d=0.01)",
             "significance": "low",
@@ -97,8 +98,7 @@ class TestFalseClaimDetection:
         result = tool.execute(operation="evaluate", finding=finding)
         assert result.success is True
         tier = result.data["tier"].upper()
-        assert tier == "WEAK", \
-            f"Inflated text with p=0.9, d=0.01 should be WEAK, got {tier}"
+        assert tier == "WEAK", f"Inflated text with p=0.9, d=0.01 should be WEAK, got {tier}"
 
     def test_contradictory_significance_label(self, tool):
         """Significance label says 'high' but p-value says 0.6 → WEAK.
@@ -117,8 +117,9 @@ class TestFalseClaimDetection:
         assert result.success is True
         tier = result.data["tier"].upper()
         # p=0.6 should dominate — this is WEAK regardless of the 'high' label
-        assert tier == "WEAK", \
+        assert tier == "WEAK", (
             f"p=0.6 should make this WEAK even with significance='high', got {tier}"
+        )
 
     def test_false_causation_still_assessed_on_stats(self, tool):
         """A finding claiming causation based on correlation, but with valid stats.
@@ -137,8 +138,9 @@ class TestFalseClaimDetection:
         assert result.success is True
         tier = result.data["tier"].upper()
         # Stats are genuinely strong, so tier should be high
-        assert tier in ("DEFINITIVE", "STRONG"), \
+        assert tier in ("DEFINITIVE", "STRONG"), (
             f"Valid stats (p=0.001, d=0.85) should be DEFINITIVE/STRONG, got {tier}"
+        )
 
     def test_curate_rejects_all_weak_findings(self, tool):
         """BEHAVIORAL: If all findings are weak, none should be usable as lead."""
@@ -164,8 +166,7 @@ class TestFalseClaimDetection:
         if isinstance(lead_count, list):
             lead_count = len(lead_count)
         # None of these weak findings should be usable as a lead
-        assert lead_count == 0, \
-            f"No weak findings should be usable as lead, got {lead_count}"
+        assert lead_count == 0, f"No weak findings should be usable as lead, got {lead_count}"
 
 
 class TestCurate:
@@ -194,7 +195,9 @@ class TestCurate:
             max_findings=5,
         )
         assert result.success is True
-        curated = result.data.get("curated", result.data.get("findings", result.data.get("selected", [])))
+        curated = result.data.get(
+            "curated", result.data.get("findings", result.data.get("selected", []))
+        )
         if len(curated) >= 2:
             # Strong finding should come first
             first_title = curated[0].get("title", curated[0].get("finding", {}).get("title", ""))
@@ -202,7 +205,13 @@ class TestCurate:
 
     def test_curate_limits_count(self, tool):
         findings = [
-            {"title": f"Finding {i}", "finding": f"f{i}", "p_value": 0.01, "effect_size": 0.5, "significance": "high"}
+            {
+                "title": f"Finding {i}",
+                "finding": f"f{i}",
+                "p_value": 0.01,
+                "effect_size": 0.5,
+                "significance": "high",
+            }
             for i in range(10)
         ]
         result = tool.execute(
@@ -212,5 +221,7 @@ class TestCurate:
             max_findings=3,
         )
         assert result.success is True
-        curated = result.data.get("curated", result.data.get("findings", result.data.get("selected", [])))
+        curated = result.data.get(
+            "curated", result.data.get("findings", result.data.get("selected", []))
+        )
         assert len(curated) <= 3

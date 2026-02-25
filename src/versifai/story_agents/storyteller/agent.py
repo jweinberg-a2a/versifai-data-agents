@@ -195,9 +195,7 @@ class StoryTellerAgent(BaseAgent):
 
     def _run_phase(self, prompt: str, max_turns: int) -> str:
         """Run a phase, providing the storyteller progress path."""
-        progress_path = os.path.join(
-            self._narrative_run_path, "progress.txt"
-        )
+        progress_path = os.path.join(self._narrative_run_path, "progress.txt")
         return super()._run_phase(prompt, max_turns, progress_path=progress_path)
 
     # ------------------------------------------------------------------
@@ -212,9 +210,7 @@ class StoryTellerAgent(BaseAgent):
     def _dump_progress_on_crash(self) -> None:
         """Flush the display log to progress.txt on interrupt/failure."""
         try:
-            progress_path = os.path.join(
-                self._narrative_run_path, "progress.txt"
-            )
+            progress_path = os.path.join(self._narrative_run_path, "progress.txt")
             self._display.dump_progress(progress_path)
         except Exception:
             pass  # best-effort
@@ -253,16 +249,14 @@ class StoryTellerAgent(BaseAgent):
         charts_dir = os.path.join(results_path, "charts")
         if os.path.isdir(charts_dir):
             inventory["charts"] = sorted(
-                f for f in os.listdir(charts_dir)
-                if f.lower().endswith((".png", ".html", ".svg"))
+                f for f in os.listdir(charts_dir) if f.lower().endswith((".png", ".html", ".svg"))
             )
 
         # Tables
         tables_dir = os.path.join(results_path, "tables")
         if os.path.isdir(tables_dir):
             inventory["tables"] = sorted(
-                f for f in os.listdir(tables_dir)
-                if f.lower().endswith(".csv")
+                f for f in os.listdir(tables_dir) if f.lower().endswith(".csv")
             )
 
         # Notes
@@ -310,10 +304,7 @@ class StoryTellerAgent(BaseAgent):
         previously written ones) and the assembler to include them.
         """
         # Build a section_id -> sequence mapping from config
-        section_seq = {
-            s.id: s.sequence
-            for s in self._cfg.narrative_sections
-        }
+        section_seq = {s.id: s.sequence for s in self._cfg.narrative_sections}
 
         for section_id, content in completed.items():
             seq = section_seq.get(section_id, 999)
@@ -382,7 +373,9 @@ class StoryTellerAgent(BaseAgent):
         # Write run metadata if using run isolation
         if cfg.run_id:
             write_run_metadata(
-                self._narrative_run_path, cfg.name, cfg.run_id,
+                self._narrative_run_path,
+                cfg.name,
+                cfg.run_id,
                 agent_type="storyteller",
             )
 
@@ -410,9 +403,7 @@ class StoryTellerAgent(BaseAgent):
             )
 
             if inventory["findings_count"] == 0:
-                self._display.error(
-                    "No findings found. Run the DataScientist agent first."
-                )
+                self._display.error("No findings found. Run the DataScientist agent first.")
                 return self._build_summary()
 
             # ── Smart resume: scan existing sections ──────────────────
@@ -459,7 +450,9 @@ class StoryTellerAgent(BaseAgent):
 
                 self._run_phase(
                     prompt=self._inject_instructions(
-                        build_evidence_evaluation_prompt(cfg, inventory, focus_visuals=focus_visuals)
+                        build_evidence_evaluation_prompt(
+                            cfg, inventory, focus_visuals=focus_visuals
+                        )
                     ),
                     max_turns=cfg.max_turns_per_phase,
                 )
@@ -472,9 +465,7 @@ class StoryTellerAgent(BaseAgent):
             if self._run_state:
                 self._run_state.mark_phase_start("sections")
                 self._save_state()
-            self._display.phase(
-                f"Phase 3: Section Writing ({len(sections)} sections)"
-            )
+            self._display.phase(f"Phase 3: Section Writing ({len(sections)} sections)")
 
             sections_skipped = 0
             for i, section in enumerate(sections, 1):
@@ -488,9 +479,7 @@ class StoryTellerAgent(BaseAgent):
                     sections_skipped += 1
                     continue
 
-                self._display.phase(
-                    f"Section {i}/{len(sections)}: {section.title}"
-                )
+                self._display.phase(f"Section {i}/{len(sections)}: {section.title}")
                 carryover = self._memory.get_carryover_context()
                 self._memory.reset_for_new_source()
                 self._consecutive_errors = 0
@@ -498,10 +487,7 @@ class StoryTellerAgent(BaseAgent):
 
                 prompt = build_section_prompt(cfg, section, inventory, focus_visuals=focus_visuals)
                 if carryover:
-                    prompt = (
-                        f"## Context From Prior Sections\n{carryover}\n\n"
-                        f"---\n\n{prompt}"
-                    )
+                    prompt = f"## Context From Prior Sections\n{carryover}\n\n---\n\n{prompt}"
 
                 self._run_phase(
                     prompt=self._inject_instructions(prompt),
@@ -510,9 +496,7 @@ class StoryTellerAgent(BaseAgent):
                 if self._run_state:
                     self._run_state.mark_item_complete("sections", section.id)
                     self._save_state()
-                self._display.success(
-                    f"Completed section: {section.title}"
-                )
+                self._display.success(f"Completed section: {section.title}")
 
             if self._run_state:
                 self._run_state.mark_phase_complete("sections")
@@ -521,9 +505,7 @@ class StoryTellerAgent(BaseAgent):
             # ── Phase 4: Coherence Pass ───────────────────────────────
             # Skip only if ALL sections were skipped (nothing new)
             if sections_skipped == len(sections):
-                self._display.step(
-                    "Phase 4: Coherence — SKIPPED (no new sections written)"
-                )
+                self._display.step("Phase 4: Coherence — SKIPPED (no new sections written)")
                 if self._run_state:
                     self._run_state.mark_phase_complete("coherence")
                     self._save_state()
@@ -537,9 +519,7 @@ class StoryTellerAgent(BaseAgent):
                 self._missing_param_tracker.clear()
 
                 self._run_phase(
-                    prompt=self._inject_instructions(
-                        build_coherence_prompt(cfg)
-                    ),
+                    prompt=self._inject_instructions(build_coherence_prompt(cfg)),
                     max_turns=cfg.coherence_pass_max_turns,
                 )
                 if self._run_state:
@@ -556,9 +536,7 @@ class StoryTellerAgent(BaseAgent):
             self._missing_param_tracker.clear()
 
             self._run_phase(
-                prompt=self._inject_instructions(
-                    build_finalization_prompt(cfg)
-                ),
+                prompt=self._inject_instructions(build_finalization_prompt(cfg)),
                 max_turns=cfg.max_turns_per_phase,
             )
             if self._run_state:
@@ -583,7 +561,9 @@ class StoryTellerAgent(BaseAgent):
         # Update run metadata on completion
         if cfg.run_id:
             write_run_metadata(
-                self._narrative_run_path, cfg.name, cfg.run_id,
+                self._narrative_run_path,
+                cfg.name,
+                cfg.run_id,
                 agent_type="storyteller",
                 extra={
                     "completed_at": datetime.now().isoformat(),
@@ -594,12 +574,8 @@ class StoryTellerAgent(BaseAgent):
 
         summary = self._build_summary()
         self._display.phase("STORYTELLER COMPLETE")
-        self._display.step(
-            f"Sections written: {self._write_narrative_tool.sections_written}"
-        )
-        self._display.step(
-            f"Citations: {len(self._cite_source_tool._citations)}"
-        )
+        self._display.step(f"Sections written: {self._write_narrative_tool.sections_written}")
+        self._display.step(f"Citations: {len(self._cite_source_tool._citations)}")
         self._display.step(f"Notes: {len(self._note_tool._notes)}")
         self._display.step(f"LLM usage: {self._llm.usage_summary}")
         return summary
@@ -658,9 +634,7 @@ class StoryTellerAgent(BaseAgent):
             completed = self._scan_completed_sections()
             if completed:
                 self._load_existing_sections(completed)
-                self._display.step(
-                    f"Loaded {len(completed)} existing sections from disk"
-                )
+                self._display.step(f"Loaded {len(completed)} existing sections from disk")
 
             self._system_prompt = build_storyteller_system_prompt(cfg)
 
@@ -674,22 +648,16 @@ class StoryTellerAgent(BaseAgent):
             if self._run_state:
                 self._run_state.mark_phase_start("sections")
                 self._save_state()
-            self._display.phase(
-                f"Writing {len(to_run)} of {len(all_sections)} sections"
-            )
+            self._display.phase(f"Writing {len(to_run)} of {len(all_sections)} sections")
 
             for _i, section in enumerate(to_run, 1):
-                self._display.phase(
-                    f"Section {section.sequence}: {section.title}"
-                )
+                self._display.phase(f"Section {section.sequence}: {section.title}")
                 self._memory.reset_for_new_source()
                 self._consecutive_errors = 0
                 self._missing_param_tracker.clear()
 
                 self._run_phase(
-                    prompt=self._inject_instructions(
-                        build_section_prompt(cfg, section, inventory)
-                    ),
+                    prompt=self._inject_instructions(build_section_prompt(cfg, section, inventory)),
                     max_turns=cfg.max_turns_per_section,
                 )
                 if self._run_state:
@@ -711,9 +679,7 @@ class StoryTellerAgent(BaseAgent):
                 self._missing_param_tracker.clear()
 
                 self._run_phase(
-                    prompt=self._inject_instructions(
-                        build_coherence_prompt(cfg)
-                    ),
+                    prompt=self._inject_instructions(build_coherence_prompt(cfg)),
                     max_turns=cfg.coherence_pass_max_turns,
                 )
                 if self._run_state:
@@ -730,9 +696,7 @@ class StoryTellerAgent(BaseAgent):
             self._missing_param_tracker.clear()
 
             self._run_phase(
-                prompt=self._inject_instructions(
-                    build_finalization_prompt(cfg)
-                ),
+                prompt=self._inject_instructions(build_finalization_prompt(cfg)),
                 max_turns=cfg.max_turns_per_phase,
             )
             if self._run_state:
@@ -756,9 +720,7 @@ class StoryTellerAgent(BaseAgent):
 
         summary = self._build_summary()
         self._display.phase("SECTION WRITING COMPLETE")
-        self._display.step(
-            f"Sections written: {self._write_narrative_tool.sections_written}"
-        )
+        self._display.step(f"Sections written: {self._write_narrative_tool.sections_written}")
         self._display.step(f"LLM usage: {self._llm.usage_summary}")
         return summary
 
@@ -840,10 +802,7 @@ class StoryTellerAgent(BaseAgent):
             self._load_existing_sections(completed_sections)
 
             # Build section summaries for the prompt
-            section_seq = {
-                s.id: (s.sequence, s.title)
-                for s in cfg.narrative_sections
-            }
+            section_seq = {s.id: (s.sequence, s.title) for s in cfg.narrative_sections}
             section_summaries: list[dict] = []
             self._display.step("--- Sections Under Review ---")
             for sid, content in completed_sections.items():
@@ -857,15 +816,15 @@ class StoryTellerAgent(BaseAgent):
                         break
                 if not title:
                     title = sid.replace("section_", "").replace("_", " ").title()
-                section_summaries.append({
-                    "section_id": sid,
-                    "title": title,
-                    "word_count": words,
-                })
+                section_summaries.append(
+                    {
+                        "section_id": sid,
+                        "title": title,
+                        "word_count": words,
+                    }
+                )
                 self._display.step(f"  {sid}: {title} ({words} words)")
-            section_summaries.sort(
-                key=lambda s: section_seq.get(s["section_id"], (999,))[0]
-            )
+            section_summaries.sort(key=lambda s: section_seq.get(s["section_id"], (999,))[0])
             self._display.step("---")
 
             # ── Switch to editor system prompt ────────────────────
@@ -881,9 +840,8 @@ class StoryTellerAgent(BaseAgent):
                 self._run_state.mark_phase_start("editor")
                 self._save_state()
             self._display.phase("Editorial Review (HITL — expect ask_human pauses)")
-            max_turns = (
-                cfg.editor_max_turns_overview
-                + cfg.editor_max_turns_per_section * len(section_summaries)
+            max_turns = cfg.editor_max_turns_overview + cfg.editor_max_turns_per_section * len(
+                section_summaries
             )
             self._display.step(f"Turn budget: {max_turns}")
 
@@ -919,9 +877,7 @@ class StoryTellerAgent(BaseAgent):
 
         summary = self._build_summary()
         self._display.phase("EDITORIAL REVIEW COMPLETE")
-        self._display.step(
-            f"Sections updated: {self._write_narrative_tool.sections_written}"
-        )
+        self._display.step(f"Sections updated: {self._write_narrative_tool.sections_written}")
         self._display.step(f"LLM usage: {self._llm.usage_summary}")
         return summary
 

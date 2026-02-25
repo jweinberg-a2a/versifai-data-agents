@@ -261,18 +261,24 @@ class WebScraperTool(BaseTool):
                     path = parsed.path.strip("/")
 
                     lastmod_el = url_el.find("lastmod")
-                    lastmod = lastmod_el.text.strip() if lastmod_el is not None and lastmod_el.text else None
+                    lastmod = (
+                        lastmod_el.text.strip()
+                        if lastmod_el is not None and lastmod_el.text
+                        else None
+                    )
 
                     # Derive a readable title from the URL path
                     slug = path.split("/")[-1] if path else ""
                     title = slug.replace("-", " ").replace("_", " ").title() if slug else base_url
 
-                    urls.append({
-                        "url": full_url,
-                        "path": path,
-                        "title": title,
-                        "lastmod": lastmod,
-                    })
+                    urls.append(
+                        {
+                            "url": full_url,
+                            "path": path,
+                            "title": title,
+                            "lastmod": lastmod,
+                        }
+                    )
 
         return urls
 
@@ -294,11 +300,13 @@ class WebScraperTool(BaseTool):
             if section_key not in sections:
                 sections[section_key] = []
 
-            sections[section_key].append({
-                "title": entry["title"],
-                "url": entry["url"],
-                "lastmod": entry.get("lastmod"),
-            })
+            sections[section_key].append(
+                {
+                    "title": entry["title"],
+                    "url": entry["url"],
+                    "lastmod": entry.get("lastmod"),
+                }
+            )
 
         # Sort pages within each section by URL
         for section in sections.values():
@@ -374,7 +382,9 @@ class WebScraperTool(BaseTool):
 
         # Truncate
         if len(text) > _MAX_CONTENT_CHARS:
-            text = text[:_MAX_CONTENT_CHARS] + "\n\n[... CONTENT TRUNCATED — full page is longer ...]"
+            text = (
+                text[:_MAX_CONTENT_CHARS] + "\n\n[... CONTENT TRUNCATED — full page is longer ...]"
+            )
 
         # Cache it
         self._page_cache[url] = text
@@ -434,12 +444,14 @@ class WebScraperTool(BaseTool):
             caption = caption_el.get_text(strip=True) if caption_el else f"Table {i + 1}"
 
             if headers or rows:
-                tables.append({
-                    "caption": caption,
-                    "headers": headers,
-                    "rows": rows[:100],  # Limit rows
-                    "total_rows": len(rows),
-                })
+                tables.append(
+                    {
+                        "caption": caption,
+                        "headers": headers,
+                        "rows": rows[:100],  # Limit rows
+                        "total_rows": len(rows),
+                    }
+                )
 
         if not tables:
             return ToolResult(
@@ -548,8 +560,7 @@ class WebScraperTool(BaseTool):
         Returns HTML string or None.
         """
         cache_url = (
-            f"https://webcache.googleusercontent.com/search?"
-            f"q=cache:{quote_plus(url)}&strip=0"
+            f"https://webcache.googleusercontent.com/search?q=cache:{quote_plus(url)}&strip=0"
         )
 
         try:

@@ -21,10 +21,7 @@ class TestMultipleComparisons:
         With 20 independent tests, p-values around 0.04 are often false
         discoveries. After BH-FDR correction, some should be rejected.
         """
-        p_values = [
-            {"name": f"test_{i}", "p_value": 0.04 + 0.001 * i}
-            for i in range(15)
-        ] + [
+        p_values = [{"name": f"test_{i}", "p_value": 0.04 + 0.001 * i} for i in range(15)] + [
             {"name": "truly_sig_1", "p_value": 0.001},
             {"name": "truly_sig_2", "p_value": 0.002},
             {"name": "truly_sig_3", "p_value": 0.003},
@@ -38,7 +35,9 @@ class TestMultipleComparisons:
         # Uncorrected: many pass at 0.05
         # FDR-corrected: fewer should pass
         uncorrected = data.get("uncorrected_significant", data.get("uncorrected", 0))
-        fdr = data.get("bh_fdr_significant", data.get("fdr_significant", data.get("bh_significant", 0)))
+        fdr = data.get(
+            "bh_fdr_significant", data.get("fdr_significant", data.get("bh_significant", 0))
+        )
 
         if isinstance(uncorrected, list):
             uncorrected = len(uncorrected)
@@ -49,16 +48,15 @@ class TestMultipleComparisons:
 
     def test_bonferroni_stricter_than_fdr(self, tool):
         """BEHAVIORAL: Bonferroni should be stricter than BH-FDR."""
-        p_values = [
-            {"name": f"test_{i}", "p_value": 0.01 + 0.005 * i}
-            for i in range(10)
-        ]
+        p_values = [{"name": f"test_{i}", "p_value": 0.01 + 0.005 * i} for i in range(10)]
         result = tool.execute(check_type="multiple_comparisons", p_values=p_values)
         assert result.success is True
         data = result.data
 
         bonf = data.get("bonferroni_significant", data.get("bonferroni", 0))
-        fdr = data.get("bh_fdr_significant", data.get("fdr_significant", data.get("bh_significant", 0)))
+        fdr = data.get(
+            "bh_fdr_significant", data.get("fdr_significant", data.get("bh_significant", 0))
+        )
 
         if isinstance(bonf, list):
             bonf = len(bonf)
@@ -113,11 +111,13 @@ class TestRobustness:
         # Strong positive relationship in main data
         data = [{"x": i, "y": i * 2 + random.gauss(0, 1)} for i in range(50)]
         # Add extreme outliers that reverse the trend at the tail
-        data.extend([
-            {"x": 100, "y": -1000},
-            {"x": 101, "y": -1100},
-            {"x": 102, "y": -1200},
-        ])
+        data.extend(
+            [
+                {"x": 100, "y": -1000},
+                {"x": 101, "y": -1100},
+                {"x": 102, "y": -1200},
+            ]
+        )
         result = tool.execute(
             check_type="robustness",
             data=data,

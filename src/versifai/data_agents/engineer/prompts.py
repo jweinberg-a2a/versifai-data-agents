@@ -387,8 +387,7 @@ def _format_multi_table_summary(cfg: ProjectConfig) -> str:
     for hint in cfg.source_processing_hints:
         table_names = [f.target_table for f in hint.files]
         lines.append(
-            f"   - `{hint.source_pattern}` → {len(hint.files)} tables: "
-            f"{', '.join(table_names)}"
+            f"   - `{hint.source_pattern}` → {len(hint.files)} tables: {', '.join(table_names)}"
         )
     return "\n".join(lines) if lines else "   (none)"
 

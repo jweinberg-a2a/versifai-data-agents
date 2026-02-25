@@ -32,22 +32,23 @@ if TYPE_CHECKING:
 # Building blocks — standalone Lego pieces
 # ---------------------------------------------------------------------------
 
+
 @dataclass
 class NarrativeSection:
     """One section of the narrative report."""
 
-    id: str                                     # "section_stakes"
-    title: str                                  # "The $16 Billion Question"
-    purpose: str                                # What this section accomplishes
-    source_theme_ids: list[str]                 # ["theme_0"] — which DataScientist themes feed it
-    tone: str = "analytical"                    # analytical / persuasive / urgent
+    id: str  # "section_stakes"
+    title: str  # "The $16 Billion Question"
+    purpose: str  # What this section accomplishes
+    source_theme_ids: list[str]  # ["theme_0"] — which DataScientist themes feed it
+    tone: str = "analytical"  # analytical / persuasive / urgent
     max_words: int = 1500
-    key_evidence: str = ""                      # What specific evidence to lead with
+    key_evidence: str = ""  # What specific evidence to lead with
     charts_to_include: list[str] = field(default_factory=list)
     charts_to_reconfigure: list[str] = field(default_factory=list)
-    narrative_guidance: str = ""                # Detailed writing instructions
-    transition_from: str = ""                   # How to connect from previous section
-    transition_to: str = ""                     # Setup for next section
+    narrative_guidance: str = ""  # Detailed writing instructions
+    transition_from: str = ""  # How to connect from previous section
+    transition_to: str = ""  # Setup for next section
     sequence: int = 0
 
 
@@ -92,6 +93,7 @@ class OutputFormat:
 # ---------------------------------------------------------------------------
 # StorytellerConfig — the container that the StoryTellerAgent consumes
 # ---------------------------------------------------------------------------
+
 
 @dataclass
 class StorytellerConfig:
@@ -200,6 +202,7 @@ class StorytellerConfig:
 # Lazy import helper
 # ---------------------------------------------------------------------------
 
+
 def _default_project() -> ProjectConfig:
     """Lazy default — returns an empty ProjectConfig.
 
@@ -207,4 +210,5 @@ def _default_project() -> ProjectConfig:
     only to satisfy the dataclass default_factory contract.
     """
     from versifai.data_agents.engineer.config import ProjectConfig
+
     return ProjectConfig()

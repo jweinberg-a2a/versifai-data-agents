@@ -111,7 +111,8 @@ class DataScientistAgent(BaseAgent):
             notes_path=os.path.join(self._run_path, "notes"),
         )
         self._viz_tool = CreateVisualizationTool(
-            cfg=cfg, display=self._display,
+            cfg=cfg,
+            display=self._display,
             notes_path=os.path.join(self._run_path, "notes"),
         )
         self._view_chart_tool = ViewChartTool(
@@ -155,6 +156,7 @@ class DataScientistAgent(BaseAgent):
         # Conditionally register MLflow model logging
         if cfg.mlflow_experiment:
             from versifai.science_agents.scientist.tools.log_model import LogModelTool
+
             tools.append(LogModelTool(cfg=cfg))
         for tool in tools:
             self._registry.register(tool)
@@ -246,8 +248,7 @@ class DataScientistAgent(BaseAgent):
                 )
             else:
                 self._display.step(
-                    f"  Theme {theme.sequence} ({theme.title}): "
-                    f"all {len(present)} tables available"
+                    f"  Theme {theme.sequence} ({theme.title}): all {len(present)} tables available"
                 )
 
     # ------------------------------------------------------------------
@@ -325,9 +326,7 @@ class DataScientistAgent(BaseAgent):
             for dep in cfg.dependencies:
                 resolved = resolve_dependency(dep)
                 self._resolved_deps[dep.config_name] = resolved
-                self._display.step(
-                    f"Dependency '{dep.config_name}' -> {resolved}"
-                )
+                self._display.step(f"Dependency '{dep.config_name}' -> {resolved}")
 
         try:
             # ── Pre-flight: discover what tables actually exist ─────
@@ -360,13 +359,10 @@ class DataScientistAgent(BaseAgent):
                 completed_silver = state["completed_silver"]
                 completed_themes = state["completed_themes"]
                 pending_silver = [
-                    ds.name for ds in cfg.silver_datasets
-                    if ds.name not in completed_silver
+                    ds.name for ds in cfg.silver_datasets if ds.name not in completed_silver
                 ]
                 all_themes = sorted(cfg.analysis_themes, key=lambda t: t.sequence)
-                pending_themes = [
-                    t for t in all_themes if t.id not in completed_themes
-                ]
+                pending_themes = [t for t in all_themes if t.id not in completed_themes]
 
                 self._display.step("--- Pipeline State ---")
                 if completed_silver:
@@ -376,8 +372,7 @@ class DataScientistAgent(BaseAgent):
                     )
                 if pending_silver:
                     self._display.step(
-                        f"  Silver TODO ({len(pending_silver)}): "
-                        f"{', '.join(pending_silver)}"
+                        f"  Silver TODO ({len(pending_silver)}): {', '.join(pending_silver)}"
                     )
                 if completed_themes:
                     self._display.step(
@@ -390,16 +385,13 @@ class DataScientistAgent(BaseAgent):
                         f"{', '.join(t.id for t in pending_themes)}"
                     )
                 if state["has_findings"]:
-                    self._display.step(
-                        f"  Existing findings: {state['findings_count']}"
-                    )
+                    self._display.step(f"  Existing findings: {state['findings_count']}")
                     # Load existing findings so synthesis has full picture
                     self._load_existing_findings(state["existing_findings"])
                 if state.get("existing_notes"):
                     note_themes = sorted(state["existing_notes"].keys())
                     self._display.step(
-                        f"  Existing notes ({len(note_themes)}): "
-                        f"{', '.join(note_themes)}"
+                        f"  Existing notes ({len(note_themes)}): {', '.join(note_themes)}"
                     )
                 self._display.step("---")
 
@@ -442,7 +434,10 @@ class DataScientistAgent(BaseAgent):
                 self._missing_param_tracker.clear()
 
                 prompt = build_silver_construction_prompt(
-                    cfg, dataset_spec, available_tables, table_schemas,
+                    cfg,
+                    dataset_spec,
+                    available_tables,
+                    table_schemas,
                 )
                 if carryover:
                     prompt = f"## Context From Orientation\n{carryover}\n\n---\n\n{prompt}"
@@ -478,8 +473,7 @@ class DataScientistAgent(BaseAgent):
                 self._run_state.mark_phase_start("themes")
                 self._save_state()
             self._display.phase(
-                f"Phase 3: Theme-Driven Research Analysis "
-                f"({len(all_themes)} themes)"
+                f"Phase 3: Theme-Driven Research Analysis ({len(all_themes)} themes)"
             )
             themes_skipped = 0
             for _i, theme in enumerate(all_themes, 1):
@@ -504,7 +498,10 @@ class DataScientistAgent(BaseAgent):
                 # Load any prior-session notes for this theme
                 theme_notes = self._note_tool.get_theme_notes_from_disk(theme.id)
                 prompt = build_theme_analysis_prompt(
-                    cfg, theme, available_tables, table_schemas,
+                    cfg,
+                    theme,
+                    available_tables,
+                    table_schemas,
                     existing_notes=theme_notes,
                 )
                 if carryover:
@@ -521,9 +518,7 @@ class DataScientistAgent(BaseAgent):
                 if self._run_state:
                     self._run_state.mark_item_complete("themes", theme.id)
                     self._save_state()
-                self._display.success(
-                    f"Completed Theme {theme.sequence}: {theme.title}"
-                )
+                self._display.success(f"Completed Theme {theme.sequence}: {theme.title}")
 
             if self._run_state:
                 self._run_state.mark_phase_complete("themes")
@@ -533,12 +528,11 @@ class DataScientistAgent(BaseAgent):
             # Skip synthesis only if ALL themes were skipped (nothing new)
             new_findings = (
                 len(self._finding_tool.findings) - state["findings_count"]
-                if state else len(self._finding_tool.findings)
+                if state
+                else len(self._finding_tool.findings)
             )
             if state and themes_skipped == len(all_themes) and new_findings == 0:
-                self._display.step(
-                    "Phase 4: Synthesis — SKIPPED (no new findings)"
-                )
+                self._display.step("Phase 4: Synthesis — SKIPPED (no new findings)")
                 self._display.step(
                     "All phases complete. Nothing to do. Use "
                     "rerun_analysis=True to force a fresh start."
@@ -588,7 +582,9 @@ class DataScientistAgent(BaseAgent):
         # Update run metadata on completion
         if cfg.run_id:
             write_run_metadata(
-                self._run_path, cfg.name, cfg.run_id,
+                self._run_path,
+                cfg.name,
+                cfg.run_id,
                 extra={
                     "completed_at": datetime.now().isoformat(),
                     "total_findings": len(self._finding_tool.findings),
@@ -657,17 +653,14 @@ class DataScientistAgent(BaseAgent):
             available_tables, table_schemas = self._discover_catalog_tables()
             silver_tables = sorted(t for t in available_tables if t.startswith("silver_"))
             bronze_tables = sorted(
-                t for t in available_tables
-                if not t.startswith("silver_") and t != "data_catalog"
+                t for t in available_tables if not t.startswith("silver_") and t != "data_catalog"
             )
             self._display.step(
                 f"Silver tables: {', '.join(silver_tables) if silver_tables else '(none)'}"
             )
 
             if not silver_tables:
-                self._display.error(
-                    "No silver tables found. Run the full pipeline first."
-                )
+                self._display.error("No silver tables found. Run the full pipeline first.")
                 return self._build_summary()
 
             # Scan existing outputs (charts + tables)
@@ -678,17 +671,26 @@ class DataScientistAgent(BaseAgent):
                 self._display.step(
                     f"Existing charts ({len(existing_charts)}): "
                     f"{', '.join(existing_charts[:10])}"
-                    + (f"... +{len(existing_charts) - 10} more" if len(existing_charts) > 10 else "")
+                    + (
+                        f"... +{len(existing_charts) - 10} more"
+                        if len(existing_charts) > 10
+                        else ""
+                    )
                 )
             if existing_tables:
                 self._display.step(
                     f"Existing tables ({len(existing_tables)}): "
                     f"{', '.join(existing_tables[:10])}"
-                    + (f"... +{len(existing_tables) - 10} more" if len(existing_tables) > 10 else "")
+                    + (
+                        f"... +{len(existing_tables) - 10} more"
+                        if len(existing_tables) > 10
+                        else ""
+                    )
                 )
 
             self._system_prompt = build_scientist_system_prompt(
-                cfg, table_schemas=table_schemas,
+                cfg,
+                table_schemas=table_schemas,
             )
 
             # ── Per-theme visualization ───────────────────────────────
@@ -697,9 +699,7 @@ class DataScientistAgent(BaseAgent):
                 self._run_state.mark_phase_start("visualizations")
                 self._save_state()
             for theme in all_themes:
-                self._display.phase(
-                    f"Viz: Theme {theme.sequence} — {theme.title}"
-                )
+                self._display.phase(f"Viz: Theme {theme.sequence} — {theme.title}")
                 self._memory.reset_for_new_source()
                 self._consecutive_errors = 0
                 self._missing_param_tracker.clear()
@@ -707,19 +707,22 @@ class DataScientistAgent(BaseAgent):
                 # Load prior-session notes for context
                 theme_notes = self._note_tool.get_theme_notes_from_disk(theme.id)
                 prompt = self._build_viz_refresh_prompt(
-                    theme, silver_tables, bronze_tables,
-                    existing_charts, existing_tables, focus,
+                    theme,
+                    silver_tables,
+                    bronze_tables,
+                    existing_charts,
+                    existing_tables,
+                    focus,
                     existing_notes=theme_notes,
                 )
                 self._run_phase(
-                    prompt=self._inject_instructions(prompt), max_turns=30,
+                    prompt=self._inject_instructions(prompt),
+                    max_turns=30,
                 )
                 if self._run_state:
                     self._run_state.mark_item_complete("visualizations", theme.id)
                     self._save_state()
-                self._display.success(
-                    f"Viz complete: Theme {theme.sequence}"
-                )
+                self._display.success(f"Viz complete: Theme {theme.sequence}")
 
             if self._run_state:
                 self._run_state.mark_phase_complete("visualizations")
@@ -782,17 +785,20 @@ class DataScientistAgent(BaseAgent):
         if existing_charts or existing_result_tables:
             existing_section = "\n### Existing Outputs (already generated)\n"
             if existing_charts:
-                existing_section += "**Charts:**\n" + "\n".join(f"- `{c}`" for c in existing_charts) + "\n"
+                existing_section += (
+                    "**Charts:**\n" + "\n".join(f"- `{c}`" for c in existing_charts) + "\n"
+                )
             if existing_result_tables:
-                existing_section += "**Tables:**\n" + "\n".join(f"- `{t}`" for t in existing_result_tables) + "\n"
+                existing_section += (
+                    "**Tables:**\n" + "\n".join(f"- `{t}`" for t in existing_result_tables) + "\n"
+                )
             existing_section += "\nYou may replace these or create new ones.\n"
 
         focus_instruction = ""
         if focus_chart_types:
             types_str = ", ".join(focus_chart_types)
             focus_instruction = (
-                f"\n**FOCUS**: Only create {types_str} outputs. "
-                f"Skip all other types.\n"
+                f"\n**FOCUS**: Only create {types_str} outputs. Skip all other types.\n"
             )
         else:
             focus_instruction = (
@@ -830,18 +836,18 @@ class DataScientistAgent(BaseAgent):
                 f"{existing_notes}\n"
             )
 
-        steps_text = "\n".join(
-            f"   {i}. {step}" for i, step in enumerate(theme.analysis_steps, 1)
-        )
+        steps_text = "\n".join(f"   {i}. {step}" for i, step in enumerate(theme.analysis_steps, 1))
 
         # Which tables this theme primarily uses
         theme_tables = ""
         if theme.required_tables:
-            present = [t for t in theme.required_tables if t.lower() in
-                       {s.lower() for s in silver_tables + bronze_tables}]
-            theme_tables = (
-                "\n### Primary Tables for This Theme\n"
-                + "\n".join(f"- `{proj.full_schema}.{t}`" for t in present)
+            present = [
+                t
+                for t in theme.required_tables
+                if t.lower() in {s.lower() for s in silver_tables + bronze_tables}
+            ]
+            theme_tables = "\n### Primary Tables for This Theme\n" + "\n".join(
+                f"- `{proj.full_schema}.{t}`" for t in present
             )
 
         return f"""\
@@ -948,28 +954,23 @@ rebuild silver tables, do NOT save findings. Just create the charts and tables.
         try:
             # ── Pre-flight (still needed for schemas + data catalog) ──
             available_tables, table_schemas = self._discover_catalog_tables()
-            self._display.step(
-                f"Found {len(available_tables)} tables in catalog"
-            )
+            self._display.step(f"Found {len(available_tables)} tables in catalog")
             if not available_tables:
                 self._display.error("No tables found. Run the Data Engineer first.")
                 return self._build_summary()
 
             self._system_prompt = build_scientist_system_prompt(
-                cfg, table_schemas=table_schemas,
+                cfg,
+                table_schemas=table_schemas,
             )
 
             # ── Theme Analysis ────────────────────────────────────────
             all_themes = sorted(cfg.analysis_themes, key=lambda t: t.sequence)
             if themes is not None:
                 theme_set = set(themes)
-                themes_to_run = [
-                    t for t in all_themes if t.sequence in theme_set
-                ]
+                themes_to_run = [t for t in all_themes if t.sequence in theme_set]
             else:
-                themes_to_run = [
-                    t for t in all_themes if t.sequence >= start_theme
-                ]
+                themes_to_run = [t for t in all_themes if t.sequence >= start_theme]
             if self._run_state:
                 self._run_state.mark_phase_start("themes")
                 self._save_state()
@@ -990,7 +991,10 @@ rebuild silver tables, do NOT save findings. Just create the charts and tables.
                 # Load any prior-session notes for this theme
                 theme_notes = self._note_tool.get_theme_notes_from_disk(theme.id)
                 prompt = build_theme_analysis_prompt(
-                    cfg, theme, available_tables, table_schemas,
+                    cfg,
+                    theme,
+                    available_tables,
+                    table_schemas,
                     existing_notes=theme_notes,
                 )
                 if carryover:
@@ -1007,9 +1011,7 @@ rebuild silver tables, do NOT save findings. Just create the charts and tables.
                 if self._run_state:
                     self._run_state.mark_item_complete("themes", theme.id)
                     self._save_state()
-                self._display.success(
-                    f"Completed Theme {theme.sequence}: {theme.title}"
-                )
+                self._display.success(f"Completed Theme {theme.sequence}: {theme.title}")
 
             if self._run_state:
                 self._run_state.mark_phase_complete("themes")
@@ -1119,7 +1121,8 @@ rebuild silver tables, do NOT save findings. Just create the charts and tables.
                 return self._build_summary()
 
             self._system_prompt = build_scientist_system_prompt(
-                cfg, table_schemas=table_schemas,
+                cfg,
+                table_schemas=table_schemas,
             )
 
             # ── Scan existing outputs ─────────────────────────────────
@@ -1127,9 +1130,7 @@ rebuild silver tables, do NOT save findings. Just create the charts and tables.
             all_charts = existing_outputs.get("charts", [])
             all_tables = existing_outputs.get("tables", [])
 
-            self._display.step(
-                f"Existing charts: {len(all_charts)}, tables: {len(all_tables)}"
-            )
+            self._display.step(f"Existing charts: {len(all_charts)}, tables: {len(all_tables)}")
 
             # ── Load findings.json ────────────────────────────────────
             findings_path = os.path.join(self._run_path, "findings.json")
@@ -1150,24 +1151,17 @@ rebuild silver tables, do NOT save findings. Just create the charts and tables.
             all_themes = sorted(cfg.analysis_themes, key=lambda t: t.sequence)
             if themes is not None:
                 theme_set = set(themes)
-                themes_to_validate = [
-                    t for t in all_themes if t.sequence in theme_set
-                ]
+                themes_to_validate = [t for t in all_themes if t.sequence in theme_set]
             else:
                 themes_to_validate = all_themes
 
             if self._run_state:
                 self._run_state.mark_phase_start("validation")
                 self._save_state()
-            self._display.phase(
-                f"Validating {len(themes_to_validate)} of "
-                f"{len(all_themes)} themes"
-            )
+            self._display.phase(f"Validating {len(themes_to_validate)} of {len(all_themes)} themes")
 
             for theme in themes_to_validate:
-                self._display.phase(
-                    f"Validate Theme {theme.sequence}: {theme.title}"
-                )
+                self._display.phase(f"Validate Theme {theme.sequence}: {theme.title}")
                 self._memory.reset_for_new_source()
                 self._consecutive_errors = 0
                 self._missing_param_tracker.clear()
@@ -1177,20 +1171,21 @@ rebuild silver tables, do NOT save findings. Just create the charts and tables.
                 alt_prefix = f"t{theme.sequence}_"
                 theme_id_prefix = f"{theme.id}_"
                 theme_charts = [
-                    c for c in all_charts
+                    c
+                    for c in all_charts
                     if c.lower().startswith(theme_prefix)
                     or c.lower().startswith(alt_prefix)
                     or c.lower().startswith(theme_id_prefix)
                 ]
                 theme_tables = [
-                    t for t in all_tables
+                    t
+                    for t in all_tables
                     if t.lower().startswith(theme_prefix)
                     or t.lower().startswith(alt_prefix)
                     or t.lower().startswith(theme_id_prefix)
                 ]
                 theme_findings = [
-                    f for f in all_findings
-                    if f.get("research_question_id", "") == theme.id
+                    f for f in all_findings if f.get("research_question_id", "") == theme.id
                 ]
                 theme_notes = self._note_tool.get_theme_notes_from_disk(theme.id)
 
@@ -1217,9 +1212,7 @@ rebuild silver tables, do NOT save findings. Just create the charts and tables.
                 if self._run_state:
                     self._run_state.mark_item_complete("validation", theme.id)
                     self._save_state()
-                self._display.success(
-                    f"Validated Theme {theme.sequence}: {theme.title}"
-                )
+                self._display.success(f"Validated Theme {theme.sequence}: {theme.title}")
 
             # ── Re-export updated findings ────────────────────────────
             updated_path = self._finding_tool.export_findings_json()
@@ -1257,9 +1250,7 @@ rebuild silver tables, do NOT save findings. Just create the charts and tables.
 
     def _run_phase(self, prompt: str, max_turns: int) -> str:
         """Run a phase, automatically providing the scientist progress path."""
-        progress_path = os.path.join(
-            self._run_path, "notes", "progress.txt"
-        )
+        progress_path = os.path.join(self._run_path, "notes", "progress.txt")
         return super()._run_phase(prompt, max_turns, progress_path=progress_path)
 
     # ------------------------------------------------------------------
@@ -1274,9 +1265,7 @@ rebuild silver tables, do NOT save findings. Just create the charts and tables.
     def _dump_progress_on_crash(self) -> None:
         """Flush the display log to progress.txt on interrupt/failure."""
         try:
-            progress_path = os.path.join(
-                self._run_path, "notes", "progress.txt"
-            )
+            progress_path = os.path.join(self._run_path, "notes", "progress.txt")
             self._display.dump_progress(progress_path)
         except Exception:
             pass  # best-effort

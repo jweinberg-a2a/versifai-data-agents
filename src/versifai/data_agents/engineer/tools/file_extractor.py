@@ -95,12 +95,14 @@ class FileExtractorTool(BaseTool):
                 zf.extract(info, dest_path)
                 extracted_path = os.path.join(dest_path, info.filename)
                 _, ext = os.path.splitext(info.filename)
-                results.append({
-                    "name": info.filename,
-                    "path": extracted_path,
-                    "size_bytes": info.file_size,
-                    "extension": ext.lower().lstrip("."),
-                })
+                results.append(
+                    {
+                        "name": info.filename,
+                        "path": extracted_path,
+                        "size_bytes": info.file_size,
+                        "extension": ext.lower().lstrip("."),
+                    }
+                )
         return results
 
     def _extract_gzip(self, file_path: str, dest_path: str) -> list[dict]:
@@ -117,12 +119,14 @@ class FileExtractorTool(BaseTool):
 
         stat = os.stat(out_path)
         _, ext = os.path.splitext(out_name)
-        return [{
-            "name": out_name,
-            "path": out_path,
-            "size_bytes": stat.st_size,
-            "extension": ext.lower().lstrip("."),
-        }]
+        return [
+            {
+                "name": out_name,
+                "path": out_path,
+                "size_bytes": stat.st_size,
+                "extension": ext.lower().lstrip("."),
+            }
+        ]
 
     def _extract_tar(self, file_path: str, dest_path: str) -> list[dict]:
         results = []
@@ -132,10 +136,12 @@ class FileExtractorTool(BaseTool):
             for m in members:
                 extracted_path = os.path.join(dest_path, m.name)
                 _, ext = os.path.splitext(m.name)
-                results.append({
-                    "name": m.name,
-                    "path": extracted_path,
-                    "size_bytes": m.size,
-                    "extension": ext.lower().lstrip("."),
-                })
+                results.append(
+                    {
+                        "name": m.name,
+                        "path": extracted_path,
+                        "size_bytes": m.size,
+                        "extension": ext.lower().lstrip("."),
+                    }
+                )
         return results

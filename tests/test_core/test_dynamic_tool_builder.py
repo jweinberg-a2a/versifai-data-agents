@@ -60,7 +60,12 @@ class TestDynamicToolBuilder:
             code='import subprocess; subprocess.run(["ls"])',
         )
         assert result.success is False
-        assert "security" in result.error.lower() or "dangerous" in result.error.lower() or "blocked" in result.error.lower() or "not allowed" in result.error.lower()
+        assert (
+            "security" in result.error.lower()
+            or "dangerous" in result.error.lower()
+            or "blocked" in result.error.lower()
+            or "not allowed" in result.error.lower()
+        )
 
     def test_security_rejects_open(self):
         builder, _registry = _make_builder()

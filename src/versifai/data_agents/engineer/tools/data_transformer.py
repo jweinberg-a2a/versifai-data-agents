@@ -231,7 +231,9 @@ class DataTransformerTool(BaseTool):
                     # Vectorized FIPS zero-padding
                     join_key_width = self._cfg.join_key.width
                     non_null = series.dropna()
-                    if col_def.target_name == self._cfg.join_key.column_name or (len(non_null) > 0 and len(str(non_null.iloc[0])) >= (join_key_width - 1)):
+                    if col_def.target_name == self._cfg.join_key.column_name or (
+                        len(non_null) > 0 and len(str(non_null.iloc[0])) >= (join_key_width - 1)
+                    ):
                         series = pad_fips_series(series, width=join_key_width)
                     else:
                         series = pad_fips_series(series, width=2)
@@ -290,7 +292,9 @@ class DataTransformerTool(BaseTool):
         # Stage the result
         if append and source_name in self._staged:
             self._staged[source_name] = pd.concat(
-                [self._staged[source_name], transformed], ignore_index=True, copy=False,
+                [self._staged[source_name], transformed],
+                ignore_index=True,
+                copy=False,
             )
         else:
             self._staged[source_name] = transformed
@@ -387,13 +391,18 @@ class DataTransformerTool(BaseTool):
         # differences before processing. Reports drift upfront so the
         # agent understands what's happening if some files have extra columns.
         header_info = self._scan_batch_headers(
-            files, encoding, separator, skip_rows, sheet_name,
+            files,
+            encoding,
+            separator,
+            skip_rows,
+            sheet_name,
         )
         col_counts = set(h["column_count"] for h in header_info if h["column_count"] > 0)
         if len(col_counts) > 1:
             count_summary = ", ".join(
                 f"{h['file_name']}={h['column_count']}"
-                for h in header_info if h["column_count"] > 0
+                for h in header_info
+                if h["column_count"] > 0
             )
             drift_notes.append(
                 f"Schema drift detected: files have different column counts "
@@ -421,7 +430,9 @@ class DataTransformerTool(BaseTool):
 
             # Build column mapping
             col_map = self._build_column_mapping(
-                schema, df.columns.tolist(), column_overrides,
+                schema,
+                df.columns.tolist(),
+                column_overrides,
             )
 
             # Transform — build dict of columns, construct DataFrame at end
@@ -434,14 +445,14 @@ class DataTransformerTool(BaseTool):
                     series = df[source_col].copy()
                     if col_def.transform_expression:
                         series = self._apply_transform(
-                            series, col_def.transform_expression,
+                            series,
+                            col_def.transform_expression,
                         )
                     elif col_def.is_fips:
                         join_key_width = self._cfg.join_key.width
                         non_null = series.dropna()
-                        if (
-                            col_def.target_name == self._cfg.join_key.column_name
-                            or (len(non_null) > 0 and len(str(non_null.iloc[0])) >= (join_key_width - 1))
+                        if col_def.target_name == self._cfg.join_key.column_name or (
+                            len(non_null) > 0 and len(str(non_null.iloc[0])) >= (join_key_width - 1)
                         ):
                             series = pad_fips_series(series, width=join_key_width)
                         else:
@@ -529,7 +540,9 @@ class DataTransformerTool(BaseTool):
                     combined = pd.concat(pending_chunks, ignore_index=True, copy=False)
                     if source_name in self._staged and len(self._staged[source_name]) > 0:
                         self._staged[source_name] = pd.concat(
-                            [self._staged[source_name], combined], ignore_index=True, copy=False,
+                            [self._staged[source_name], combined],
+                            ignore_index=True,
+                            copy=False,
                         )
                     else:
                         self._staged[source_name] = combined
@@ -545,7 +558,9 @@ class DataTransformerTool(BaseTool):
             combined = pd.concat(pending_chunks, ignore_index=True, copy=False)
             if source_name in self._staged and len(self._staged[source_name]) > 0:
                 self._staged[source_name] = pd.concat(
-                    [self._staged[source_name], combined], ignore_index=True, copy=False,
+                    [self._staged[source_name], combined],
+                    ignore_index=True,
+                    copy=False,
                 )
             else:
                 self._staged[source_name] = combined
@@ -625,18 +640,23 @@ class DataTransformerTool(BaseTool):
             try:
                 if ext in ("xlsx", "xls"):
                     df_header = pd.read_excel(
-                        fp, sheet_name=sheet_name or 0,
-                        skiprows=skip_rows or None, nrows=0,
+                        fp,
+                        sheet_name=sheet_name or 0,
+                        skiprows=skip_rows or None,
+                        nrows=0,
                     )
                 elif ext == "parquet":
                     import pyarrow.parquet as pq
+
                     pf = pq.ParquetFile(fp)
                     cols = pf.schema.names
-                    header_info.append({
-                        "file_name": fname,
-                        "column_count": len(cols),
-                        "columns": cols,
-                    })
+                    header_info.append(
+                        {
+                            "file_name": fname,
+                            "column_count": len(cols),
+                            "columns": cols,
+                        }
+                    )
                     continue
                 else:
                     encodings = [encoding] if encoding else ["utf-8", "latin-1"]
@@ -649,24 +669,31 @@ class DataTransformerTool(BaseTool):
                                     line = f.readline()
                                 sep = "\t" if "\t" in line else ("|" if "|" in line else ",")
                             df_header = pd.read_csv(
-                                fp, sep=sep, encoding=enc, nrows=0,
+                                fp,
+                                sep=sep,
+                                encoding=enc,
+                                nrows=0,
                                 skiprows=range(1, skip_rows + 1) if skip_rows else None,
                             )
                             break
                         except (UnicodeDecodeError, UnicodeError):
                             continue
                 if df_header is not None:
-                    header_info.append({
-                        "file_name": fname,
-                        "column_count": len(df_header.columns),
-                        "columns": list(df_header.columns),
-                    })
+                    header_info.append(
+                        {
+                            "file_name": fname,
+                            "column_count": len(df_header.columns),
+                            "columns": list(df_header.columns),
+                        }
+                    )
             except Exception:
-                header_info.append({
-                    "file_name": fname,
-                    "column_count": -1,
-                    "columns": [],
-                })
+                header_info.append(
+                    {
+                        "file_name": fname,
+                        "column_count": -1,
+                        "columns": [],
+                    }
+                )
         return header_info
 
     def get_staged(self, source_name: str) -> pd.DataFrame | None:
@@ -674,7 +701,10 @@ class DataTransformerTool(BaseTool):
         return self._staged.get(source_name)
 
     def stage_dataframe(
-        self, source_name: str, df: pd.DataFrame, append: bool = False,
+        self,
+        source_name: str,
+        df: pd.DataFrame,
+        append: bool = False,
     ) -> dict:
         """
         Stage an external DataFrame (e.g. from a custom tool) for catalog writing.
@@ -690,7 +720,8 @@ class DataTransformerTool(BaseTool):
 
         if append and source_name in self._staged:
             self._staged[source_name] = pd.concat(
-                [self._staged[source_name], df], ignore_index=True,
+                [self._staged[source_name], df],
+                ignore_index=True,
             )
         else:
             self._staged[source_name] = df
@@ -791,7 +822,9 @@ class DataTransformerTool(BaseTool):
         df = self._clean_object_columns(df)
 
         try:
-            df.to_parquet(parquet_path, index=False, coerce_timestamps='us', allow_truncated_timestamps=True)
+            df.to_parquet(
+                parquet_path, index=False, coerce_timestamps="us", allow_truncated_timestamps=True
+            )
         except Exception as e:
             return (
                 f"AUTO-FLUSH FAILED: Could not write parquet to {parquet_path}: "
@@ -812,8 +845,12 @@ class DataTransformerTool(BaseTool):
         )
 
     def _load_file(
-        self, file_path: str, encoding: str | None, separator: str | None,
-        skip_rows: int, sheet_name: str | None,
+        self,
+        file_path: str,
+        encoding: str | None,
+        separator: str | None,
+        skip_rows: int,
+        sheet_name: str | None,
     ) -> pd.DataFrame | None:
         ext = os.path.splitext(file_path)[1].lower().lstrip(".")
 
@@ -841,7 +878,10 @@ class DataTransformerTool(BaseTool):
                     else:
                         sep = ","
                 return pd.read_csv(
-                    file_path, sep=sep, encoding=enc, low_memory=False,
+                    file_path,
+                    sep=sep,
+                    encoding=enc,
+                    low_memory=False,
                     on_bad_lines="skip",
                     skiprows=range(1, skip_rows + 1) if skip_rows else None,
                 )
@@ -908,11 +948,17 @@ class DataTransformerTool(BaseTool):
 
     def _apply_transform(self, series: pd.Series, expression: str) -> pd.Series:
         """Apply a Python expression to each value in the series."""
+
         def safe_eval(value):
             try:
-                return eval(expression, {"__builtins__": {}}, {"value": value, "str": str, "int": int, "float": float, "pd": pd})
+                return eval(
+                    expression,
+                    {"__builtins__": {}},
+                    {"value": value, "str": str, "int": int, "float": float, "pd": pd},
+                )
             except Exception:
                 return value
+
         return series.apply(safe_eval)
 
     @staticmethod

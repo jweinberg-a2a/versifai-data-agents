@@ -267,7 +267,9 @@ class StatisticalAnalysisTool(BaseTool):
                         "statistic": round(float(ad_result.statistic), 6),
                         "critical_values": {
                             f"{sl}%": round(float(cv), 6)
-                            for sl, cv in zip(ad_result.significance_level, ad_result.critical_values)
+                            for sl, cv in zip(
+                                ad_result.significance_level, ad_result.critical_values
+                            )
                         },
                         "normal_at_5pct": ad_result.statistic < ad_result.critical_values[2],
                     }
@@ -313,7 +315,9 @@ class StatisticalAnalysisTool(BaseTool):
 
             is_normal = entry.get("shapiro_wilk", entry.get("dagostino", {})).get("normal", None)
             if is_normal is True:
-                entry["recommendation"] = "Data appears normally distributed — parametric tests appropriate."
+                entry["recommendation"] = (
+                    "Data appears normally distributed — parametric tests appropriate."
+                )
             elif is_normal is False:
                 entry["recommendation"] = (
                     "Data is NOT normally distributed — use non-parametric tests "
@@ -332,23 +336,37 @@ class StatisticalAnalysisTool(BaseTool):
     # Hypothesis testing
     # ------------------------------------------------------------------
 
-    def _hypothesis_test(self, df, group_column, value_column, method, confidence_level, **kwargs) -> ToolResult:
+    def _hypothesis_test(
+        self, df, group_column, value_column, method, confidence_level, **kwargs
+    ) -> ToolResult:
         from scipy import stats as sp_stats
 
         if not group_column:
-            return ToolResult(success=False, error="'group_column' is required for hypothesis testing.")
+            return ToolResult(
+                success=False, error="'group_column' is required for hypothesis testing."
+            )
         if not value_column:
-            return ToolResult(success=False, error="'value_column' is required for hypothesis testing.")
+            return ToolResult(
+                success=False, error="'value_column' is required for hypothesis testing."
+            )
         if group_column not in df.columns:
-            return ToolResult(success=False, error=f"Group column '{group_column}' not found. Available: {list(df.columns)}")
+            return ToolResult(
+                success=False,
+                error=f"Group column '{group_column}' not found. Available: {list(df.columns)}",
+            )
         if value_column not in df.columns:
-            return ToolResult(success=False, error=f"Value column '{value_column}' not found. Available: {list(df.columns)}")
+            return ToolResult(
+                success=False,
+                error=f"Value column '{value_column}' not found. Available: {list(df.columns)}",
+            )
 
         groups = df.groupby(group_column)[value_column].apply(lambda x: x.dropna().values)
         group_names = list(groups.index)
 
         if len(group_names) < 2:
-            return ToolResult(success=False, error=f"Need at least 2 groups, found {len(group_names)}.")
+            return ToolResult(
+                success=False, error=f"Need at least 2 groups, found {len(group_names)}."
+            )
 
         # Auto-select method if not specified
         if not method:
@@ -356,9 +374,7 @@ class StatisticalAnalysisTool(BaseTool):
                 # Check normality to decide parametric vs non-parametric
                 try:
                     normal_checks = [
-                        sp_stats.shapiro(g)[1] > 0.05
-                        for g in groups.values
-                        if len(g) >= 8
+                        sp_stats.shapiro(g)[1] > 0.05 for g in groups.values if len(g) >= 8
                     ]
                     method = "ttest_ind" if all(normal_checks) else "mannwhitney"
                 except Exception:
@@ -394,7 +410,7 @@ class StatisticalAnalysisTool(BaseTool):
             result["p_value"] = round(float(p), 6)
             result["significant"] = p < alpha
             # Cohen's d
-            pooled_std = np.sqrt((np.std(g1, ddof=1)**2 + np.std(g2, ddof=1)**2) / 2)
+            pooled_std = np.sqrt((np.std(g1, ddof=1) ** 2 + np.std(g2, ddof=1) ** 2) / 2)
             d = (np.mean(g1) - np.mean(g2)) / pooled_std if pooled_std > 0 else 0
             result["cohens_d"] = round(float(d), 4)
             result["effect_interpretation"] = _interpret_cohens_d(abs(d))
@@ -426,8 +442,8 @@ class StatisticalAnalysisTool(BaseTool):
             result["significant"] = p < alpha
             # Eta-squared
             grand_mean = df[value_column].dropna().mean()
-            ss_between = sum(len(g) * (np.mean(g) - grand_mean)**2 for g in groups.values)
-            ss_total = sum((v - grand_mean)**2 for g in groups.values for v in g)
+            ss_between = sum(len(g) * (np.mean(g) - grand_mean) ** 2 for g in groups.values)
+            ss_total = sum((v - grand_mean) ** 2 for g in groups.values for v in g)
             eta_sq = ss_between / ss_total if ss_total > 0 else 0
             result["eta_squared"] = round(float(eta_sq), 4)
             result["effect_interpretation"] = _interpret_eta_squared(eta_sq)
@@ -460,7 +476,7 @@ class StatisticalAnalysisTool(BaseTool):
 
         result["interpretation"] = (
             f"The difference is {'statistically significant' if result['significant'] else 'NOT statistically significant'} "
-            f"at the {confidence_level*100:.0f}% confidence level (p={result['p_value']})."
+            f"at the {confidence_level * 100:.0f}% confidence level (p={result['p_value']})."
         )
 
         return ToolResult(
@@ -477,9 +493,15 @@ class StatisticalAnalysisTool(BaseTool):
         from scipy import stats as sp_stats
 
         method = method or "pearson"
-        numeric = df[columns].select_dtypes(include="number") if columns else df.select_dtypes(include="number")
+        numeric = (
+            df[columns].select_dtypes(include="number")
+            if columns
+            else df.select_dtypes(include="number")
+        )
         if numeric.shape[1] < 2:
-            return ToolResult(success=False, error="Need at least 2 numeric columns for correlation.")
+            return ToolResult(
+                success=False, error="Need at least 2 numeric columns for correlation."
+            )
 
         cols = list(numeric.columns)
         n = len(numeric.dropna())
@@ -490,7 +512,7 @@ class StatisticalAnalysisTool(BaseTool):
         }
 
         for i, c1 in enumerate(cols):
-            for c2 in cols[i + 1:]:
+            for c2 in cols[i + 1 :]:
                 valid = numeric[[c1, c2]].dropna()
                 if len(valid) < 5:
                     continue
@@ -499,16 +521,18 @@ class StatisticalAnalysisTool(BaseTool):
                 else:
                     r, p = sp_stats.spearmanr(valid[c1], valid[c2])
 
-                results["correlations"].append({
-                    "var1": c1,
-                    "var2": c2,
-                    "r": round(float(r), 4),
-                    "p_value": round(float(p), 6),
-                    "significant": p < (1 - confidence_level),
-                    "r_squared": round(float(r**2), 4),
-                    "strength": _interpret_r(abs(r)),
-                    "direction": "positive" if r > 0 else "negative",
-                })
+                results["correlations"].append(
+                    {
+                        "var1": c1,
+                        "var2": c2,
+                        "r": round(float(r), 4),
+                        "p_value": round(float(p), 6),
+                        "significant": p < (1 - confidence_level),
+                        "r_squared": round(float(r**2), 4),
+                        "strength": _interpret_r(abs(r)),
+                        "direction": "positive" if r > 0 else "negative",
+                    }
+                )
 
         # Sort by absolute correlation strength
         results["correlations"].sort(key=lambda x: abs(x["r"]), reverse=True)
@@ -534,7 +558,9 @@ class StatisticalAnalysisTool(BaseTool):
         from scipy import stats as sp_stats
 
         if not group_column or not value_column:
-            return ToolResult(success=False, error="'group_column' and 'value_column' are required.")
+            return ToolResult(
+                success=False, error="'group_column' and 'value_column' are required."
+            )
 
         groups = df.groupby(group_column)[value_column].apply(lambda x: x.dropna().values)
         group_names = list(groups.index)
@@ -545,17 +571,19 @@ class StatisticalAnalysisTool(BaseTool):
         results = {"group_column": group_column, "value_column": value_column, "comparisons": []}
 
         for i, name1 in enumerate(group_names):
-            for name2 in group_names[i + 1:]:
+            for name2 in group_names[i + 1 :]:
                 g1, g2 = groups[name1], groups[name2]
                 if len(g1) < 2 or len(g2) < 2:
                     continue
 
                 mean_diff = float(np.mean(g1) - np.mean(g2))
-                pooled_std = np.sqrt((np.std(g1, ddof=1)**2 + np.std(g2, ddof=1)**2) / 2)
+                pooled_std = np.sqrt((np.std(g1, ddof=1) ** 2 + np.std(g2, ddof=1) ** 2) / 2)
                 d = mean_diff / pooled_std if pooled_std > 0 else 0
 
                 # Confidence interval for Cohen's d (approximate)
-                se_d = np.sqrt((len(g1) + len(g2)) / (len(g1) * len(g2)) + d**2 / (2 * (len(g1) + len(g2))))
+                se_d = np.sqrt(
+                    (len(g1) + len(g2)) / (len(g1) * len(g2)) + d**2 / (2 * (len(g1) + len(g2)))
+                )
                 z = sp_stats.norm.ppf(0.975)
                 ci_low = d - z * se_d
                 ci_high = d + z * se_d
@@ -564,17 +592,19 @@ class StatisticalAnalysisTool(BaseTool):
                 base_mean = float(np.mean(g2))
                 pct_diff = (mean_diff / base_mean * 100) if base_mean != 0 else None
 
-                results["comparisons"].append({
-                    "group1": str(name1),
-                    "group2": str(name2),
-                    "mean1": round(float(np.mean(g1)), 4),
-                    "mean2": round(float(np.mean(g2)), 4),
-                    "mean_difference": round(mean_diff, 4),
-                    "pct_difference": round(pct_diff, 2) if pct_diff is not None else None,
-                    "cohens_d": round(float(d), 4),
-                    "cohens_d_ci": [round(float(ci_low), 4), round(float(ci_high), 4)],
-                    "interpretation": _interpret_cohens_d(abs(d)),
-                })
+                results["comparisons"].append(
+                    {
+                        "group1": str(name1),
+                        "group2": str(name2),
+                        "mean1": round(float(np.mean(g1)), 4),
+                        "mean2": round(float(np.mean(g2)), 4),
+                        "mean_difference": round(mean_diff, 4),
+                        "pct_difference": round(pct_diff, 2) if pct_diff is not None else None,
+                        "cohens_d": round(float(d), 4),
+                        "cohens_d_ci": [round(float(ci_low), 4), round(float(ci_high), 4)],
+                        "interpretation": _interpret_cohens_d(abs(d)),
+                    }
+                )
 
         return ToolResult(
             success=True,
@@ -599,7 +629,9 @@ class StatisticalAnalysisTool(BaseTool):
                 "missing_count": int(series.isna().sum()),
                 "missing_pct": round(series.isna().mean() * 100, 2),
                 "unique_values": int(series.nunique()),
-                "cardinality_ratio": round(series.nunique() / len(series), 4) if len(series) > 0 else 0,
+                "cardinality_ratio": round(series.nunique() / len(series), 4)
+                if len(series) > 0
+                else 0,
             }
 
             if pd.api.types.is_numeric_dtype(series):
@@ -641,8 +673,12 @@ class StatisticalAnalysisTool(BaseTool):
             "total_missing_cells": sum(c["missing_count"] for c in results["columns"].values()),
             "total_missing_pct": round(
                 sum(c["missing_count"] for c in results["columns"].values())
-                / (len(df) * len(target_cols)) * 100, 2
-            ) if len(df) * len(target_cols) > 0 else 0,
+                / (len(df) * len(target_cols))
+                * 100,
+                2,
+            )
+            if len(df) * len(target_cols) > 0
+            else 0,
         }
 
         return ToolResult(
@@ -683,16 +719,31 @@ class StatisticalAnalysisTool(BaseTool):
 
         if method == "bayesian_ttest":
             return self._bayesian_ttest(
-                df, group_column, value_column, prior, rope, n_samples, confidence_level,
+                df,
+                group_column,
+                value_column,
+                prior,
+                rope,
+                n_samples,
+                confidence_level,
             )
         elif method == "bayesian_proportion":
             return self._bayesian_proportion(
-                df, group_column, value_column, prior, n_samples, confidence_level,
+                df,
+                group_column,
+                value_column,
+                prior,
+                n_samples,
+                confidence_level,
             )
         elif method == "bayesian_correlation":
             cols = columns or []
             return self._bayesian_correlation(
-                df, cols, prior, n_samples, confidence_level,
+                df,
+                cols,
+                prior,
+                n_samples,
+                confidence_level,
             )
         else:
             return ToolResult(
@@ -704,7 +755,14 @@ class StatisticalAnalysisTool(BaseTool):
             )
 
     def _bayesian_ttest(
-        self, df, group_column, value_column, prior, rope, n_samples, confidence_level,
+        self,
+        df,
+        group_column,
+        value_column,
+        prior,
+        rope,
+        n_samples,
+        confidence_level,
     ) -> ToolResult:
         """Bayesian two-group comparison using conjugate Normal-InverseGamma model."""
         from scipy import stats as sp_stats
@@ -800,9 +858,14 @@ class StatisticalAnalysisTool(BaseTool):
             prior_density_0 = sp_stats.norm.pdf(0, loc=prior_mean, scale=prior_std)
             # Estimate posterior density at 0 via KDE
             from scipy.stats import gaussian_kde
+
             kde = gaussian_kde(post_diff)
             posterior_density_0 = float(kde(0.0)[0])
-            bf10 = prior_density_0 / posterior_density_0 if posterior_density_0 > 1e-10 else float("inf")
+            bf10 = (
+                prior_density_0 / posterior_density_0
+                if posterior_density_0 > 1e-10
+                else float("inf")
+            )
         except Exception:
             bf10 = None
 
@@ -850,9 +913,14 @@ class StatisticalAnalysisTool(BaseTool):
                 "rope_probability": round(rope_probability, 4),
                 "effect_size_posterior_mean": round(d_mean, 4),
                 "effect_size_interpretation": _interpret_cohens_d(abs(d_mean)),
-                f"effect_size_hdi_{confidence_level * 100:.0f}": [round(d_hdi_low, 4), round(d_hdi_high, 4)],
+                f"effect_size_hdi_{confidence_level * 100:.0f}": [
+                    round(d_hdi_low, 4),
+                    round(d_hdi_high, 4),
+                ],
             },
-            "bayes_factor_10": round(bf10, 2) if bf10 is not None and bf10 != float("inf") else bf10,
+            "bayes_factor_10": round(bf10, 2)
+            if bf10 is not None and bf10 != float("inf")
+            else bf10,
             "bf_interpretation": _interpret_bf(bf10) if bf10 is not None else "Could not compute.",
             "frequentist_comparison": {
                 "t_statistic": round(float(freq_stat), 4),
@@ -867,13 +935,20 @@ class StatisticalAnalysisTool(BaseTool):
             data=result,
             summary=(
                 f"Bayesian t-test: P(direction)={prob_direction:.2f}, "
-                f"posterior d={d_mean:.3f}, BF₁₀={bf10:.1f}" if bf10 and bf10 != float("inf")
+                f"posterior d={d_mean:.3f}, BF₁₀={bf10:.1f}"
+                if bf10 and bf10 != float("inf")
                 else f"Bayesian t-test: P(direction)={prob_direction:.2f}, posterior d={d_mean:.3f}"
             ),
         )
 
     def _bayesian_proportion(
-        self, df, group_column, value_column, prior, n_samples, confidence_level,
+        self,
+        df,
+        group_column,
+        value_column,
+        prior,
+        n_samples,
+        confidence_level,
     ) -> ToolResult:
         """Bayesian comparison of two proportions using Beta-Binomial conjugate model."""
         from scipy import stats as sp_stats
@@ -910,7 +985,11 @@ class StatisticalAnalysisTool(BaseTool):
         # Beta prior
         prior_alpha = prior.get("alpha", 1.0)
         prior_beta = prior.get("beta", 1.0)
-        prior_type = "informative" if "alpha" in prior and prior.get("alpha", 1) != 1 else "weakly_informative"
+        prior_type = (
+            "informative"
+            if "alpha" in prior and prior.get("alpha", 1) != 1
+            else "weakly_informative"
+        )
 
         # Posterior Beta distributions
         post_alpha1 = prior_alpha + s1
@@ -937,12 +1016,14 @@ class StatisticalAnalysisTool(BaseTool):
             "value_column": value_column,
             "groups": {
                 str(group_names[0]): {
-                    "n": n1, "successes": s1,
+                    "n": n1,
+                    "successes": s1,
                     "observed_rate": round(s1 / n1, 4) if n1 > 0 else 0,
                     "posterior_mean": round(float(post_alpha1 / (post_alpha1 + post_beta1)), 4),
                 },
                 str(group_names[1]): {
-                    "n": n2, "successes": s2,
+                    "n": n2,
+                    "successes": s2,
                     "observed_rate": round(s2 / n2, 4) if n2 > 0 else 0,
                     "posterior_mean": round(float(post_alpha2 / (post_alpha2 + post_beta2)), 4),
                 },
@@ -975,7 +1056,12 @@ class StatisticalAnalysisTool(BaseTool):
         )
 
     def _bayesian_correlation(
-        self, df, columns, prior, n_samples, confidence_level,
+        self,
+        df,
+        columns,
+        prior,
+        n_samples,
+        confidence_level,
     ) -> ToolResult:
         """Bayesian correlation test using Fisher-z transform with normal prior."""
         from scipy import stats as sp_stats
@@ -1031,7 +1117,11 @@ class StatisticalAnalysisTool(BaseTool):
         try:
             prior_density_0 = sp_stats.norm.pdf(0, loc=prior_mean, scale=prior_std)
             posterior_density_0 = sp_stats.norm.pdf(0, loc=post_mean_z, scale=post_std_z)
-            bf10 = prior_density_0 / posterior_density_0 if posterior_density_0 > 1e-10 else float("inf")
+            bf10 = (
+                prior_density_0 / posterior_density_0
+                if posterior_density_0 > 1e-10
+                else float("inf")
+            )
         except Exception:
             bf10 = None
 
@@ -1054,7 +1144,9 @@ class StatisticalAnalysisTool(BaseTool):
                 "probability_positive": round(prob_positive, 4),
                 "r_squared_posterior_mean": round(float(np.mean(post_r**2)), 4),
             },
-            "bayes_factor_10": round(bf10, 2) if bf10 is not None and bf10 != float("inf") else bf10,
+            "bayes_factor_10": round(bf10, 2)
+            if bf10 is not None and bf10 != float("inf")
+            else bf10,
             "bf_interpretation": _interpret_bf(bf10) if bf10 is not None else "Could not compute.",
             "frequentist_comparison": {
                 "pearson_r": round(float(r_obs), 4),
@@ -1073,7 +1165,8 @@ class StatisticalAnalysisTool(BaseTool):
             data=result,
             summary=(
                 f"Bayesian correlation: posterior r={np.mean(post_r):.3f}, "
-                f"P(direction)={prob_direction:.2f}, BF₁₀={bf10:.1f}" if bf10 and bf10 != float("inf")
+                f"P(direction)={prob_direction:.2f}, BF₁₀={bf10:.1f}"
+                if bf10 and bf10 != float("inf")
                 else f"Bayesian correlation: posterior r={np.mean(post_r):.3f}, P(direction)={prob_direction:.2f}"
             ),
         )
@@ -1082,7 +1175,9 @@ class StatisticalAnalysisTool(BaseTool):
     # Assumption checking
     # ------------------------------------------------------------------
 
-    def _assumption_check(self, df, columns, method, value_column, group_column, **kwargs) -> ToolResult:
+    def _assumption_check(
+        self, df, columns, method, value_column, group_column, **kwargs
+    ) -> ToolResult:
         from scipy import stats as sp_stats
 
         method = method or "regression"
@@ -1095,13 +1190,17 @@ class StatisticalAnalysisTool(BaseTool):
                 series = df[col].dropna()
                 if len(series) < 8:
                     continue
-                stat, p = sp_stats.shapiro(series) if len(series) <= 5000 else sp_stats.normaltest(series)
+                stat, p = (
+                    sp_stats.shapiro(series) if len(series) <= 5000 else sp_stats.normaltest(series)
+                )
                 results["assumptions"][f"normality_{col}"] = {
                     "test": "shapiro_wilk" if len(series) <= 5000 else "dagostino",
                     "statistic": round(float(stat), 6),
                     "p_value": round(float(p), 6),
                     "passed": p > 0.05,
-                    "note": "Normal" if p > 0.05 else "Non-normal — consider transformation or non-parametric test",
+                    "note": "Normal"
+                    if p > 0.05
+                    else "Non-normal — consider transformation or non-parametric test",
                 }
 
         if method in ("ttest", "anova") and group_column and value_column:
@@ -1114,7 +1213,9 @@ class StatisticalAnalysisTool(BaseTool):
                     "statistic": round(float(stat), 6),
                     "p_value": round(float(p), 6),
                     "passed": p > 0.05,
-                    "note": "Equal variances" if p > 0.05 else "Unequal variances — use Welch's t-test or non-parametric",
+                    "note": "Equal variances"
+                    if p > 0.05
+                    else "Unequal variances — use Welch's t-test or non-parametric",
                 }
 
         if method == "regression" and len(target_cols) >= 2:
@@ -1125,7 +1226,7 @@ class StatisticalAnalysisTool(BaseTool):
                 high_corr = []
                 cols_list = list(corr_matrix.columns)
                 for i, c1 in enumerate(cols_list):
-                    for c2 in cols_list[i + 1:]:
+                    for c2 in cols_list[i + 1 :]:
                         r = abs(corr_matrix.loc[c1, c2])
                         if r > 0.7:
                             high_corr.append({"var1": c1, "var2": c2, "r": round(float(r), 4)})
@@ -1135,7 +1236,8 @@ class StatisticalAnalysisTool(BaseTool):
                     "high_correlations": high_corr,
                     "passed": len(high_corr) == 0,
                     "note": (
-                        "No multicollinearity detected" if not high_corr
+                        "No multicollinearity detected"
+                        if not high_corr
                         else f"{len(high_corr)} variable pairs have |r| > 0.7 — consider removing or combining"
                     ),
                 }
@@ -1148,7 +1250,7 @@ class StatisticalAnalysisTool(BaseTool):
                 "predictors": k,
                 "ratio": round(n / k, 1) if k > 0 else None,
                 "passed": (n / k > 10) if k > 0 else True,
-                "note": f"n/k ratio = {round(n/k, 1) if k > 0 else 'N/A'}. Should be > 10, ideally > 20.",
+                "note": f"n/k ratio = {round(n / k, 1) if k > 0 else 'N/A'}. Should be > 10, ideally > 20.",
             }
 
         if method == "chi_square" and group_column and value_column:
@@ -1157,7 +1259,9 @@ class StatisticalAnalysisTool(BaseTool):
             results["assumptions"]["expected_frequencies"] = {
                 "min_expected_approx": round(min_expected, 2),
                 "passed": min_expected >= 5,
-                "note": "Expected frequencies OK" if min_expected >= 5 else "Expected frequencies < 5 — use Fisher's exact test",
+                "note": "Expected frequencies OK"
+                if min_expected >= 5
+                else "Expected frequencies < 5 — use Fisher's exact test",
             }
 
         # Overall verdict
@@ -1181,6 +1285,7 @@ class StatisticalAnalysisTool(BaseTool):
 # ------------------------------------------------------------------
 # Interpretation helpers
 # ------------------------------------------------------------------
+
 
 def _interpret_cohens_d(d: float) -> str:
     if d < 0.2:

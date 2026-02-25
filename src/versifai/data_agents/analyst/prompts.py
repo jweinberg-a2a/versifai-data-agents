@@ -71,7 +71,7 @@ dates for timestamps).
 - No unnamed columns or columns with names like `column_0`, `Unnamed: 0`, `_c0`.
 - No columns that are just the original source abbreviation in snake_case \
 (e.g., `e_totpop` is NOT acceptable — it should be `total_population_estimate`).
-- Metadata columns must be present: {', '.join(f'`{c.name}`' for c in cfg.metadata_columns)}.
+- Metadata columns must be present: {", ".join(f"`{c.name}`" for c in cfg.metadata_columns)}.
 - Column names must NOT contain uppercase letters, spaces, special characters, or \
 double underscores.
 
@@ -310,7 +310,7 @@ WHERE {cfg.join_key.column_name} IS NOT NULL
    - All lowercase snake_case? (no uppercase, spaces, special chars)
    - Descriptive? (not just abbreviations like `ep_pov150` or `e_totpop`)
    - No unnamed/auto-generated columns? (`column_0`, `Unnamed: 0`, `_c0`)
-   - Metadata columns present? ({', '.join(f'`{c.name}`' for c in cfg.metadata_columns)})
+   - Metadata columns present? ({", ".join(f"`{c.name}`" for c in cfg.metadata_columns)})
 
 4. **Volume & year coverage:**
 ```sql
@@ -420,14 +420,18 @@ they write smart SQL that checks multiple things at once.
 
 
 def _format_table_inventory(
-    cfg: ProjectConfig, inventory: list[dict],
+    cfg: ProjectConfig,
+    inventory: list[dict],
 ) -> str:
     """Format the pre-built table inventory as a readable text block."""
     sections: list[str] = []
 
     # Group by grain
     by_grain: dict[str, list[dict]] = {
-        "county": [], "contract": [], "bridge": [], "other": [],
+        "county": [],
+        "contract": [],
+        "bridge": [],
+        "other": [],
     }
     for t in inventory:
         grain = t.get("grain", "other")
@@ -435,8 +439,11 @@ def _format_table_inventory(
 
     # Key column names to highlight with types
     key_col_names = {
-        cfg.join_key.column_name, "contract_number", "contract_id",
-        "state_fips_code", "state_abbreviation",
+        cfg.join_key.column_name,
+        "contract_number",
+        "contract_id",
+        "state_fips_code",
+        "state_abbreviation",
     }
 
     for grain_label, grain_key in [

@@ -154,7 +154,9 @@ class FileReaderTool(BaseTool):
                     if sample_bytes > 0 and sample_rows >= n_rows:
                         # File has more rows than we sampled — estimate
                         bytes_per_row = file_size / sample_rows  # rough
-                        estimated_rows = int(file_size / bytes_per_row) if bytes_per_row > 0 else sample_rows
+                        estimated_rows = (
+                            int(file_size / bytes_per_row) if bytes_per_row > 0 else sample_rows
+                        )
                     else:
                         estimated_rows = sample_rows
                 else:
@@ -169,7 +171,9 @@ class FileReaderTool(BaseTool):
                 last_error = str(e)
                 continue
 
-        return ToolResult(success=False, error=f"Failed to read CSV with all encodings. Last error: {last_error}")
+        return ToolResult(
+            success=False, error=f"Failed to read CSV with all encodings. Last error: {last_error}"
+        )
 
     def _read_excel(
         self, file_path: str, n_rows: int, sheet_name: str | None, skip_rows: int
@@ -180,9 +184,7 @@ class FileReaderTool(BaseTool):
         xls = pd.ExcelFile(file_path)
         all_sheets = xls.sheet_names
 
-        df_sample = pd.read_excel(
-            file_path, sheet_name=sheet, nrows=n_rows, skiprows=skip_rows
-        )
+        df_sample = pd.read_excel(file_path, sheet_name=sheet, nrows=n_rows, skiprows=skip_rows)
 
         # Estimate row count from openpyxl metadata (avoids loading full file)
         estimated_rows = -1
@@ -190,6 +192,7 @@ class FileReaderTool(BaseTool):
         if ext == ".xlsx":
             try:
                 from openpyxl import load_workbook
+
                 wb = load_workbook(file_path, read_only=True, data_only=True)
                 target_sheet = sheet if isinstance(sheet, str) else all_sheets[sheet]
                 ws = wb[target_sheet]
@@ -228,7 +231,7 @@ class FileReaderTool(BaseTool):
         try:
             reader2 = pd.read_sas(file_path, encoding="latin-1", chunksize=1)
             # The reader object has row_count from the SAS header
-            estimated_rows = getattr(reader2, 'row_count', -1)
+            estimated_rows = getattr(reader2, "row_count", -1)
             reader2.close()
             if estimated_rows <= 0:
                 estimated_rows = int(os.path.getsize(file_path) / 200)  # rough estimate
@@ -261,12 +264,14 @@ class FileReaderTool(BaseTool):
     ) -> ToolResult:
         columns_info = []
         for col in df.columns:
-            columns_info.append({
-                "name": str(col),
-                "dtype": str(df[col].dtype),
-                "sample_values": [str(v) for v in df[col].head(3).tolist()],
-                "null_count_in_sample": int(df[col].isna().sum()),
-            })
+            columns_info.append(
+                {
+                    "name": str(col),
+                    "dtype": str(df[col].dtype),
+                    "sample_values": [str(v) for v in df[col].head(3).tolist()],
+                    "null_count_in_sample": int(df[col].isna().sum()),
+                }
+            )
 
         # Only include a few sample rows — enough to see the shape, not flood tokens
         sample_data = df.head(5).fillna("").astype(str).to_dict(orient="records")

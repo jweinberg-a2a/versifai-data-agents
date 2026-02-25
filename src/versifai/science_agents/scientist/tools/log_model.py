@@ -67,8 +67,7 @@ class LogModelTool(BaseTool):
                 "model_type": {
                     "type": "string",
                     "description": (
-                        "Model type: 'gradient_boosting', 'logistic_regression', "
-                        "'random_forest'."
+                        "Model type: 'gradient_boosting', 'logistic_regression', 'random_forest'."
                     ),
                 },
                 "data": {
@@ -112,8 +111,12 @@ class LogModelTool(BaseTool):
                 },
             },
             "required": [
-                "model_type", "data", "target_column",
-                "feature_columns", "metrics", "model_name",
+                "model_type",
+                "data",
+                "target_column",
+                "feature_columns",
+                "metrics",
+                "model_name",
             ],
         }
 
@@ -184,10 +187,7 @@ class LogModelTool(BaseTool):
             }
         elif hasattr(model, "coef_"):
             coefs = model.coef_[0] if model.coef_.ndim > 1 else model.coef_
-            importance = {
-                f: round(float(abs(c)), 6)
-                for f, c in zip(feature_columns, coefs)
-            }
+            importance = {f: round(float(abs(c)), 6) for f, c in zip(feature_columns, coefs)}
 
         # Set MLflow experiment
         experiment_name = self._cfg.mlflow_experiment
@@ -197,12 +197,14 @@ class LogModelTool(BaseTool):
         # Log to MLflow
         with mlflow.start_run(run_name=model_name, tags=run_tags) as run:
             # Log parameters
-            mlflow.log_params({
-                "model_type": model_type,
-                "n_features": len(feature_columns),
-                "n_training_rows": len(clean),
-                "target_column": target_column,
-            })
+            mlflow.log_params(
+                {
+                    "model_type": model_type,
+                    "n_features": len(feature_columns),
+                    "n_training_rows": len(clean),
+                    "target_column": target_column,
+                }
+            )
             for k, v in params.items():
                 mlflow.log_param(k, v)
 
@@ -216,16 +218,16 @@ class LogModelTool(BaseTool):
                 model,
                 artifact_path="model",
                 registered_model_name=(
-                    self._cfg.mlflow_registry_name
-                    if self._cfg.mlflow_registry_name
-                    else None
+                    self._cfg.mlflow_registry_name if self._cfg.mlflow_registry_name else None
                 ),
             )
 
             # Log feature importance as artifact
             if importance:
                 with tempfile.NamedTemporaryFile(
-                    mode="w", suffix=".json", delete=False,
+                    mode="w",
+                    suffix=".json",
+                    delete=False,
                 ) as f:
                     json.dump(importance, f, indent=2)
                     f.flush()
@@ -234,7 +236,9 @@ class LogModelTool(BaseTool):
 
             # Log feature columns as artifact
             with tempfile.NamedTemporaryFile(
-                mode="w", suffix=".json", delete=False,
+                mode="w",
+                suffix=".json",
+                delete=False,
             ) as f:
                 json.dump(list(feature_columns), f, indent=2)
                 f.flush()
@@ -255,24 +259,20 @@ class LogModelTool(BaseTool):
             "n_training_rows": len(clean),
             "n_features": len(feature_columns),
             "metrics_logged": metrics,
-            "top_features": dict(
-                sorted(importance.items(), key=lambda x: x[1], reverse=True)[:10]
-            ),
+            "top_features": dict(sorted(importance.items(), key=lambda x: x[1], reverse=True)[:10]),
         }
 
         return ToolResult(
             success=True,
             data=result,
-            summary=(
-                f"Model logged to MLflow: run_id={run_id}, "
-                f"model_uri={model_uri}"
-            ),
+            summary=(f"Model logged to MLflow: run_id={run_id}, model_uri={model_uri}"),
         )
 
     def _build_model(self, model_type: str, params: dict, y: pd.Series):
         """Build an sklearn model object from type and parameters."""
         if model_type == "gradient_boosting":
             from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
+
             is_classification = y.nunique() <= 10
             cls = GradientBoostingClassifier if is_classification else GradientBoostingRegressor
             return cls(
@@ -283,6 +283,7 @@ class LogModelTool(BaseTool):
             )
         elif model_type == "logistic_regression":
             from sklearn.linear_model import LogisticRegression
+
             return LogisticRegression(
                 max_iter=params.get("max_iter", 1000),
                 random_state=42,
@@ -290,6 +291,7 @@ class LogModelTool(BaseTool):
             )
         elif model_type == "random_forest":
             from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+
             is_classification = y.nunique() <= 10
             cls = RandomForestClassifier if is_classification else RandomForestRegressor
             return cls(

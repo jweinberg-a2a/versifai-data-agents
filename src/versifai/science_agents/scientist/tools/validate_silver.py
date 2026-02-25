@@ -245,10 +245,7 @@ class ValidateSilverTool(BaseTool):
             )
 
         # Sample duplicates for diagnosis
-        sample_dupes = (
-            dupes.head(20)[primary_key_columns]
-            .to_dict(orient="records")
-        )
+        sample_dupes = dupes.head(20)[primary_key_columns].to_dict(orient="records")
         pk_str = ", ".join(primary_key_columns)
 
         return ToolResult(
@@ -277,14 +274,20 @@ class ValidateSilverTool(BaseTool):
     # ------------------------------------------------------------------
 
     def _check_enrollment(
-        self, df: pd.DataFrame, enrollment_columns=None,
-        max_enrollment_per_row=1_000_000, **kw,
+        self,
+        df: pd.DataFrame,
+        enrollment_columns=None,
+        max_enrollment_per_row=1_000_000,
+        **kw,
     ) -> ToolResult:
         if not enrollment_columns:
             # Auto-detect enrollment-like columns
             enrollment_columns = [
-                c for c in df.columns
-                if any(kw in c.lower() for kw in ["enrollment", "enrolled", "members", "beneficiaries"])
+                c
+                for c in df.columns
+                if any(
+                    kw in c.lower() for kw in ["enrollment", "enrolled", "members", "beneficiaries"]
+                )
             ]
         if not enrollment_columns:
             return ToolResult(
@@ -304,9 +307,9 @@ class ValidateSilverTool(BaseTool):
             # Check 1: String type with suppressed values
             if df[col].dtype == object:
                 star_count = df[col].astype(str).str.strip().eq("*").sum()
-                non_numeric = df[col].apply(
-                    lambda x: not _is_numeric_str(x) if pd.notna(x) else False
-                ).sum()
+                non_numeric = (
+                    df[col].apply(lambda x: not _is_numeric_str(x) if pd.notna(x) else False).sum()
+                )
                 if star_count > 0 or non_numeric > 0:
                     col_issues["suppressed_values"] = {
                         "star_count": int(star_count),
@@ -385,12 +388,12 @@ class ValidateSilverTool(BaseTool):
                 "suggested_fix": (
                     "Rebuild silver table from bronze with proper CAST and "
                     "time-period filtering. See per-column fixes above."
-                    if has_issues else ""
+                    if has_issues
+                    else ""
                 ),
             },
             summary=(
-                f"ENROLLMENT ISSUES: {total_issue_count} issues across "
-                f"{len(issues)} columns."
+                f"ENROLLMENT ISSUES: {total_issue_count} issues across {len(issues)} columns."
                 if has_issues
                 else f"Enrollment OK: {len(enrollment_columns)} columns validated."
             ),
@@ -401,9 +404,12 @@ class ValidateSilverTool(BaseTool):
     # ------------------------------------------------------------------
 
     def _check_year_alignment(
-        self, df: pd.DataFrame,
-        year_column_left="", year_column_right="",
-        expected_offset=-1, **kw,
+        self,
+        df: pd.DataFrame,
+        year_column_left="",
+        year_column_right="",
+        expected_offset=-1,
+        **kw,
     ) -> ToolResult:
         if not year_column_left or not year_column_right:
             return ToolResult(
@@ -457,9 +463,7 @@ class ValidateSilverTool(BaseTool):
                 "incorrect_offset": int(incorrect),
                 "expected_offset": expected_offset,
                 "actual_offset_distribution": {str(k): int(v) for k, v in offset_dist.items()},
-                "details": [
-                    {"offset": str(k), "count": int(v)} for k, v in offset_dist.items()
-                ],
+                "details": [{"offset": str(k), "count": int(v)} for k, v in offset_dist.items()],
                 "suggested_fix": (
                     f"{incorrect} rows have wrong year offset. Expected "
                     f"{year_column_left} - {year_column_right} = {expected_offset}. "
@@ -478,8 +482,12 @@ class ValidateSilverTool(BaseTool):
     # ------------------------------------------------------------------
 
     def _check_join_completeness(
-        self, df: pd.DataFrame,
-        left_count=0, matched_count=0, unmatched_sample=None, **kw,
+        self,
+        df: pd.DataFrame,
+        left_count=0,
+        matched_count=0,
+        unmatched_sample=None,
+        **kw,
     ) -> ToolResult:
         if left_count <= 0:
             return ToolResult(
@@ -561,7 +569,8 @@ class ValidateSilverTool(BaseTool):
                 violations = self._check_fips_column(df, col)
             else:
                 violations = self._check_numeric_range(
-                    df, col,
+                    df,
+                    col,
                     min_val=spec.get("min"),
                     max_val=spec.get("max"),
                 )
@@ -581,12 +590,12 @@ class ValidateSilverTool(BaseTool):
                 "suggested_fix": (
                     "Out-of-range values detected. Check source data and CAST "
                     "operations. See per-column details."
-                    if has_issues else ""
+                    if has_issues
+                    else ""
                 ),
             },
             summary=(
-                f"VALUE RANGE ISSUES: {total_violations} violations across "
-                f"{len(issues)} columns."
+                f"VALUE RANGE ISSUES: {total_violations} violations across {len(issues)} columns."
                 if has_issues
                 else f"Value ranges OK: {len(column_ranges)} columns validated."
             ),
@@ -614,20 +623,22 @@ class ValidateSilverTool(BaseTool):
 
             if null_count + zero_count == total and total > 0:
                 likely_cause = "failed CAST" if null_count > zero_count else "broken JOIN"
-                suspect.append({
-                    "column": col,
-                    "null_count": null_count,
-                    "zero_count": zero_count,
-                    "total_rows": total,
-                    "likely_cause": likely_cause,
-                    "fix": (
-                        f"Column '{col}' is entirely zeros/NULLs. "
-                        f"Likely cause: {likely_cause}. "
-                        f"If failed CAST: check source column type and apply "
-                        f"CAST(NULLIF(TRIM(col), '*') AS DOUBLE). "
-                        f"If broken JOIN: verify ON clause includes all required keys."
-                    ),
-                })
+                suspect.append(
+                    {
+                        "column": col,
+                        "null_count": null_count,
+                        "zero_count": zero_count,
+                        "total_rows": total,
+                        "likely_cause": likely_cause,
+                        "fix": (
+                            f"Column '{col}' is entirely zeros/NULLs. "
+                            f"Likely cause: {likely_cause}. "
+                            f"If failed CAST: check source column type and apply "
+                            f"CAST(NULLIF(TRIM(col), '*') AS DOUBLE). "
+                            f"If broken JOIN: verify ON clause includes all required keys."
+                        ),
+                    }
+                )
 
         has_issues = len(suspect) > 0
         return ToolResult(
@@ -640,7 +651,8 @@ class ValidateSilverTool(BaseTool):
                 "suggested_fix": (
                     "Zero/NULL columns detected — likely failed CASTs or broken "
                     "JOINs. Rebuild from bronze with corrected SQL."
-                    if has_issues else ""
+                    if has_issues
+                    else ""
                 ),
             },
             summary=(
@@ -679,6 +691,7 @@ class ValidateSilverTool(BaseTool):
         try:
             from versifai._utils.fips import validate_fips
         except ImportError:
+
             def validate_fips(x):
                 return isinstance(x, str) and len(x) == 5 and x.isdigit()
 
@@ -698,8 +711,11 @@ class ValidateSilverTool(BaseTool):
         }
 
     def _check_numeric_range(
-        self, df: pd.DataFrame, col: str,
-        min_val: float | None = None, max_val: float | None = None,
+        self,
+        df: pd.DataFrame,
+        col: str,
+        min_val: float | None = None,
+        max_val: float | None = None,
     ) -> dict | None:
         """Check a numeric column against expected range."""
         numeric = pd.to_numeric(df[col], errors="coerce").dropna()

@@ -36,6 +36,7 @@ from datetime import datetime
 # Run ID generation
 # ---------------------------------------------------------------------------
 
+
 def generate_run_id() -> str:
     """Generate a unique run ID: YYYYMMDD_HHMMSS_XXXX.
 
@@ -50,6 +51,7 @@ def generate_run_id() -> str:
 # ---------------------------------------------------------------------------
 # Run directory management
 # ---------------------------------------------------------------------------
+
 
 def init_run_directory(base_path: str, run_id: str) -> str:
     """Create a run-isolated output directory.
@@ -76,25 +78,16 @@ def resolve_run_path(base_path: str, run_id: str | None = None) -> str:
     if run_id:
         path = os.path.join(base_path, "runs", run_id)
         if not os.path.isdir(path):
-            raise FileNotFoundError(
-                f"Run directory not found: {path}"
-            )
+            raise FileNotFoundError(f"Run directory not found: {path}")
         return path
 
     runs_dir = os.path.join(base_path, "runs")
     if not os.path.isdir(runs_dir):
-        raise FileNotFoundError(
-            f"No runs directory found at {runs_dir}"
-        )
+        raise FileNotFoundError(f"No runs directory found at {runs_dir}")
 
-    run_ids = sorted(
-        d for d in os.listdir(runs_dir)
-        if os.path.isdir(os.path.join(runs_dir, d))
-    )
+    run_ids = sorted(d for d in os.listdir(runs_dir) if os.path.isdir(os.path.join(runs_dir, d)))
     if not run_ids:
-        raise FileNotFoundError(
-            f"No runs found in {runs_dir}"
-        )
+        raise FileNotFoundError(f"No runs found in {runs_dir}")
 
     return os.path.join(runs_dir, run_ids[-1])
 
@@ -136,6 +129,7 @@ def list_runs(base_path: str) -> list[dict]:
 # ---------------------------------------------------------------------------
 # Run metadata
 # ---------------------------------------------------------------------------
+
 
 def write_run_metadata(
     run_path: str,
@@ -182,6 +176,7 @@ def write_run_metadata(
 # Run state tracking (for stop / resume)
 # ---------------------------------------------------------------------------
 
+
 @dataclass
 class RunState:
     """Tracks execution state of an agent run for stop/resume support.
@@ -200,8 +195,8 @@ class RunState:
         state.mark_completed()      # or mark_interrupted() / mark_failed()
     """
 
-    status: str = "running"          # running | completed | failed | interrupted
-    entry_point: str = "run"         # run | run_themes | run_visualizations | ...
+    status: str = "running"  # running | completed | failed | interrupted
+    entry_point: str = "run"  # run | run_themes | run_visualizations | ...
     current_phase: str = ""
     current_item: str = ""
     completed_phases: list[str] = field(default_factory=list)
@@ -266,9 +261,7 @@ class RunState:
             current_phase=data.get("current_phase", ""),
             current_item=data.get("current_item", ""),
             completed_phases=list(data.get("completed_phases", [])),
-            completed_items={
-                k: list(v) for k, v in data.get("completed_items", {}).items()
-            },
+            completed_items={k: list(v) for k, v in data.get("completed_items", {}).items()},
             error=data.get("error") or "",
             updated_at=data.get("updated_at", ""),
         )
@@ -317,6 +310,7 @@ def load_run_state(run_path: str) -> RunState | None:
 # Inter-agent dependency
 # ---------------------------------------------------------------------------
 
+
 @dataclass
 class AgentDependency:
     """Declares that a config consumes outputs from a previous agent run.
@@ -333,10 +327,10 @@ class AgentDependency:
         )
     """
 
-    agent_type: str          # "engineer", "scientist", "storyteller"
-    config_name: str         # "geographic_disparity", "kill_zone_H5216"
-    run_id: str = ""         # Specific run ID. Empty = resolve latest.
-    base_path: str = ""      # Base results path for that agent.
+    agent_type: str  # "engineer", "scientist", "storyteller"
+    config_name: str  # "geographic_disparity", "kill_zone_H5216"
+    run_id: str = ""  # Specific run ID. Empty = resolve latest.
+    base_path: str = ""  # Base results path for that agent.
     outputs: list[str] = field(default_factory=list)
 
 
@@ -349,25 +343,20 @@ def resolve_dependency(dep: AgentDependency) -> str:
     (backward compatibility with pre-run-isolation outputs).
     """
     if not dep.base_path:
-        raise ValueError(
-            f"AgentDependency for '{dep.config_name}' has no base_path set."
-        )
+        raise ValueError(f"AgentDependency for '{dep.config_name}' has no base_path set.")
 
     # If a specific run_id is requested
     if dep.run_id:
         run_path = os.path.join(dep.base_path, "runs", dep.run_id)
         if os.path.isdir(run_path):
             return run_path
-        raise FileNotFoundError(
-            f"Run '{dep.run_id}' not found at {run_path}"
-        )
+        raise FileNotFoundError(f"Run '{dep.run_id}' not found at {run_path}")
 
     # Try to find the latest run
     runs_dir = os.path.join(dep.base_path, "runs")
     if os.path.isdir(runs_dir):
         run_ids = sorted(
-            d for d in os.listdir(runs_dir)
-            if os.path.isdir(os.path.join(runs_dir, d))
+            d for d in os.listdir(runs_dir) if os.path.isdir(os.path.join(runs_dir, d))
         )
         if run_ids:
             return os.path.join(runs_dir, run_ids[-1])

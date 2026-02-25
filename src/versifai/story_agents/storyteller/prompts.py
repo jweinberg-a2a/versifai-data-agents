@@ -267,16 +267,14 @@ def build_section_prompt(
     """Build the prompt for writing one narrative section."""
     charts_text = ""
     if section.charts_to_include:
-        charts_text = (
-            "\n### Charts to Include\n"
-            + "\n".join(f"- `{c}`" for c in section.charts_to_include)
+        charts_text = "\n### Charts to Include\n" + "\n".join(
+            f"- `{c}`" for c in section.charts_to_include
         )
 
     reconfig_text = ""
     if section.charts_to_reconfigure:
-        reconfig_text = (
-            "\n### Charts to Reconfigure (cosmetic only)\n"
-            + "\n".join(f"- `{c}`" for c in section.charts_to_reconfigure)
+        reconfig_text = "\n### Charts to Reconfigure (cosmetic only)\n" + "\n".join(
+            f"- `{c}`" for c in section.charts_to_reconfigure
         )
 
     transition_from = ""
@@ -562,10 +560,10 @@ You are reviewing a completed narrative document. The document has
 {sections_text}
 
 ### Research Outputs Available
-- **Findings**: {inventory.get('findings_count', 0)} total
-- **Charts**: {len(inventory.get('charts', []))} files
-- **Tables**: {len(inventory.get('tables', []))} files
-- **Notes**: {len(inventory.get('notes', []))} files
+- **Findings**: {inventory.get("findings_count", 0)} total
+- **Charts**: {len(inventory.get("charts", []))} files
+- **Tables**: {len(inventory.get("tables", []))} files
+- **Notes**: {len(inventory.get("notes", []))} files
 {instructions_block}
 ### Your Process
 

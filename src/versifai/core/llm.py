@@ -138,14 +138,16 @@ class LLMClient:
                     if block.get("type") == "text":
                         text_parts.append(block.get("text", ""))
                     elif block.get("type") == "tool_use":
-                        tool_calls.append({
-                            "id": block["id"],
-                            "type": "function",
-                            "function": {
-                                "name": block["name"],
-                                "arguments": json.dumps(block.get("input", {})),
-                            },
-                        })
+                        tool_calls.append(
+                            {
+                                "id": block["id"],
+                                "type": "function",
+                                "function": {
+                                    "name": block["name"],
+                                    "arguments": json.dumps(block.get("input", {})),
+                                },
+                            }
+                        )
 
                 new_msg: dict[str, Any] = {
                     "role": "assistant",
@@ -168,11 +170,13 @@ class LLMClient:
                         result_content = block.get("content", "")
                         if isinstance(result_content, list):
                             result_content = json.dumps(result_content)
-                        converted.append({
-                            "role": "tool",
-                            "tool_call_id": block.get("tool_use_id", ""),
-                            "content": str(result_content),
-                        })
+                        converted.append(
+                            {
+                                "role": "tool",
+                                "tool_call_id": block.get("tool_use_id", ""),
+                                "content": str(result_content),
+                            }
+                        )
                 else:
                     # Regular user message with content blocks — pass through
                     converted.append(msg)
@@ -256,12 +260,12 @@ class LLMClient:
                     usage = response.usage
                     self._total_input_tokens += getattr(usage, "prompt_tokens", 0) or 0
                     self._total_output_tokens += getattr(usage, "completion_tokens", 0) or 0
-                    self._total_cache_read_tokens += getattr(
-                        usage, "cache_read_input_tokens", 0
-                    ) or 0
-                    self._total_cache_creation_tokens += getattr(
-                        usage, "cache_creation_input_tokens", 0
-                    ) or 0
+                    self._total_cache_read_tokens += (
+                        getattr(usage, "cache_read_input_tokens", 0) or 0
+                    )
+                    self._total_cache_creation_tokens += (
+                        getattr(usage, "cache_creation_input_tokens", 0) or 0
+                    )
 
                 return self._normalize_response(response)
 
@@ -280,8 +284,7 @@ class LLMClient:
                     raise
 
         raise RuntimeError(
-            f"LLM call failed after {self._retry_attempts} attempts. "
-            f"Last error: {last_error}"
+            f"LLM call failed after {self._retry_attempts} attempts. Last error: {last_error}"
         )
 
     # ------------------------------------------------------------------
@@ -312,12 +315,14 @@ class LLMClient:
                         except json.JSONDecodeError:
                             args = {"raw": args}
 
-                    content_blocks.append({
-                        "type": "tool_use",
-                        "id": tc.id,
-                        "name": tc.function.name,
-                        "input": args,
-                    })
+                    content_blocks.append(
+                        {
+                            "type": "tool_use",
+                            "id": tc.id,
+                            "name": tc.function.name,
+                            "input": args,
+                        }
+                    )
 
         usage_dict = {}
         if hasattr(response, "usage") and response.usage:
@@ -365,17 +370,21 @@ class LLMClient:
             if block.type == "text":
                 actions.append({"type": "text", "text": block.text})
             elif block.type == "tool_use":
-                actions.append({
-                    "type": "tool_use",
-                    "id": block.id,
-                    "name": block.name,
-                    "input": block.input,
-                })
+                actions.append(
+                    {
+                        "type": "tool_use",
+                        "id": block.id,
+                        "name": block.name,
+                        "input": block.input,
+                    }
+                )
         return actions
 
     @staticmethod
     def build_tool_result_message(
-        tool_use_id: str, result: str, is_error: bool = False,
+        tool_use_id: str,
+        result: str,
+        is_error: bool = False,
     ) -> dict:
         """Build a tool_result message block for the conversation."""
         return {

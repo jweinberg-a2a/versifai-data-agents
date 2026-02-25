@@ -56,9 +56,7 @@ class RenameColumnsTool(BaseTool):
             "properties": {
                 "table_name": {
                     "type": "string",
-                    "description": (
-                        "Fully qualified table name (catalog.schema.table)."
-                    ),
+                    "description": ("Fully qualified table name (catalog.schema.table)."),
                 },
                 "column_renames": {
                     "type": "object",
@@ -72,9 +70,7 @@ class RenameColumnsTool(BaseTool):
             "required": ["table_name", "column_renames"],
         }
 
-    def _execute(
-        self, table_name: str, column_renames: dict, **kwargs
-    ) -> ToolResult:
+    def _execute(self, table_name: str, column_renames: dict, **kwargs) -> ToolResult:
         if not column_renames:
             return ToolResult(
                 success=False,
@@ -92,22 +88,16 @@ class RenameColumnsTool(BaseTool):
         for old_name, new_name in column_renames.items():
             old_lower = old_name.lower()
             if old_lower in protected:
-                warnings.append(
-                    f"Skipped '{old_name}' — protected column (metadata/join key)."
-                )
+                warnings.append(f"Skipped '{old_name}' — protected column (metadata/join key).")
                 continue
 
             # Ensure snake_case
             new_snake = to_snake_case(new_name)
             if new_snake != new_name:
-                warnings.append(
-                    f"'{new_name}' normalized to '{new_snake}' (snake_case)."
-                )
+                warnings.append(f"'{new_name}' normalized to '{new_snake}' (snake_case).")
 
             if old_lower == new_snake:
-                warnings.append(
-                    f"Skipped '{old_name}' — already named '{new_snake}'."
-                )
+                warnings.append(f"Skipped '{old_name}' — already named '{new_snake}'.")
                 continue
 
             validated[old_lower] = new_snake
@@ -127,10 +117,7 @@ class RenameColumnsTool(BaseTool):
         failed: list[dict] = []
 
         for old_col, new_col in validated.items():
-            sql = (
-                f"ALTER TABLE {table_name} "
-                f"RENAME COLUMN `{old_col}` TO `{new_col}`"
-            )
+            sql = f"ALTER TABLE {table_name} RENAME COLUMN `{old_col}` TO `{new_col}`"
             try:
                 self._execute_sql(sql)
                 succeeded.append({"old": old_col, "new": new_col})
@@ -194,6 +181,4 @@ class RenameColumnsTool(BaseTool):
         )
         # Check for error status from the SDK
         if result.status and result.status.error:
-            raise RuntimeError(
-                f"SQL error: {result.status.error.message}"
-            )
+            raise RuntimeError(f"SQL error: {result.status.error.message}")

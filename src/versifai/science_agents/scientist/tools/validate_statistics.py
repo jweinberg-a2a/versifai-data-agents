@@ -172,15 +172,15 @@ class ValidateStatisticsTool(BaseTool):
     # ------------------------------------------------------------------
 
     def _check_multiple_comparisons(
-        self, p_values=None, alpha=0.05, **kw,
+        self,
+        p_values=None,
+        alpha=0.05,
+        **kw,
     ) -> ToolResult:
         if not p_values:
             return ToolResult(
                 success=False,
-                error=(
-                    "Missing 'p_values'. Provide a list of "
-                    "{name: str, p_value: float} dicts."
-                ),
+                error=("Missing 'p_values'. Provide a list of {name: str, p_value: float} dicts."),
             )
 
         n = len(p_values)
@@ -208,16 +208,18 @@ class ValidateStatisticsTool(BaseTool):
             p = test.get("p_value", 1.0)
             bh_threshold = (rank / n) * alpha
 
-            results.append({
-                "name": name,
-                "p_value": round(p, 6),
-                "rank": rank,
-                "uncorrected_significant": p < alpha,
-                "bonferroni_threshold": round(bonferroni_alpha, 6),
-                "bonferroni_significant": p < bonferroni_alpha,
-                "bh_threshold": round(bh_threshold, 6),
-                "bh_significant": p < bh_threshold,
-            })
+            results.append(
+                {
+                    "name": name,
+                    "p_value": round(p, 6),
+                    "rank": rank,
+                    "uncorrected_significant": p < alpha,
+                    "bonferroni_threshold": round(bonferroni_alpha, 6),
+                    "bonferroni_significant": p < bonferroni_alpha,
+                    "bh_threshold": round(bh_threshold, 6),
+                    "bh_significant": p < bh_threshold,
+                }
+            )
 
         # Find the BH cutoff (largest rank where p <= threshold)
         bh_significant_count = 0
@@ -266,7 +268,10 @@ class ValidateStatisticsTool(BaseTool):
     # ------------------------------------------------------------------
 
     def _check_multicollinearity(
-        self, data=None, feature_columns=None, **kw,
+        self,
+        data=None,
+        feature_columns=None,
+        **kw,
     ) -> ToolResult:
         if not data:
             return ToolResult(success=False, error="Missing 'data'.")
@@ -290,8 +295,7 @@ class ValidateStatisticsTool(BaseTool):
             return ToolResult(
                 success=False,
                 error=(
-                    f"Insufficient observations ({len(X)}) for "
-                    f"{len(feature_columns)} features."
+                    f"Insufficient observations ({len(X)}) for {len(feature_columns)} features."
                 ),
             )
 
@@ -317,6 +321,7 @@ class ValidateStatisticsTool(BaseTool):
                 else:
                     # Manual VIF: 1 / (1 - R²) from regressing col on other cols
                     from numpy.linalg import lstsq
+
                     others = [c for c in feature_columns if c != col]
                     y = X[col].values
                     A = X[others].values
@@ -339,24 +344,28 @@ class ValidateStatisticsTool(BaseTool):
                     status = "concern"
                     concern.append(col)
 
-            vif_results.append({
-                "feature": col,
-                "vif": round(vif, 2) if vif is not None else None,
-                "status": status,
-            })
+            vif_results.append(
+                {
+                    "feature": col,
+                    "vif": round(vif, 2) if vif is not None else None,
+                    "status": status,
+                }
+            )
 
         # Also compute pairwise correlations for context
         corr_matrix = X.corr()
         high_pairs = []
         for i, c1 in enumerate(feature_columns):
-            for c2 in feature_columns[i + 1:]:
+            for c2 in feature_columns[i + 1 :]:
                 r = float(corr_matrix.loc[c1, c2])
                 if abs(r) > 0.7:
-                    high_pairs.append({
-                        "var1": c1,
-                        "var2": c2,
-                        "r": round(r, 3),
-                    })
+                    high_pairs.append(
+                        {
+                            "var1": c1,
+                            "var2": c2,
+                            "r": round(r, 3),
+                        }
+                    )
 
         has_issues = len(severe) > 0 or len(concern) > 0
         recommendation = ""
@@ -401,15 +410,18 @@ class ValidateStatisticsTool(BaseTool):
     # ------------------------------------------------------------------
 
     def _check_ecological_fallacy(
-        self, data=None, data_fine_grain=None,
-        outcome_column="", predictor_column="", **kw,
+        self,
+        data=None,
+        data_fine_grain=None,
+        outcome_column="",
+        predictor_column="",
+        **kw,
     ) -> ToolResult:
         if not data or not data_fine_grain:
             return ToolResult(
                 success=False,
                 error=(
-                    "Both 'data' (coarse grain) and 'data_fine_grain' (fine grain) "
-                    "are required."
+                    "Both 'data' (coarse grain) and 'data_fine_grain' (fine grain) are required."
                 ),
             )
         if not outcome_column or not predictor_column:
@@ -441,7 +453,8 @@ class ValidateStatisticsTool(BaseTool):
                 error=f"Insufficient coarse-grain data (n={len(coarse_clean)}).",
             )
         r_coarse, p_coarse = sp_stats.spearmanr(
-            coarse_clean[predictor_column], coarse_clean[outcome_column],
+            coarse_clean[predictor_column],
+            coarse_clean[outcome_column],
         )
 
         # Compute correlation at fine grain
@@ -453,7 +466,8 @@ class ValidateStatisticsTool(BaseTool):
                 error=f"Insufficient fine-grain data (n={len(fine_clean)}).",
             )
         r_fine, p_fine = sp_stats.spearmanr(
-            fine_clean[predictor_column], fine_clean[outcome_column],
+            fine_clean[predictor_column],
+            fine_clean[outcome_column],
         )
 
         # Detect ecological fallacy
@@ -525,7 +539,11 @@ class ValidateStatisticsTool(BaseTool):
     # ------------------------------------------------------------------
 
     def _check_robustness(
-        self, data=None, outcome_column="", predictor_column="", **kw,
+        self,
+        data=None,
+        outcome_column="",
+        predictor_column="",
+        **kw,
     ) -> ToolResult:
         if not data:
             return ToolResult(success=False, error="Missing 'data'.")
@@ -545,9 +563,9 @@ class ValidateStatisticsTool(BaseTool):
                     error=f"Column '{col}' not found. Available: {list(df.columns)}",
                 )
 
-        clean = df[[predictor_column, outcome_column]].apply(
-            pd.to_numeric, errors="coerce"
-        ).dropna()
+        clean = (
+            df[[predictor_column, outcome_column]].apply(pd.to_numeric, errors="coerce").dropna()
+        )
 
         if len(clean) < 10:
             return ToolResult(
@@ -562,23 +580,27 @@ class ValidateStatisticsTool(BaseTool):
 
         # Variant 1: Original (Spearman)
         r_orig, p_orig = sp_stats.spearmanr(x, y)
-        variants.append({
-            "variant": "original_spearman",
-            "r": round(float(r_orig), 4),
-            "p_value": round(float(p_orig), 6),
-            "n": len(x),
-            "direction": "positive" if r_orig > 0 else "negative",
-        })
+        variants.append(
+            {
+                "variant": "original_spearman",
+                "r": round(float(r_orig), 4),
+                "p_value": round(float(p_orig), 6),
+                "n": len(x),
+                "direction": "positive" if r_orig > 0 else "negative",
+            }
+        )
 
         # Variant 2: Pearson (alternative method)
         r_pearson, p_pearson = sp_stats.pearsonr(x, y)
-        variants.append({
-            "variant": "pearson",
-            "r": round(float(r_pearson), 4),
-            "p_value": round(float(p_pearson), 6),
-            "n": len(x),
-            "direction": "positive" if r_pearson > 0 else "negative",
-        })
+        variants.append(
+            {
+                "variant": "pearson",
+                "r": round(float(r_pearson), 4),
+                "p_value": round(float(p_pearson), 6),
+                "n": len(x),
+                "direction": "positive" if r_pearson > 0 else "negative",
+            }
+        )
 
         # Variant 3: Outliers removed (IQR method on both variables)
         x_q1, x_q3 = np.percentile(x, [25, 75])
@@ -586,8 +608,10 @@ class ValidateStatisticsTool(BaseTool):
         x_iqr = x_q3 - x_q1
         y_iqr = y_q3 - y_q1
         mask = (
-            (x >= x_q1 - 1.5 * x_iqr) & (x <= x_q3 + 1.5 * x_iqr) &
-            (y >= y_q1 - 1.5 * y_iqr) & (y <= y_q3 + 1.5 * y_iqr)
+            (x >= x_q1 - 1.5 * x_iqr)
+            & (x <= x_q3 + 1.5 * x_iqr)
+            & (y >= y_q1 - 1.5 * y_iqr)
+            & (y <= y_q3 + 1.5 * y_iqr)
         )
         x_no_outlier = x[mask]
         y_no_outlier = y[mask]
@@ -595,52 +619,51 @@ class ValidateStatisticsTool(BaseTool):
 
         if len(x_no_outlier) >= 5:
             r_no, p_no = sp_stats.spearmanr(x_no_outlier, y_no_outlier)
-            variants.append({
-                "variant": "outliers_removed",
-                "r": round(float(r_no), 4),
-                "p_value": round(float(p_no), 6),
-                "n": len(x_no_outlier),
-                "removed": removed,
-                "direction": "positive" if r_no > 0 else "negative",
-            })
+            variants.append(
+                {
+                    "variant": "outliers_removed",
+                    "r": round(float(r_no), 4),
+                    "p_value": round(float(p_no), 6),
+                    "n": len(x_no_outlier),
+                    "removed": removed,
+                    "direction": "positive" if r_no > 0 else "negative",
+                }
+            )
         else:
-            variants.append({
-                "variant": "outliers_removed",
-                "r": None,
-                "p_value": None,
-                "n": len(x_no_outlier),
-                "removed": removed,
-                "direction": "insufficient_data",
-            })
+            variants.append(
+                {
+                    "variant": "outliers_removed",
+                    "r": None,
+                    "p_value": None,
+                    "n": len(x_no_outlier),
+                    "removed": removed,
+                    "direction": "insufficient_data",
+                }
+            )
 
         # Variant 4: Winsorized at 5th/95th percentile
         x_win = np.clip(x, np.percentile(x, 5), np.percentile(x, 95))
         y_win = np.clip(y, np.percentile(y, 5), np.percentile(y, 95))
         r_win, p_win = sp_stats.spearmanr(x_win, y_win)
-        variants.append({
-            "variant": "winsorized_5_95",
-            "r": round(float(r_win), 4),
-            "p_value": round(float(p_win), 6),
-            "n": len(x_win),
-            "direction": "positive" if r_win > 0 else "negative",
-        })
+        variants.append(
+            {
+                "variant": "winsorized_5_95",
+                "r": round(float(r_win), 4),
+                "p_value": round(float(p_win), 6),
+                "n": len(x_win),
+                "direction": "positive" if r_win > 0 else "negative",
+            }
+        )
 
         # Determine robustness: all variants agree on direction and significance
         directions = [
-            v["direction"] for v in variants
-            if v["direction"] not in ("insufficient_data",)
+            v["direction"] for v in variants if v["direction"] not in ("insufficient_data",)
         ]
-        r_values = [
-            abs(v["r"]) for v in variants
-            if v["r"] is not None
-        ]
+        r_values = [abs(v["r"]) for v in variants if v["r"] is not None]
 
         direction_consistent = len(set(directions)) <= 1
         # All variants should be significant (or all not)
-        sig_flags = [
-            v["p_value"] < 0.05 for v in variants
-            if v["p_value"] is not None
-        ]
+        sig_flags = [v["p_value"] < 0.05 for v in variants if v["p_value"] is not None]
         significance_consistent = len(set(sig_flags)) <= 1
 
         # Magnitude stability: max/min ratio of |r| values
@@ -665,9 +688,7 @@ class ValidateStatisticsTool(BaseTool):
             if not significance_consistent:
                 issues.append("significance is inconsistent across variants")
             if not magnitude_stable:
-                issues.append(
-                    f"magnitude is unstable (ratio={magnitude_ratio:.1f}x)"
-                )
+                issues.append(f"magnitude is unstable (ratio={magnitude_ratio:.1f}x)")
             recommendation = (
                 f"Finding is NOT robust: {'; '.join(issues)}. "
                 f"Report with appropriate caveats, or investigate which "
@@ -699,6 +720,7 @@ class ValidateStatisticsTool(BaseTool):
 # ------------------------------------------------------------------
 # Helpers
 # ------------------------------------------------------------------
+
 
 def _interpret_r(r: float) -> str:
     if r < 0.1:

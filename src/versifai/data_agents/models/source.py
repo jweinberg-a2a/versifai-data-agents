@@ -59,8 +59,8 @@ class FileGroup:
     might be grouped together under a single FileGroup.
     """
 
-    name: str                          # e.g. "ma_enrollment"
-    folder_path: str                   # Volume subfolder path
+    name: str  # e.g. "ma_enrollment"
+    folder_path: str  # Volume subfolder path
     files: list[FileInfo] = field(default_factory=list)
     documentation_files: list[FileInfo] = field(default_factory=list)
     data_files: list[FileInfo] = field(default_factory=list)

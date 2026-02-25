@@ -59,6 +59,7 @@ class CreateVisualizationTool(BaseTool):
         # Try Spark first
         try:
             from pyspark.sql import SparkSession
+
             spark = SparkSession.getActiveSession()
             if spark:
                 sdf = spark.sql(sql)
@@ -84,13 +85,14 @@ class CreateVisualizationTool(BaseTool):
                 return None
 
             result = client.statement_execution.execute_statement(
-                warehouse_id=warehouse_id, statement=sql, wait_timeout="120s",
+                warehouse_id=warehouse_id,
+                statement=sql,
+                wait_timeout="120s",
             )
 
             if result.result and result.result.data_array:
                 col_names = (
-                    [c.name for c in result.manifest.schema.columns]
-                    if result.manifest else []
+                    [c.name for c in result.manifest.schema.columns] if result.manifest else []
                 )
                 rows = result.result.data_array
                 if col_names:
@@ -363,8 +365,8 @@ class CreateVisualizationTool(BaseTool):
                         "Additional named data sources for chart_type='custom'. "
                         "A dict mapping variable names to SQL queries. Each query is "
                         "executed and the result is available as a DataFrame in render_code. "
-                        "Example: {\"ref_data\": \"SELECT * FROM ref_table\", "
-                        "\"cutpoints\": \"SELECT * FROM cutpoint_table\"} — then "
+                        'Example: {"ref_data": "SELECT * FROM ref_table", '
+                        '"cutpoints": "SELECT * FROM cutpoint_table"} — then '
                         "render_code can use `ref_data` and `cutpoints` as DataFrames "
                         "alongside the primary `df` from sql_query."
                     ),
@@ -486,7 +488,9 @@ class CreateVisualizationTool(BaseTool):
 
         # Post-processing for successful results
         if result and result.success:
-            save_path = (result.data or {}).get("chart_path") or (result.data or {}).get("table_path", "")
+            save_path = (result.data or {}).get("chart_path") or (result.data or {}).get(
+                "table_path", ""
+            )
 
             # Return the chart image so Claude can visually review it
             if save_path and save_path.endswith(".png"):
@@ -527,6 +531,7 @@ class CreateVisualizationTool(BaseTool):
         annotations: list[str],
     ) -> ToolResult:
         import matplotlib
+
         matplotlib.use("Agg")  # Non-interactive backend
         import matplotlib.pyplot as plt
         import seaborn as sns
@@ -550,13 +555,17 @@ class CreateVisualizationTool(BaseTool):
 
             elif chart_type == "scatter":
                 if color_column and color_column in df.columns:
-                    sns.scatterplot(data=df, x=x_column, y=y_column, hue=color_column, ax=ax, alpha=0.7)
+                    sns.scatterplot(
+                        data=df, x=x_column, y=y_column, hue=color_column, ax=ax, alpha=0.7
+                    )
                 else:
                     sns.scatterplot(data=df, x=x_column, y=y_column, ax=ax, alpha=0.7)
 
             elif chart_type == "line":
                 if color_column and color_column in df.columns:
-                    sns.lineplot(data=df, x=x_column, y=y_column, hue=color_column, ax=ax, marker="o")
+                    sns.lineplot(
+                        data=df, x=x_column, y=y_column, hue=color_column, ax=ax, marker="o"
+                    )
                 else:
                     sns.lineplot(data=df, x=x_column, y=y_column, ax=ax, marker="o")
 
@@ -577,7 +586,9 @@ class CreateVisualizationTool(BaseTool):
                 # Pivot the data for heatmap — requires x, y, and a value column
                 if x_column and y_column and color_column:
                     pivot = df.pivot_table(
-                        index=y_column, columns=x_column, values=color_column,
+                        index=y_column,
+                        columns=x_column,
+                        values=color_column,
                         aggfunc="mean",
                     )
                     sns.heatmap(pivot, ax=ax, annot=True, fmt=".2f", cmap=cfg.color_palette)
@@ -585,7 +596,9 @@ class CreateVisualizationTool(BaseTool):
                     # Correlation matrix fallback
                     numeric = df.select_dtypes(include="number")
                     if not numeric.empty:
-                        sns.heatmap(numeric.corr(), ax=ax, annot=True, fmt=".2f", cmap=cfg.color_palette)
+                        sns.heatmap(
+                            numeric.corr(), ax=ax, annot=True, fmt=".2f", cmap=cfg.color_palette
+                        )
                     else:
                         plt.close(fig)
                         return ToolResult(
@@ -594,8 +607,16 @@ class CreateVisualizationTool(BaseTool):
                         )
             elif chart_type == "waterfall":
                 # Waterfall decomposition chart — positive/negative contributions
-                categories = df[x_column].astype(str).tolist() if x_column else df.iloc[:, 0].astype(str).tolist()
-                values = df[y_column].astype(float).tolist() if y_column else df.iloc[:, 1].astype(float).tolist()
+                categories = (
+                    df[x_column].astype(str).tolist()
+                    if x_column
+                    else df.iloc[:, 0].astype(str).tolist()
+                )
+                values = (
+                    df[y_column].astype(float).tolist()
+                    if y_column
+                    else df.iloc[:, 1].astype(float).tolist()
+                )
 
                 cumulative = []
                 running = 0.0
@@ -615,7 +636,9 @@ class CreateVisualizationTool(BaseTool):
                 bottoms = [c if v >= 0 else c + v for c, v in zip(cumulative, values)]
                 bar_heights = [abs(v) for v in values]
 
-                ax.barh(y_pos, bar_heights, left=bottoms, color=colors, edgecolor="white", linewidth=0.5)
+                ax.barh(
+                    y_pos, bar_heights, left=bottoms, color=colors, edgecolor="white", linewidth=0.5
+                )
                 ax.set_yticks(list(y_pos))
                 ax.set_yticklabels(categories)
                 ax.invert_yaxis()
@@ -623,25 +646,65 @@ class CreateVisualizationTool(BaseTool):
                 # Connector lines
                 for i in range(len(values) - 2):  # skip last (total)
                     end_x = cumulative[i] + values[i]
-                    ax.plot([end_x, end_x], [i - 0.4, i + 1.4], color="#64748b", linewidth=0.8, linestyle="--")
+                    ax.plot(
+                        [end_x, end_x],
+                        [i - 0.4, i + 1.4],
+                        color="#64748b",
+                        linewidth=0.8,
+                        linestyle="--",
+                    )
 
                 # Value labels
                 for i, (b, h, v) in enumerate(zip(bottoms, bar_heights, values)):
                     label_x = b + h / 2
-                    ax.text(label_x, i, f"{v:+,.1f}" if i < len(values) - 1 else f"{v:,.1f}",
-                            ha="center", va="center", fontsize=9, fontweight="bold", color="white")
+                    ax.text(
+                        label_x,
+                        i,
+                        f"{v:+,.1f}" if i < len(values) - 1 else f"{v:,.1f}",
+                        ha="center",
+                        va="center",
+                        fontsize=9,
+                        fontweight="bold",
+                        color="white",
+                    )
 
             elif chart_type == "dumbbell":
                 # Dumbbell chart — paired comparison per category
                 # y_column = categories, x_column = start value, color_column = end value
-                cats = df[y_column].astype(str).tolist() if y_column else df.iloc[:, 0].astype(str).tolist()
-                starts = pd.to_numeric(df[x_column], errors="coerce").tolist() if x_column else df.iloc[:, 1].astype(float).tolist()
-                ends = pd.to_numeric(df[color_column], errors="coerce").tolist() if color_column and color_column in df.columns else starts
+                cats = (
+                    df[y_column].astype(str).tolist()
+                    if y_column
+                    else df.iloc[:, 0].astype(str).tolist()
+                )
+                starts = (
+                    pd.to_numeric(df[x_column], errors="coerce").tolist()
+                    if x_column
+                    else df.iloc[:, 1].astype(float).tolist()
+                )
+                ends = (
+                    pd.to_numeric(df[color_column], errors="coerce").tolist()
+                    if color_column and color_column in df.columns
+                    else starts
+                )
 
                 y_pos = range(len(cats))
                 ax.hlines(y=y_pos, xmin=starts, xmax=ends, color="#64748b", linewidth=2, zorder=1)
-                ax.scatter(starts, y_pos, color="#3b82f6", s=80, zorder=2, label=x_label or x_column or "Start")
-                ax.scatter(ends, y_pos, color="#ef4444", s=80, zorder=2, label=y_label or color_column or "End")
+                ax.scatter(
+                    starts,
+                    y_pos,
+                    color="#3b82f6",
+                    s=80,
+                    zorder=2,
+                    label=x_label or x_column or "Start",
+                )
+                ax.scatter(
+                    ends,
+                    y_pos,
+                    color="#ef4444",
+                    s=80,
+                    zorder=2,
+                    label=y_label or color_column or "End",
+                )
                 ax.set_yticks(list(y_pos))
                 ax.set_yticklabels(cats)
                 ax.invert_yaxis()
@@ -670,7 +733,9 @@ class CreateVisualizationTool(BaseTool):
                     cmap = sns.color_palette(cfg.color_palette, len(unique_colors))
                     color_map = dict(zip(unique_colors, cmap))
                     # Re-sort to match
-                    sorted_df = df.sort_values(by=x_column if x_column in df.columns else df.columns[1])
+                    sorted_df = df.sort_values(
+                        by=x_column if x_column in df.columns else df.columns[1]
+                    )
                     dot_colors = [color_map.get(c, dot_color) for c in sorted_df[color_column]]
                 else:
                     dot_colors = [dot_color] * len(cats)
@@ -683,7 +748,9 @@ class CreateVisualizationTool(BaseTool):
             elif chart_type == "violin":
                 # Violin plot — richer distribution view than box
                 if color_column and color_column in df.columns:
-                    sns.violinplot(data=df, x=x_column, y=y_column, hue=color_column, ax=ax, inner="box", cut=0)
+                    sns.violinplot(
+                        data=df, x=x_column, y=y_column, hue=color_column, ax=ax, inner="box", cut=0
+                    )
                 else:
                     sns.violinplot(data=df, x=x_column, y=y_column, ax=ax, inner="box", cut=0)
 
@@ -707,8 +774,12 @@ class CreateVisualizationTool(BaseTool):
         # Add annotations
         for i, ann in enumerate(annotations[:5]):
             ax.annotate(
-                ann, xy=(0.02, 0.98 - i * 0.05), xycoords="axes fraction",
-                fontsize=9, color="gray", va="top",
+                ann,
+                xy=(0.02, 0.98 - i * 0.05),
+                xycoords="axes fraction",
+                fontsize=9,
+                color="gray",
+                va="top",
             )
 
         plt.tight_layout()
@@ -758,10 +829,7 @@ class CreateVisualizationTool(BaseTool):
         import json
         from urllib.request import urlopen
 
-        url = (
-            "https://raw.githubusercontent.com/plotly/datasets/master/"
-            "geojson-counties-fips.json"
-        )
+        url = "https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json"
         with urlopen(url, timeout=30) as response:
             cls._counties_geojson = json.load(response)
         return cls._counties_geojson
@@ -782,8 +850,7 @@ class CreateVisualizationTool(BaseTool):
         if fips_column not in df.columns:
             return ToolResult(
                 success=False,
-                error=f"FIPS column '{fips_column}' not found in data. "
-                f"Columns: {list(df.columns)}",
+                error=f"FIPS column '{fips_column}' not found in data. Columns: {list(df.columns)}",
             )
         if not value_column or value_column not in df.columns:
             return ToolResult(
@@ -866,7 +933,8 @@ class CreateVisualizationTool(BaseTool):
 
         try:
             fig = make_subplots(
-                rows=1, cols=2,
+                rows=1,
+                cols=2,
                 subplot_titles=(left_label, right_label),
                 specs=[[{"type": "choropleth"}, {"type": "choropleth"}]],
             )
@@ -881,7 +949,8 @@ class CreateVisualizationTool(BaseTool):
                     marker_line_width=0.1,
                     marker_line_color="white",
                 ),
-                row=1, col=1,
+                row=1,
+                col=1,
             )
             fig.add_trace(
                 go.Choropleth(
@@ -893,7 +962,8 @@ class CreateVisualizationTool(BaseTool):
                     marker_line_width=0.1,
                     marker_line_color="white",
                 ),
-                row=1, col=2,
+                row=1,
+                col=2,
             )
 
             fig.update_geos(
@@ -948,6 +1018,7 @@ class CreateVisualizationTool(BaseTool):
         from itertools import groupby
 
         import matplotlib
+
         matplotlib.use("Agg")
         import matplotlib.colors as mcolors
         import matplotlib.patches as mpatches
@@ -1048,7 +1119,11 @@ class CreateVisualizationTool(BaseTool):
         if plotly_fig is not None:
             # Plotly path — save via existing helper
             return self._save_plotly_figure(
-                plotly_fig, title, filename, "custom", len(df),
+                plotly_fig,
+                title,
+                filename,
+                "custom",
+                len(df),
             )
         elif mpl_fig is not None:
             # Matplotlib path — save PNG
@@ -1123,28 +1198,32 @@ class CreateVisualizationTool(BaseTool):
         node_colors = []
         for n in all_labels:
             if n in source_set and n not in target_set:
-                node_colors.append("rgba(59, 130, 246, 0.8)")   # blue — pure source
+                node_colors.append("rgba(59, 130, 246, 0.8)")  # blue — pure source
             elif n in target_set and n not in source_set:
-                node_colors.append("rgba(16, 185, 129, 0.8)")   # green — pure target
+                node_colors.append("rgba(16, 185, 129, 0.8)")  # green — pure target
             else:
-                node_colors.append("rgba(124, 58, 237, 0.8)")   # purple — both
+                node_colors.append("rgba(124, 58, 237, 0.8)")  # purple — both
 
         try:
-            fig = go.Figure(data=[go.Sankey(
-                node=dict(
-                    pad=15,
-                    thickness=20,
-                    line=dict(color="black", width=0.5),
-                    label=node_labels,
-                    color=node_colors,
-                ),
-                link=dict(
-                    source=source_indices,
-                    target=target_indices,
-                    value=values,
-                    color="rgba(148, 163, 184, 0.4)",
-                ),
-            )])
+            fig = go.Figure(
+                data=[
+                    go.Sankey(
+                        node=dict(
+                            pad=15,
+                            thickness=20,
+                            line=dict(color="black", width=0.5),
+                            label=node_labels,
+                            color=node_colors,
+                        ),
+                        link=dict(
+                            source=source_indices,
+                            target=target_indices,
+                            value=values,
+                            color="rgba(148, 163, 184, 0.4)",
+                        ),
+                    )
+                ]
+            )
             fig.update_layout(
                 title_text=title,
                 title_font_size=16,
@@ -1159,7 +1238,12 @@ class CreateVisualizationTool(BaseTool):
         return self._save_plotly_figure(fig, title, filename, "sankey", len(df))
 
     def _save_plotly_figure(
-        self, fig, title: str, filename: str, chart_type: str, row_count: int,
+        self,
+        fig,
+        title: str,
+        filename: str,
+        chart_type: str,
+        row_count: int,
     ) -> ToolResult:
         """Save a plotly figure as PNG (or HTML fallback) and display inline."""
         cfg = self._cfg
@@ -1184,7 +1268,9 @@ class CreateVisualizationTool(BaseTool):
         # Display inline in notebook — plotly HTML works natively in Databricks
         try:
             html_str = fig.to_html(
-                full_html=False, include_plotlyjs="cdn", config={"responsive": True},
+                full_html=False,
+                include_plotlyjs="cdn",
+                config={"responsive": True},
             )
             self._display._raw_html(html_str)
         except Exception:
@@ -1215,7 +1301,7 @@ class CreateVisualizationTool(BaseTool):
                 f'<div style="margin:8px 0;text-align:center;">'
                 f'<img src="data:image/png;base64,{b64}" '
                 f'style="max-width:100%;border-radius:8px;border:1px solid #334155;" />'
-                f'</div>'
+                f"</div>"
             )
             self._display._display_html(html_content)
         except Exception:
@@ -1226,7 +1312,10 @@ class CreateVisualizationTool(BaseTool):
     # ------------------------------------------------------------------
 
     def _render_table(
-        self, df: pd.DataFrame, title: str, filename: str,
+        self,
+        df: pd.DataFrame,
+        title: str,
+        filename: str,
     ) -> ToolResult:
         import html as html_mod
 
@@ -1254,12 +1343,12 @@ class CreateVisualizationTool(BaseTool):
         html_content = (
             f'<div style="margin:8px 0;">'
             f'<div style="font-weight:700;font-size:14px;color:#e2e8f0;margin-bottom:8px;">'
-            f'{html_mod.escape(title)}</div>'
+            f"{html_mod.escape(title)}</div>"
             f'<table style="border-collapse:collapse;width:100%;font-size:12px;color:#e2e8f0;">'
             f'<thead><tr style="background:#1e293b;border-bottom:2px solid #334155;">'
-            f'{header_row}</tr></thead>'
-            f'<tbody>{body_rows}</tbody></table>'
-            f'{truncation}</div>'
+            f"{header_row}</tr></thead>"
+            f"<tbody>{body_rows}</tbody></table>"
+            f"{truncation}</div>"
         )
         self._display._display_html(html_content)
 
@@ -1289,7 +1378,7 @@ class CreateVisualizationTool(BaseTool):
                 f'<div style="margin:8px 0;text-align:center;">'
                 f'<img src="data:image/png;base64,{b64}" '
                 f'style="max-width:100%;border-radius:8px;border:1px solid #334155;" />'
-                f'</div>'
+                f"</div>"
             )
             self._display._display_html(html_content)
         except Exception:

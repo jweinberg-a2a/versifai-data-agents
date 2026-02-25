@@ -140,6 +140,7 @@ def prioritize_sources(sources: list[DataSource]) -> list[DataSource]:
     2. Sources with fewer files (faster to process)
     3. Alphabetical for consistency
     """
+
     def sort_key(s: DataSource) -> tuple:
         has_docs = -len(s.file_group.documentation_files)  # negative = more docs first
         file_count = len(s.file_group.files)

@@ -65,7 +65,7 @@ class VolumeExplorerTool(BaseTool):
 
         summary = (
             f"Found {file_count} files and {dir_count} subdirectories "
-            f"({round(total_size / (1024*1024), 2)} MB total) in {path}"
+            f"({round(total_size / (1024 * 1024), 2)} MB total) in {path}"
         )
 
         # Include a compact file list in the summary so the agent sees ALL
@@ -110,19 +110,23 @@ class VolumeExplorerTool(BaseTool):
                 entries.append(entry)
                 if recursive and current_depth < max_depth:
                     children = self._scan_directory(
-                        full_path, recursive=True, max_depth=max_depth,
+                        full_path,
+                        recursive=True,
+                        max_depth=max_depth,
                         current_depth=current_depth + 1,
                     )
                     entry["children"] = children
             else:
                 _, ext = os.path.splitext(item_name)
-                entries.append({
-                    "name": item_name,
-                    "path": full_path,
-                    "type": "file",
-                    "extension": ext.lower().lstrip("."),
-                    "size_bytes": stat.st_size,
-                    "size_mb": round(stat.st_size / (1024 * 1024), 2),
-                    "modified_at": datetime.fromtimestamp(stat.st_mtime).isoformat(),
-                })
+                entries.append(
+                    {
+                        "name": item_name,
+                        "path": full_path,
+                        "type": "file",
+                        "extension": ext.lower().lstrip("."),
+                        "size_bytes": stat.st_size,
+                        "size_mb": round(stat.st_size / (1024 * 1024), 2),
+                        "modified_at": datetime.fromtimestamp(stat.st_mtime).isoformat(),
+                    }
+                )
         return entries

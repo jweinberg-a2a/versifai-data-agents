@@ -144,14 +144,20 @@ class CheckConfoundersTool(BaseTool):
 
         # Compute aggregate relationship
         aggregate = self._compute_relationship(
-            df, outcome_column, predictor_column, predictor_is_numeric,
+            df,
+            outcome_column,
+            predictor_column,
+            predictor_is_numeric,
         )
 
         # Decompose by each grouping column
         decompositions = []
         for group_col in grouping_columns:
             decomp = self._decompose_by_group(
-                df, outcome_column, predictor_column, group_col,
+                df,
+                outcome_column,
+                predictor_column,
+                group_col,
                 predictor_is_numeric,
             )
             decompositions.append(decomp)
@@ -252,7 +258,7 @@ class CheckConfoundersTool(BaseTool):
                 "method": "spearman_correlation",
                 "r": round(r, 4),
                 "p_value": round(p, 6),
-                "r_squared": round(r ** 2, 4),
+                "r_squared": round(r**2, 4),
                 "direction": direction,
                 "strength": strength,
                 "summary": f"r={r:.3f} ({strength} {direction}, n={n})",
@@ -302,7 +308,10 @@ class CheckConfoundersTool(BaseTool):
         for group_val in valid_groups:
             subset = df[df[group_col] == group_val]
             rel = self._compute_relationship(
-                subset, outcome, predictor, predictor_numeric,
+                subset,
+                outcome,
+                predictor,
+                predictor_numeric,
                 label=f"{group_col}={group_val}",
             )
             rel["group_value"] = str(group_val)
@@ -312,7 +321,10 @@ class CheckConfoundersTool(BaseTool):
 
         # Detect paradox: do subgroups disagree with aggregate?
         aggregate = self._compute_relationship(
-            df, outcome, predictor, predictor_numeric,
+            df,
+            outcome,
+            predictor,
+            predictor_numeric,
         )
         paradox = self._detect_paradox(aggregate, subgroups, predictor_numeric)
 
@@ -354,7 +366,9 @@ class CheckConfoundersTool(BaseTool):
             return self._detect_means_paradox(aggregate, subgroups)
 
     def _detect_correlation_paradox(
-        self, aggregate: dict, subgroups: dict[str, dict],
+        self,
+        aggregate: dict,
+        subgroups: dict[str, dict],
     ) -> dict:
         agg_r = aggregate.get("r", 0.0)
         agg_strength = abs(agg_r)
@@ -362,29 +376,34 @@ class CheckConfoundersTool(BaseTool):
         subgroup_rs = []
         for sg in subgroups.values():
             if sg.get("method") == "spearman_correlation" and sg.get("r") is not None:
-                subgroup_rs.append({
-                    "label": sg["label"],
-                    "r": sg["r"],
-                    "n": sg["n"],
-                })
+                subgroup_rs.append(
+                    {
+                        "label": sg["label"],
+                        "r": sg["r"],
+                        "n": sg["n"],
+                    }
+                )
 
         if not subgroup_rs:
-            return {"detected": False, "strength": 0.0, "explanation": "No valid subgroup correlations."}
+            return {
+                "detected": False,
+                "strength": 0.0,
+                "explanation": "No valid subgroup correlations.",
+            }
 
         # Weighted by sample size
         total_n = sum(s["n"] for s in subgroup_rs)
 
         # Check 1: Direction reversal — majority of subgroups have opposite sign
         same_direction = sum(
-            1 for s in subgroup_rs
-            if (s["r"] > 0) == (agg_r > 0) or abs(s["r"]) < 0.05
+            1 for s in subgroup_rs if (s["r"] > 0) == (agg_r > 0) or abs(s["r"]) < 0.05
         )
         opposite_direction = len(subgroup_rs) - same_direction
 
         # Check 2: Strength masking — aggregate is weak but subgroups are strong
-        weighted_avg_strength = sum(
-            abs(s["r"]) * s["n"] for s in subgroup_rs
-        ) / total_n if total_n > 0 else 0.0
+        weighted_avg_strength = (
+            sum(abs(s["r"]) * s["n"] for s in subgroup_rs) / total_n if total_n > 0 else 0.0
+        )
 
         strength_ratio = weighted_avg_strength / max(agg_strength, 0.01)
 
@@ -423,7 +442,9 @@ class CheckConfoundersTool(BaseTool):
         return {"detected": detected, "strength": round(strength, 3), "explanation": explanation}
 
     def _detect_means_paradox(
-        self, aggregate: dict, subgroups: dict[str, dict],
+        self,
+        aggregate: dict,
+        subgroups: dict[str, dict],
     ) -> dict:
         """Detect paradox in group means comparisons."""
         agg_groups = aggregate.get("groups", {})

@@ -17,7 +17,7 @@ logger = logging.getLogger("agent.memory")
 
 # Approximate token budget — leave room for system prompt + tool definitions
 SUMMARY_TRIGGER = 30  # Summarize old messages when we exceed this count
-KEEP_RECENT = 12      # Messages to keep after summarization
+KEEP_RECENT = 12  # Messages to keep after summarization
 
 # Tool results beyond this age (in messages) get compressed to their summary
 TOOL_RESULT_COMPRESS_AGE = 10  # Compress tool results older than this many messages
@@ -26,6 +26,7 @@ TOOL_RESULT_COMPRESS_AGE = 10  # Compress tool results older than this many mess
 @dataclass
 class DecisionRecord:
     """A logged decision the agent made during processing."""
+
     timestamp: str
     source_name: str
     decision: str
@@ -100,17 +101,19 @@ class AgentMemory:
         else:
             content = result
 
-        self._messages.append({
-            "role": "user",
-            "content": [
-                {
-                    "type": "tool_result",
-                    "tool_use_id": tool_use_id,
-                    "content": content,
-                    "is_error": is_error,
-                }
-            ],
-        })
+        self._messages.append(
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "tool_result",
+                        "tool_use_id": tool_use_id,
+                        "content": content,
+                        "is_error": is_error,
+                    }
+                ],
+            }
+        )
         self._compress_old_tool_results()
         self._maybe_summarize()
 
@@ -326,7 +329,15 @@ class AgentMemory:
         self._messages = [
             first_msg,
             {"role": "user", "content": summary_text},
-            {"role": "assistant", "content": [{"type": "text", "text": "Understood. I have the context from previous work. Continuing with the task."}]},
+            {
+                "role": "assistant",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": "Understood. I have the context from previous work. Continuing with the task.",
+                    }
+                ],
+            },
         ] + recent_msgs
 
         logger.debug(
@@ -342,13 +353,15 @@ class AgentMemory:
         self, source_name: str, decision: str, reasoning: str, tool_used: str = None
     ) -> None:
         """Log a decision made by the agent."""
-        self._decisions.append(DecisionRecord(
-            timestamp=datetime.now().isoformat(),
-            source_name=source_name,
-            decision=decision,
-            reasoning=reasoning,
-            tool_used=tool_used,
-        ))
+        self._decisions.append(
+            DecisionRecord(
+                timestamp=datetime.now().isoformat(),
+                source_name=source_name,
+                decision=decision,
+                reasoning=reasoning,
+                tool_used=tool_used,
+            )
+        )
 
     def log_source_summary(self, source_name: str, summary: str) -> None:
         """Store a summary for a completed source (survives context compression)."""

@@ -28,9 +28,11 @@ from dataclasses import dataclass, field
 # Building blocks — standalone Lego pieces
 # ---------------------------------------------------------------------------
 
+
 @dataclass
 class JoinKeyConfig:
     """Defines the primary join key for cross-table joins."""
+
     column_name: str = ""
     data_type: str = "STRING"
     description: str = ""
@@ -45,6 +47,7 @@ class JoinKeyConfig:
 @dataclass
 class AlternativeKeyConfig:
     """An alternative join key for tables at a non-county grain."""
+
     column_name: str
     description: str
     data_type: str = "STRING"
@@ -54,6 +57,7 @@ class AlternativeKeyConfig:
 @dataclass
 class MetadataColumnConfig:
     """Defines metadata columns automatically added to every table."""
+
     name: str
     data_type: str
     description: str
@@ -63,6 +67,7 @@ class MetadataColumnConfig:
 @dataclass
 class DataSourceHint:
     """Optional hint about a known data source — helps the agent recognize it."""
+
     name: str
     description: str
     keywords: list[str] = field(default_factory=list)
@@ -71,10 +76,11 @@ class DataSourceHint:
 @dataclass
 class SourceFileHint:
     """Describes a specific file expected within a source directory/archive."""
-    file_pattern: str   # filename substring to match (e.g., "Part C Cut Point")
-    target_table: str   # table name to create (e.g., "silver_star_cut_points")
-    description: str    # what this file contains
-    used_in: str = ""   # which themes/silver tables use this
+
+    file_pattern: str  # filename substring to match (e.g., "Part C Cut Point")
+    target_table: str  # table name to create (e.g., "silver_star_cut_points")
+    description: str  # what this file contains
+    used_in: str = ""  # which themes/silver tables use this
 
 
 @dataclass
@@ -85,16 +91,18 @@ class SourceProcessingHint:
     When multi_table=True, the agent should create a SEPARATE table for each
     file matching the hints, rather than combining everything into one table.
     """
-    source_pattern: str   # directory name pattern to match (e.g., "star_rating")
-    description: str      # overall description of this source
+
+    source_pattern: str  # directory name pattern to match (e.g., "star_rating")
+    description: str  # overall description of this source
     multi_table: bool = False  # True if this source should produce multiple tables
     files: list[SourceFileHint] = field(default_factory=list)
-    notes: str = ""       # additional processing notes
+    notes: str = ""  # additional processing notes
 
 
 # ---------------------------------------------------------------------------
 # ProjectConfig — the container that the DataEngineerAgent consumes
 # ---------------------------------------------------------------------------
+
 
 @dataclass
 class ProjectConfig:
@@ -227,9 +235,7 @@ class ProjectConfig:
             return ""
         lines = []
         for key in self.alternative_keys:
-            lines.append(
-                f"- `{key.column_name}` ({key.grain}-level): {key.description}"
-            )
+            lines.append(f"- `{key.column_name}` ({key.grain}-level): {key.description}")
         return "\n".join(lines)
 
     @property

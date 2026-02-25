@@ -60,8 +60,12 @@ class TestSaveFinding:
 
     def test_get_high_significance(self):
         tool = SaveFindingTool()
-        tool.execute(research_question_id="rq1", title="High", finding="h", evidence="e", significance="high")
-        tool.execute(research_question_id="rq1", title="Low", finding="l", evidence="e", significance="low")
+        tool.execute(
+            research_question_id="rq1", title="High", finding="h", evidence="e", significance="high"
+        )
+        tool.execute(
+            research_question_id="rq1", title="Low", finding="l", evidence="e", significance="low"
+        )
 
         high = tool.get_high_significance_findings()
         assert len(high) == 1
@@ -80,7 +84,13 @@ class TestSaveFinding:
 
     def test_findings_summary_text(self):
         tool = SaveFindingTool()
-        tool.execute(research_question_id="rq1", title="Summary Test", finding="f", evidence="e", significance="high")
+        tool.execute(
+            research_question_id="rq1",
+            title="Summary Test",
+            finding="f",
+            evidence="e",
+            significance="high",
+        )
         summary = tool.findings_summary_text()
         assert "Summary Test" in summary
         assert "HIGH" in summary.upper() or "high" in summary

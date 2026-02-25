@@ -29,7 +29,9 @@ class TestDocumentationReader:
 
     def test_read_csv_as_dict(self, tmp_path):
         dict_file = tmp_path / "data_dictionary.csv"
-        dict_file.write_text("column_name,description,type\nfips_code,County FIPS,string\nvalue,Metric value,float\n")
+        dict_file.write_text(
+            "column_name,description,type\nfips_code,County FIPS,string\nvalue,Metric value,float\n"
+        )
         tool = DocumentationReaderTool()
         result = tool.execute(file_path=str(dict_file))
         assert result.success is True

@@ -60,7 +60,8 @@ class ReadChartTool(BaseTool):
         if not os.path.isdir(self._charts_path):
             return []
         return sorted(
-            f for f in os.listdir(self._charts_path)
+            f
+            for f in os.listdir(self._charts_path)
             if f.lower().endswith((".png", ".html", ".svg"))
         )
 
@@ -92,10 +93,7 @@ class ReadChartTool(BaseTool):
             # Match by theme prefix patterns (theme0_, t0_, theme_0_)
             seq = theme_id.replace("theme_", "")
             prefixes = [f"theme{seq}_", f"t{seq}_", f"{theme_id}_"]
-            matches = [
-                c for c in all_charts
-                if any(c.lower().startswith(p) for p in prefixes)
-            ]
+            matches = [c for c in all_charts if any(c.lower().startswith(p) for p in prefixes)]
             return ToolResult(
                 success=True,
                 data={"theme": theme_id, "count": len(matches), "charts": matches},
@@ -113,9 +111,7 @@ class ReadChartTool(BaseTool):
                 for notes_file in os.listdir(self._notes_path):
                     if not notes_file.endswith("_notes.json"):
                         continue
-                    notes = self._load_notes(
-                        notes_file.replace("_notes.json", "")
-                    )
+                    notes = self._load_notes(notes_file.replace("_notes.json", ""))
                     # Notes may contain chart metadata keyed by filename
                     for key, value in notes.items():
                         if isinstance(value, dict) and filename in str(value):

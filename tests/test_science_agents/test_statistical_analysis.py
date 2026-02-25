@@ -18,6 +18,7 @@ def tool():
 # Basic correctness
 # ---------------------------------------------------------------------------
 
+
 class TestDescribe:
     def test_describe_known_data(self, tool):
         data = [{"x": v} for v in [1, 2, 3, 4, 5]]
@@ -36,9 +37,7 @@ class TestDescribe:
 class TestCorrelation:
     def test_perfect_positive(self, tool):
         data = [{"x": i, "y": i} for i in range(20)]
-        result = tool.execute(
-            analysis_type="correlation", data=data, columns=["x", "y"]
-        )
+        result = tool.execute(analysis_type="correlation", data=data, columns=["x", "y"])
         assert result.success is True
         r = result.data["correlations"][0]["r"]
         assert abs(r) > 0.99
@@ -46,18 +45,14 @@ class TestCorrelation:
     def test_no_correlation_random(self, tool):
         random.seed(42)
         data = [{"x": random.gauss(0, 1), "y": random.gauss(0, 1)} for _ in range(200)]
-        result = tool.execute(
-            analysis_type="correlation", data=data, columns=["x", "y"]
-        )
+        result = tool.execute(analysis_type="correlation", data=data, columns=["x", "y"])
         assert result.success is True
         r = result.data["correlations"][0]["r"]
         assert abs(r) < 0.2
 
     def test_negative_correlation(self, tool):
         data = [{"x": i, "y": -i} for i in range(20)]
-        result = tool.execute(
-            analysis_type="correlation", data=data, columns=["x", "y"]
-        )
+        result = tool.execute(analysis_type="correlation", data=data, columns=["x", "y"])
         assert result.success is True
         r = result.data["correlations"][0]["r"]
         assert r < -0.99
@@ -67,6 +62,7 @@ class TestCorrelation:
 # Hypothesis testing
 # ---------------------------------------------------------------------------
 
+
 class TestHypothesisTest:
     def test_ttest_identical_groups(self, tool):
         """Same constant in both groups → NOT significant.
@@ -75,8 +71,9 @@ class TestHypothesisTest:
         We add tiny noise to make it testable while keeping groups nearly identical.
         """
         random.seed(42)
-        data = [{"group": "A", "value": 100 + random.gauss(0, 0.01)} for _ in range(30)] + \
-               [{"group": "B", "value": 100 + random.gauss(0, 0.01)} for _ in range(30)]
+        data = [{"group": "A", "value": 100 + random.gauss(0, 0.01)} for _ in range(30)] + [
+            {"group": "B", "value": 100 + random.gauss(0, 0.01)} for _ in range(30)
+        ]
         result = tool.execute(
             analysis_type="hypothesis_test",
             data=data,
@@ -105,6 +102,7 @@ class TestHypothesisTest:
 # ---------------------------------------------------------------------------
 # Effect size
 # ---------------------------------------------------------------------------
+
 
 class TestEffectSize:
     def test_large_effect(self, tool, clearly_different_groups):
@@ -135,6 +133,7 @@ class TestEffectSize:
 # ---------------------------------------------------------------------------
 # BEHAVIORAL validity tests
 # ---------------------------------------------------------------------------
+
 
 class TestBehavioralValidity:
     def test_no_false_significance(self, tool, nearly_identical_groups):
@@ -208,13 +207,12 @@ class TestFalseDataDetection:
     def test_all_identical_values_no_false_correlation(self, tool):
         """All Y values identical → correlation should be 0 or undefined, not 1."""
         data = [{"x": i, "y": 42} for i in range(20)]
-        result = tool.execute(
-            analysis_type="correlation", data=data, columns=["x", "y"]
-        )
+        result = tool.execute(analysis_type="correlation", data=data, columns=["x", "y"])
         assert result.success is True
         r = result.data["correlations"][0]["r"]
         # With zero variance in Y, correlation is undefined or 0
         import math
+
         assert r == 0 or math.isnan(r), f"Constant Y should give r=0 or NaN, got {r}"
 
     def test_single_outlier_inflated_stats(self, tool):
@@ -239,15 +237,13 @@ class TestFalseDataDetection:
 
         This catches the mistake of inflating sample size by duplication.
         """
-        base = [{"group": "A", "value": 100 + random.gauss(0, 20)},
-                {"group": "B", "value": 100 + random.gauss(0, 20)}]
-        random.seed(42)
         base = [
-            {"group": "A", "value": 100 + random.gauss(0, 20)}
-            for _ in range(5)
-        ] + [
-            {"group": "B", "value": 100.5 + random.gauss(0, 20)}
-            for _ in range(5)
+            {"group": "A", "value": 100 + random.gauss(0, 20)},
+            {"group": "B", "value": 100 + random.gauss(0, 20)},
+        ]
+        random.seed(42)
+        base = [{"group": "A", "value": 100 + random.gauss(0, 20)} for _ in range(5)] + [
+            {"group": "B", "value": 100.5 + random.gauss(0, 20)} for _ in range(5)
         ]
         # With n=5 per group and 0.5 mean diff on std=20, should not be significant
         result = tool.execute(

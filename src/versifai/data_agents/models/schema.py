@@ -12,14 +12,14 @@ from dataclasses import dataclass, field
 class ColumnDefinition:
     """Definition of a single column in a target schema."""
 
-    target_name: str               # snake_case target column name
-    data_type: str                 # spark SQL type: STRING, INT, DOUBLE, DATE, etc.
-    source_name: str               # original column name in the source file
+    target_name: str  # snake_case target column name
+    data_type: str  # spark SQL type: STRING, INT, DOUBLE, DATE, etc.
+    source_name: str  # original column name in the source file
     description: str = ""
     nullable: bool = True
-    is_fips: bool = False          # True if this is a FIPS code column
-    is_metadata: bool = False      # True if this is an added metadata column
-    transform_expression: str = "" # optional SQL/Python expression to apply
+    is_fips: bool = False  # True if this is a FIPS code column
+    is_metadata: bool = False  # True if this is an added metadata column
+    transform_expression: str = ""  # optional SQL/Python expression to apply
 
     def to_dict(self) -> dict:
         return {
@@ -46,8 +46,8 @@ class TargetSchema:
     Designed by the agent after profiling a data source.
     """
 
-    source_name: str                              # e.g. "cdc_svi"
-    table_name: str                               # full table: catalog.schema.table
+    source_name: str  # e.g. "cdc_svi"
+    table_name: str  # full table: catalog.schema.table
     columns: list[ColumnDefinition] = field(default_factory=list)
     description: str = ""
     partition_columns: list[str] = field(default_factory=list)

@@ -60,33 +60,35 @@ class BaseAgent:
     def _get_tool_definitions(self) -> list[dict]:
         """Get tool definitions including ask_human pseudo-tool."""
         tools = self._registry.to_claude_tools()
-        tools.append({
-            "name": "ask_human",
-            "description": (
-                "Pause execution and ask the human operator a question. "
-                "Use when you need clarification about research direction, "
-                "metric interpretation, or domain context."
-            ),
-            "input_schema": {
-                "type": "object",
-                "properties": {
-                    "question": {
-                        "type": "string",
-                        "description": "The question to ask the operator.",
+        tools.append(
+            {
+                "name": "ask_human",
+                "description": (
+                    "Pause execution and ask the human operator a question. "
+                    "Use when you need clarification about research direction, "
+                    "metric interpretation, or domain context."
+                ),
+                "input_schema": {
+                    "type": "object",
+                    "properties": {
+                        "question": {
+                            "type": "string",
+                            "description": "The question to ask the operator.",
+                        },
+                        "context": {
+                            "type": "string",
+                            "description": "Additional context to help the operator answer.",
+                        },
+                        "options": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "Optional list of suggested answers.",
+                        },
                     },
-                    "context": {
-                        "type": "string",
-                        "description": "Additional context to help the operator answer.",
-                    },
-                    "options": {
-                        "type": "array",
-                        "items": {"type": "string"},
-                        "description": "Optional list of suggested answers.",
-                    },
+                    "required": ["question"],
                 },
-                "required": ["question"],
-            },
-        })
+            }
+        )
         return tools
 
     # ------------------------------------------------------------------
@@ -97,9 +99,7 @@ class BaseAgent:
         """Prepend user instructions to a phase prompt if set."""
         instructions = getattr(self, "_instructions", "")
         if instructions:
-            return (
-                f"## Operator Instructions\n{instructions}\n\n---\n\n{prompt}"
-            )
+            return f"## Operator Instructions\n{instructions}\n\n---\n\n{prompt}"
         return prompt
 
     # ------------------------------------------------------------------
@@ -171,26 +171,24 @@ class BaseAgent:
                             context=tool_input.get("context", ""),
                             options=tool_input.get("options"),
                         )
-                        self._memory.add_tool_result(
-                            tool_use_id, result_str or "(no response)"
-                        )
-                        self._display.tool_result(
-                            tool_name, result_str or "(no response)"
-                        )
+                        self._memory.add_tool_result(tool_use_id, result_str or "(no response)")
+                        self._display.tool_result(tool_name, result_str or "(no response)")
                         continue
 
                     # PRE-CHECK: Detect repeated missing-parameter failures
-                    intercept = self._check_missing_param_pattern(
-                        tool_name, tool_input
-                    )
+                    intercept = self._check_missing_param_pattern(tool_name, tool_input)
                     if intercept:
                         result_str = intercept
                         self._consecutive_errors += 1
                         self._display.tool_result(
-                            tool_name, intercept[:400], is_error=True,
+                            tool_name,
+                            intercept[:400],
+                            is_error=True,
                         )
                         self._memory.add_tool_result(
-                            tool_use_id, result_str, is_error=True,
+                            tool_use_id,
+                            result_str,
+                            is_error=True,
                         )
                         continue
 
@@ -232,7 +230,8 @@ class BaseAgent:
                         image_b64 = self._read_chart_image(result.image_path)
 
                     self._memory.add_tool_result(
-                        tool_use_id, result_str,
+                        tool_use_id,
+                        result_str,
                         is_error=not result.success,
                         image_base64=image_b64,
                     )
@@ -256,7 +255,9 @@ class BaseAgent:
     # ------------------------------------------------------------------
 
     def _check_missing_param_pattern(
-        self, tool_name: str, tool_input: dict,
+        self,
+        tool_name: str,
+        tool_input: dict,
     ) -> str | None:
         """
         Detect when the LLM keeps calling a tool without a required parameter.
@@ -291,9 +292,7 @@ class BaseAgent:
             )
 
         repeated = {
-            p: count
-            for p, count in self._missing_param_tracker[tool_name].items()
-            if count >= 2
+            p: count for p, count in self._missing_param_tracker[tool_name].items() if count >= 2
         }
 
         if not repeated:

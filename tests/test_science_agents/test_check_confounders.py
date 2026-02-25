@@ -68,9 +68,8 @@ class TestSimpsonsParadox:
         )
         assert result.success is True
         result_data = result.data
-        has_paradox = (
-            result_data.get("paradox_detected", False)
-            or result_data.get("simpsons_paradox", False)
+        has_paradox = result_data.get("paradox_detected", False) or result_data.get(
+            "simpsons_paradox", False
         )
         assert not has_paradox, "No paradox should be detected when trends are consistent"
 

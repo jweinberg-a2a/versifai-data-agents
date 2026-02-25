@@ -52,7 +52,7 @@ class TestValueRanges:
         data = [
             {"pct_enrolled": 50},
             {"pct_enrolled": 150},  # >100% should be flagged
-            {"pct_enrolled": -5},   # negative should be flagged
+            {"pct_enrolled": -5},  # negative should be flagged
         ]
         result = tool.execute(
             check_type="value_ranges",
@@ -60,7 +60,9 @@ class TestValueRanges:
             column_ranges={"pct_enrolled": {"min": 0, "max": 100}},
         )
         assert result.success is True
-        has_issues = result.data.get("issues_found", False) or len(result.data.get("details", [])) > 0
+        has_issues = (
+            result.data.get("issues_found", False) or len(result.data.get("details", [])) > 0
+        )
         assert has_issues, "Out-of-range values should be caught"
 
     def test_valid_ranges_pass(self, tool):
@@ -114,8 +116,7 @@ class TestJoinCompleteness:
         )
         assert result.success is True
         has_issue = (
-            result.data.get("issues_found", False)
-            or result.data.get("match_rate_pct", 100) < 80
+            result.data.get("issues_found", False) or result.data.get("match_rate_pct", 100) < 80
         )
         assert has_issue, "50% match rate should be flagged"
 

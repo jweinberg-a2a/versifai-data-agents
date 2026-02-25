@@ -11,6 +11,7 @@ from versifai.core.tools.registry import ToolRegistry
 # Concrete tool for testing
 # ---------------------------------------------------------------------------
 
+
 class _EchoTool(BaseTool):
     """Minimal concrete tool that echoes its input."""
 
@@ -59,6 +60,7 @@ class _FailingTool(BaseTool):
 # ToolResult tests
 # ---------------------------------------------------------------------------
 
+
 class TestToolResult:
     def test_success_result(self):
         result = ToolResult(success=True, data={"key": "value"})
@@ -98,6 +100,7 @@ class TestToolResult:
 # ---------------------------------------------------------------------------
 # BaseTool tests
 # ---------------------------------------------------------------------------
+
 
 class TestBaseTool:
     def test_tool_properties(self):
@@ -140,6 +143,7 @@ class TestBaseTool:
 # ---------------------------------------------------------------------------
 # ToolRegistry tests
 # ---------------------------------------------------------------------------
+
 
 class TestToolRegistry:
     def test_register_and_get(self):

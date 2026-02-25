@@ -159,40 +159,46 @@ class LiteratureReviewTool(BaseTool):
         # Try known reference URLs from config first
         reference_matches = self._match_references(query)
         if reference_matches:
-            results.append({
-                "source": "configured_references",
-                "articles": reference_matches,
-            })
+            results.append(
+                {
+                    "source": "configured_references",
+                    "articles": reference_matches,
+                }
+            )
 
         # Search via DuckDuckGo HTML (no API key needed)
         try:
             web_results = self._search_duckduckgo(query, max_results)
             if web_results:
-                results.append({
-                    "source": "web_search",
-                    "articles": web_results,
-                })
+                results.append(
+                    {
+                        "source": "web_search",
+                        "articles": web_results,
+                    }
+                )
         except Exception as e:
             logger.warning(f"Web search failed: {e}")
-            results.append({
-                "source": "web_search",
-                "error": str(e),
-            })
+            results.append(
+                {
+                    "source": "web_search",
+                    "error": str(e),
+                }
+            )
 
         # Search Google Scholar
         try:
             scholar_results = self._search_scholar(query, max_results)
             if scholar_results:
-                results.append({
-                    "source": "google_scholar",
-                    "articles": scholar_results,
-                })
+                results.append(
+                    {
+                        "source": "google_scholar",
+                        "articles": scholar_results,
+                    }
+                )
         except Exception as e:
             logger.warning(f"Scholar search failed: {e}")
 
-        total_articles = sum(
-            len(r.get("articles", [])) for r in results if "articles" in r
-        )
+        total_articles = sum(len(r.get("articles", [])) for r in results if "articles" in r)
 
         if total_articles == 0:
             return ToolResult(
@@ -217,7 +223,9 @@ class LiteratureReviewTool(BaseTool):
         for ref in self._cfg.research_references:
             # Check if any keywords match
             keyword_match = any(kw.lower() in query_lower for kw in ref.keywords)
-            title_match = any(word in ref.title.lower() for word in query_lower.split() if len(word) > 3)
+            title_match = any(
+                word in ref.title.lower() for word in query_lower.split() if len(word) > 3
+            )
             if keyword_match or title_match:
                 entry = {"title": ref.title, "description": ref.description}
                 if ref.url:
@@ -236,23 +244,30 @@ class LiteratureReviewTool(BaseTool):
         articles = []
         try:
             from bs4 import BeautifulSoup
+
             soup = BeautifulSoup(resp.text, "html.parser")
             for result in soup.select(".result")[:max_results]:
                 title_el = result.select_one(".result__title a")
                 snippet_el = result.select_one(".result__snippet")
                 if title_el:
-                    articles.append({
-                        "title": title_el.get_text(strip=True),
-                        "url": title_el.get("href", ""),
-                        "snippet": snippet_el.get_text(strip=True) if snippet_el else "",
-                    })
+                    articles.append(
+                        {
+                            "title": title_el.get_text(strip=True),
+                            "url": title_el.get("href", ""),
+                            "snippet": snippet_el.get_text(strip=True) if snippet_el else "",
+                        }
+                    )
         except ImportError:
             # BeautifulSoup not available — extract with regex
-            for match in re.finditer(r'class="result__title".*?<a.*?href="(.*?)".*?>(.*?)</a>', resp.text, re.DOTALL):
-                articles.append({
-                    "title": re.sub(r"<.*?>", "", match.group(2)).strip(),
-                    "url": match.group(1),
-                })
+            for match in re.finditer(
+                r'class="result__title".*?<a.*?href="(.*?)".*?>(.*?)</a>', resp.text, re.DOTALL
+            ):
+                articles.append(
+                    {
+                        "title": re.sub(r"<.*?>", "", match.group(2)).strip(),
+                        "url": match.group(1),
+                    }
+                )
                 if len(articles) >= max_results:
                     break
 
@@ -275,18 +290,21 @@ class LiteratureReviewTool(BaseTool):
         articles = []
         try:
             from bs4 import BeautifulSoup
+
             soup = BeautifulSoup(resp.text, "html.parser")
             for result in soup.select(".gs_ri")[:max_results]:
                 title_el = result.select_one(".gs_rt a")
                 snippet_el = result.select_one(".gs_rs")
                 meta_el = result.select_one(".gs_a")
                 if title_el:
-                    articles.append({
-                        "title": title_el.get_text(strip=True),
-                        "url": title_el.get("href", ""),
-                        "snippet": snippet_el.get_text(strip=True) if snippet_el else "",
-                        "citation": meta_el.get_text(strip=True) if meta_el else "",
-                    })
+                    articles.append(
+                        {
+                            "title": title_el.get_text(strip=True),
+                            "url": title_el.get("href", ""),
+                            "snippet": snippet_el.get_text(strip=True) if snippet_el else "",
+                            "citation": meta_el.get_text(strip=True) if meta_el else "",
+                        }
+                    )
         except ImportError:
             pass
 
@@ -308,7 +326,11 @@ class LiteratureReviewTool(BaseTool):
     # ------------------------------------------------------------------
 
     def _compare_findings(
-        self, own_finding, published_finding, source_title, **kwargs,
+        self,
+        own_finding,
+        published_finding,
+        source_title,
+        **kwargs,
     ) -> ToolResult:
         if not own_finding:
             return ToolResult(success=False, error="'own_finding' is required.")

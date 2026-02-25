@@ -41,7 +41,6 @@ def _format_table_schemas(
     return "\n".join(lines)
 
 
-
 def build_scientist_system_prompt(
     cfg: ResearchConfig,
     table_schemas: dict[str, list[tuple[str, str]]] | None = None,
@@ -477,7 +476,9 @@ def build_orientation_prompt(
     # Build the available tables section
     if available_tables:
         # Separate bronze tables from silver/catalog tables
-        bronze = sorted(t for t in available_tables if not t.startswith("silver_") and t != "data_catalog")
+        bronze = sorted(
+            t for t in available_tables if not t.startswith("silver_") and t != "data_catalog"
+        )
         silver = sorted(t for t in available_tables if t.startswith("silver_"))
         table_list = "\n".join(f"- `{proj.full_schema}.{t}`" for t in bronze)
         if silver:
@@ -511,8 +512,7 @@ the **Table Schemas** section of your system prompt.
     themes = sorted(cfg.analysis_themes, key=lambda t: t.sequence)
     if themes:
         themes_section = "\n".join(
-            f"- **Theme {t.sequence}: {t.title}** [{t.analysis_type}]: "
-            f"{t.question[:120]}"
+            f"- **Theme {t.sequence}: {t.title}** [{t.analysis_type}]: {t.question[:120]}"
             for t in themes
         )
     else:
@@ -583,16 +583,23 @@ def build_silver_construction_prompt(
     if available_tables:
         present = [t for t in dataset_spec.source_tables if t.lower() in available_tables]
         missing = [t for t in dataset_spec.source_tables if t.lower() not in available_tables]
-        tables_section = "**Available**: " + ", ".join(f"`{t}`" for t in present) if present else "**Available**: (none)"
+        tables_section = (
+            "**Available**: " + ", ".join(f"`{t}`" for t in present)
+            if present
+            else "**Available**: (none)"
+        )
         if missing:
             tables_section += (
-                "\n**Not loaded**: " + ", ".join(f"`{t}`" for t in missing)
+                "\n**Not loaded**: "
+                + ", ".join(f"`{t}`" for t in missing)
                 + "\n\nBuild this silver dataset using the available tables. "
                 "Adapt the join and column selection to what is present — "
                 "include as much data as possible."
             )
     else:
-        tables_section = "**Source tables**: " + ", ".join(f"`{t}`" for t in dataset_spec.source_tables)
+        tables_section = "**Source tables**: " + ", ".join(
+            f"`{t}`" for t in dataset_spec.source_tables
+        )
 
     # Data notes — domain-specific hints from the config
     data_notes_section = ""
@@ -759,7 +766,8 @@ value ranges for numeric columns, and any data quality notes.
 
 
 def build_analysis_prompt(
-    cfg: ResearchConfig, question: ResearchQuestion,
+    cfg: ResearchConfig,
+    question: ResearchQuestion,
 ) -> str:
     """Phase 3: Investigate a specific research question."""
     proj = cfg.project
@@ -775,7 +783,6 @@ def build_analysis_prompt(
 3. Create visualizations showing the landscape: distributions, geographic
    patterns, and breakdowns by relevant categories.
 4. Establish the baselines against which all other analyses will be compared.""",
-
         "comparative": """\
 **Comparative Analysis Approach**:
 1. Define comparison groups (e.g., SVI quartiles, rural vs urban). Use data-
@@ -792,7 +799,6 @@ def build_analysis_prompt(
    MA penetration between SVI quartiles is plausible; a 50% difference
    warrants investigation.
 6. Fit a regression model using `fit_model` to control for confounders.""",
-
         "correlation": """\
 **Correlation Analysis Approach**:
 1. Start with `statistical_analysis` (analysis_type='distribution') to check
@@ -807,7 +813,6 @@ def build_analysis_prompt(
    'gradient_boosting' and compare R² with linear regression.
 6. Build counterfactuals: use `fit_model` with model_type='counterfactual' to
    estimate what outcomes would look like under different conditions.""",
-
         "trend": """\
 **Trend Analysis Approach**:
 1. Use `fit_model` with model_type='time_series' to detect trends, assess
@@ -821,7 +826,6 @@ def build_analysis_prompt(
 5. Forecast with uncertainty bounds to project where disparities are heading.
 6. Build counterfactual scenarios: what if vulnerable counties had grown at
    the same rate as non-vulnerable counties?""",
-
         "simulation": """\
 **Simulation Analysis Approach**:
 1. VALIDATE FIRST: Replicate known published outputs (e.g., CMS cut points)
@@ -925,9 +929,11 @@ def build_theme_analysis_prompt(
         missing = [t for t in theme.required_tables if t.lower() not in available_tables]
         # Also note other catalog tables not in the required list
         other_tables = sorted(
-            t for t in available_tables
+            t
+            for t in available_tables
             if t.lower() not in {r.lower() for r in theme.required_tables}
-            and t != "data_catalog" and not t.startswith("silver_")
+            and t != "data_catalog"
+            and not t.startswith("silver_")
         )
         tables_section = f"**Primary tables for this theme**: {', '.join(f'`{t}`' for t in present) if present else '(none available)'}"
         if missing:
@@ -952,9 +958,7 @@ def build_theme_analysis_prompt(
     )
 
     # Format the analysis steps
-    steps_text = "\n".join(
-        f"   {i}. {step}" for i, step in enumerate(theme.analysis_steps, 1)
-    )
+    steps_text = "\n".join(f"   {i}. {step}" for i, step in enumerate(theme.analysis_steps, 1))
 
     # Format the signature visualization and notes
     if theme.signature_visualization:
@@ -979,7 +983,6 @@ def build_theme_analysis_prompt(
 - Compute summary statistics for key variables using `statistical_analysis`.
 - Check distributions — are variables normal, skewed, multimodal?
 - Create baseline visualizations showing the landscape.""",
-
         "comparative": """\
 **Method Guidance (Comparative)**:
 - Define comparison groups using data-driven breakpoints (e.g., SVI quartiles).
@@ -992,7 +995,6 @@ def build_theme_analysis_prompt(
   Create a posterior distribution plot for the key comparison.
 - Fit regression models via `fit_model` to control for confounders.
 - Sense-check: compare magnitudes against published research via `review_literature`.""",
-
         "correlation": """\
 **Method Guidance (Correlation)**:
 - Check distributions to choose Pearson vs. Spearman correlation.
@@ -1004,14 +1006,12 @@ def build_theme_analysis_prompt(
 - Check for confounders: fit `fit_model` controlling for population, urbanicity.
 - Look for non-linear relationships with random_forest or gradient_boosting.
 - Build counterfactuals where appropriate using model_type='counterfactual'.""",
-
         "trend": """\
 **Method Guidance (Trend)**:
 - Use `fit_model` with model_type='time_series' to detect trends.
 - Check if trends differ by subgroup (e.g., high-SVI vs. low-SVI).
 - Forecast with uncertainty bounds.
 - Build counterfactual scenarios: what if trajectories had been equalized?""",
-
         "simulation": """\
 **Method Guidance (Simulation)**:
 - This theme replicates and extends a known algorithm (CMS Tukey+clustering pipeline).
@@ -1228,14 +1228,14 @@ def build_validation_prompt(
     notes_block = theme_notes.strip() if theme_notes else "(No notes)"
 
     # Analysis steps from config
-    steps_text = "\n".join(
-        f"   {i}. {step}" for i, step in enumerate(theme.analysis_steps, 1)
-    )
+    steps_text = "\n".join(f"   {i}. {step}" for i, step in enumerate(theme.analysis_steps, 1))
 
     # Tables to produce from config
-    tables_to_produce = "\n".join(
-        f"   - {t}" for t in theme.tables_to_produce
-    ) if theme.tables_to_produce else "(None specified)"
+    tables_to_produce = (
+        "\n".join(f"   - {t}" for t in theme.tables_to_produce)
+        if theme.tables_to_produce
+        else "(None specified)"
+    )
 
     # Signature viz from config
     if theme.signature_visualization:

@@ -47,9 +47,9 @@ def pad_fips_series(series: pd.Series, width: int = 5) -> pd.Series:
     """
     s = series.astype(str).str.strip()
     # Remove trailing .0 / .00 etc (from float columns: "1001.0" → "1001")
-    s = s.str.replace(r'\.0+$', '', regex=True)
+    s = s.str.replace(r"\.0+$", "", regex=True)
     # Mask non-numeric and empty/null-like values
-    is_valid = s.str.match(r'^\d+$') & ~s.isin(['', 'nan', 'None', 'NaN', '<NA>'])
+    is_valid = s.str.match(r"^\d+$") & ~s.isin(["", "nan", "None", "NaN", "<NA>"])
     # Zero-pad
     s = s.str.zfill(width)
     # Replace invalid entries with None

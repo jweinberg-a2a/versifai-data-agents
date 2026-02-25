@@ -51,9 +51,7 @@ class CatalogWriterTool(BaseTool):
                 },
                 "table_name": {
                     "type": "string",
-                    "description": (
-                        "Fully qualified table name (catalog.schema.table)."
-                    ),
+                    "description": ("Fully qualified table name (catalog.schema.table)."),
                 },
                 "mode": {
                     "type": "string",
@@ -94,7 +92,11 @@ class CatalogWriterTool(BaseTool):
         # ── Large data path: parquet batches exist from auto-flush ────
         if flushed_rows > 0:
             return self._write_from_flushed_parquet(
-                flush_state, df, table_name, mode, source_name,
+                flush_state,
+                df,
+                table_name,
+                mode,
+                source_name,
             )
 
         # ── Small data path: everything fits in memory, no flushes ────
@@ -107,7 +109,11 @@ class CatalogWriterTool(BaseTool):
     DIRECT_WRITE_MAX_ROWS = 2_000_000
 
     def _write_direct(
-        self, df: pd.DataFrame, table_name: str, mode: str, source_name: str,
+        self,
+        df: pd.DataFrame,
+        table_name: str,
+        mode: str,
+        source_name: str,
     ) -> ToolResult:
         """Write datasets that had no auto-flush during processing.
 
@@ -129,17 +135,10 @@ class CatalogWriterTool(BaseTool):
 
         spark_df = spark.createDataFrame(df)
 
-        writer = (
-            spark_df.write
-            .format("delta")
-            .mode(mode)
-            .option("overwriteSchema", "true")
-        )
+        writer = spark_df.write.format("delta").mode(mode).option("overwriteSchema", "true")
         writer.saveAsTable(table_name)
 
-        result_count = spark.sql(
-            f"SELECT COUNT(*) as cnt FROM {table_name}"
-        ).collect()[0]["cnt"]
+        result_count = spark.sql(f"SELECT COUNT(*) as cnt FROM {table_name}").collect()[0]["cnt"]
 
         return ToolResult(
             success=True,
@@ -158,7 +157,11 @@ class CatalogWriterTool(BaseTool):
         )
 
     def _write_via_temp_parquet(
-        self, df: pd.DataFrame, table_name: str, mode: str, source_name: str,
+        self,
+        df: pd.DataFrame,
+        table_name: str,
+        mode: str,
+        source_name: str,
     ) -> ToolResult:
         """Write a large in-memory DataFrame via a temp parquet file.
 
@@ -180,9 +183,12 @@ class CatalogWriterTool(BaseTool):
             df[col] = s.where(~mask, other=None)
 
         try:
-            df.to_parquet(parquet_path, index=False, coerce_timestamps='us', allow_truncated_timestamps=True)
+            df.to_parquet(
+                parquet_path, index=False, coerce_timestamps="us", allow_truncated_timestamps=True
+            )
         except Exception as e:
             import traceback
+
             return ToolResult(
                 success=False,
                 error=(
@@ -193,10 +199,15 @@ class CatalogWriterTool(BaseTool):
 
         try:
             result = self._write_from_parquet(
-                staging_dir, table_name, mode, source_name, row_count,
+                staging_dir,
+                table_name,
+                mode,
+                source_name,
+                row_count,
             )
         except Exception as e:
             import traceback
+
             return ToolResult(
                 success=False,
                 error=(
@@ -213,8 +224,12 @@ class CatalogWriterTool(BaseTool):
         return result
 
     def _write_from_flushed_parquet(
-        self, flush_state: dict, remaining_df: pd.DataFrame | None,
-        table_name: str, mode: str, source_name: str,
+        self,
+        flush_state: dict,
+        remaining_df: pd.DataFrame | None,
+        table_name: str,
+        mode: str,
+        source_name: str,
     ) -> ToolResult:
         """Write large datasets from auto-flushed parquet batches."""
         staging_dir = flush_state["staging_dir"]
@@ -233,17 +248,24 @@ class CatalogWriterTool(BaseTool):
                 mask = s.isin(["nan", "None", "<NA>", "NaT", ""])
                 remaining_df[col] = s.where(~mask, other=None)
 
-            remaining_df.to_parquet(parquet_path, index=False, coerce_timestamps='us', allow_truncated_timestamps=True)
+            remaining_df.to_parquet(
+                parquet_path, index=False, coerce_timestamps="us", allow_truncated_timestamps=True
+            )
 
         total_rows = flushed_rows + remaining_rows
 
         # Create Delta table from ALL parquet files via Spark SQL
         try:
             result = self._write_from_parquet(
-                staging_dir, table_name, mode, source_name, total_rows,
+                staging_dir,
+                table_name,
+                mode,
+                source_name,
+                total_rows,
             )
         except Exception as e:
             import traceback
+
             return ToolResult(
                 success=False,
                 error=(
@@ -271,8 +293,12 @@ class CatalogWriterTool(BaseTool):
             pass  # directory not empty or already removed
 
     def _write_from_parquet(
-        self, staging_dir: str, table_name: str, mode: str,
-        source_name: str, total_rows: int,
+        self,
+        staging_dir: str,
+        table_name: str,
+        mode: str,
+        source_name: str,
+        total_rows: int,
     ) -> ToolResult:
         """Create a Delta table from all parquet files in a staging directory.
 
@@ -291,20 +317,14 @@ class CatalogWriterTool(BaseTool):
         if mode == "overwrite":
             spark.sql(f"DROP TABLE IF EXISTS {table_name}")
             spark.sql(
-                f"CREATE TABLE {table_name} USING DELTA "
-                f"AS SELECT * FROM parquet.`{parquet_glob}`"
+                f"CREATE TABLE {table_name} USING DELTA AS SELECT * FROM parquet.`{parquet_glob}`"
             )
         else:
             # append mode
-            spark.sql(
-                f"INSERT INTO {table_name} "
-                f"SELECT * FROM parquet.`{parquet_glob}`"
-            )
+            spark.sql(f"INSERT INTO {table_name} SELECT * FROM parquet.`{parquet_glob}`")
 
         # Verify
-        result_count = spark.sql(
-            f"SELECT COUNT(*) as cnt FROM {table_name}"
-        ).collect()[0]["cnt"]
+        result_count = spark.sql(f"SELECT COUNT(*) as cnt FROM {table_name}").collect()[0]["cnt"]
 
         return ToolResult(
             success=True,
@@ -369,6 +389,7 @@ class ExecuteSQLTool(BaseTool):
         # Try Spark first (preferred in Databricks notebooks)
         try:
             from pyspark.sql import SparkSession
+
             spark = SparkSession.getActiveSession()
             if spark:
                 # Safety: disable broadcast joins for DDL/CTAS to prevent
@@ -383,9 +404,12 @@ class ExecuteSQLTool(BaseTool):
                     elapsed = time.time() - t0
                     # Detect OOM / driver crash patterns
                     oom_keywords = [
-                        "OutOfMemoryError", "Java heap space",
-                        "GC overhead limit", "Container killed",
-                        "ExecutorLostFailure", "SparkException",
+                        "OutOfMemoryError",
+                        "Java heap space",
+                        "GC overhead limit",
+                        "Container killed",
+                        "ExecutorLostFailure",
+                        "SparkException",
                     ]
                     if any(kw.lower() in err_msg.lower() for kw in oom_keywords):
                         return ToolResult(
@@ -417,6 +441,7 @@ class ExecuteSQLTool(BaseTool):
                 # Instead, create the pool manually and shut down with wait=False
                 # on timeout so the agent can continue immediately.
                 import concurrent.futures
+
                 timeout = self.QUERY_TIMEOUT_SECONDS
 
                 def _collect_ddl():
@@ -652,6 +677,7 @@ class ListCatalogTablesTool(BaseTool):
         # Delegate to ExecuteSQLTool logic
         try:
             from pyspark.sql import SparkSession
+
             spark = SparkSession.getActiveSession()
             if spark:
                 result = spark.sql(sql)

@@ -42,6 +42,7 @@ from .conftest import CMS_CITATION, requires_llm
 # Minimal test agent — real LLM, real tools, focused prompt
 # ---------------------------------------------------------------------------
 
+
 class ReviewerAgent(BaseAgent):
     """Lightweight agent for integration testing.
 
@@ -78,14 +79,15 @@ searching for more issues after documenting the primary error."""
     def __init__(self, tools: list, model: str | None = None) -> None:
         display = AgentDisplay()
         memory = AgentMemory()
-        model = model or os.environ.get(
-            "VERSIFAI_TEST_MODEL", "claude-haiku-4-5-20251001"
-        )
+        model = model or os.environ.get("VERSIFAI_TEST_MODEL", "claude-haiku-4-5-20251001")
         llm = LLMClient(model=model)
         registry = ToolRegistry()
 
         super().__init__(
-            display=display, memory=memory, llm=llm, registry=registry,
+            display=display,
+            memory=memory,
+            llm=llm,
+            registry=registry,
         )
 
         for tool in tools:
@@ -102,6 +104,7 @@ searching for more issues after documenting the primary error."""
 # Helper — broad semantic check
 # ---------------------------------------------------------------------------
 
+
 def _response_contains_any(response: str, keywords: list[str]) -> bool:
     """Check if the response contains any of the given keywords (case-insensitive)."""
     lower = response.lower()
@@ -112,13 +115,16 @@ def _response_contains_any(response: str, keywords: list[str]) -> bool:
 # Test class 1: Misattributed citation (CMS → CDC)
 # ===================================================================
 
+
 @requires_llm
 @pytest.mark.integration
 class TestAgentDetectsMisattribution:
     """The agent must catch when CMS Medicare data is attributed to the CDC."""
 
     def test_catches_cms_data_attributed_to_cdc(
-        self, review_tools, findings_cms_misattributed_to_cdc,
+        self,
+        review_tools,
+        findings_cms_misattributed_to_cdc,
     ):
         """AGENT BEHAVIORAL: CMS data wrongly cited as CDC → agent flags it.
 
@@ -147,11 +153,22 @@ class TestAgentDetectsMisattribution:
         response = agent.review(prompt, max_turns=10)
 
         # The agent should identify CMS as the correct source
-        assert _response_contains_any(response, [
-            "CMS", "Centers for Medicare", "misattribut", "incorrect",
-            "wrong source", "not CDC", "not the CDC", "should be CMS",
-            "incorrectly attributed", "error", "inaccurate",
-        ]), (
+        assert _response_contains_any(
+            response,
+            [
+                "CMS",
+                "Centers for Medicare",
+                "misattribut",
+                "incorrect",
+                "wrong source",
+                "not CDC",
+                "not the CDC",
+                "should be CMS",
+                "incorrectly attributed",
+                "error",
+                "inaccurate",
+            ],
+        ), (
             f"Agent failed to detect CMS data misattributed to CDC.\n"
             f"Agent response:\n{response[:800]}"
         )
@@ -161,13 +178,16 @@ class TestAgentDetectsMisattribution:
 # Test class 2: Confused programs (Medicare vs. Medicaid)
 # ===================================================================
 
+
 @requires_llm
 @pytest.mark.integration
 class TestAgentDetectsProgramConfusion:
     """The agent must catch when Medicare and Medicaid are confused."""
 
     def test_catches_medicare_medicaid_swap(
-        self, review_tools, findings_medicare_medicaid_confused,
+        self,
+        review_tools,
+        findings_medicare_medicaid_confused,
     ):
         """AGENT BEHAVIORAL: 65.7M labeled as Medicaid seniors → agent flags it.
 
@@ -195,20 +215,30 @@ class TestAgentDetectsProgramConfusion:
         response = agent.review(prompt, max_turns=10)
 
         # The agent should flag the Medicare/Medicaid confusion
-        assert _response_contains_any(response, [
-            "Medicare", "not Medicaid", "confusion", "incorrect program",
-            "mixed up", "wrong program", "should be Medicare",
-            "65.7 million is Medicare", "Medicaid is", "means-tested",
-            "different program", "error", "inaccurate",
-        ]), (
-            f"Agent failed to detect Medicare/Medicaid confusion.\n"
-            f"Agent response:\n{response[:800]}"
-        )
+        assert _response_contains_any(
+            response,
+            [
+                "Medicare",
+                "not Medicaid",
+                "confusion",
+                "incorrect program",
+                "mixed up",
+                "wrong program",
+                "should be Medicare",
+                "65.7 million is Medicare",
+                "Medicaid is",
+                "means-tested",
+                "different program",
+                "error",
+                "inaccurate",
+            ],
+        ), f"Agent failed to detect Medicare/Medicaid confusion.\nAgent response:\n{response[:800]}"
 
 
 # ===================================================================
 # Test class 3: Contradictory statistics (overclaiming weak results)
 # ===================================================================
+
 
 @requires_llm
 @pytest.mark.integration
@@ -216,7 +246,9 @@ class TestAgentDetectsStatisticalOverclaiming:
     """The agent must catch when narrative text wildly overclaims weak stats."""
 
     def test_catches_inflated_narrative_with_p_073(
-        self, review_tools, findings_inflated_text_weak_stats,
+        self,
+        review_tools,
+        findings_inflated_text_weak_stats,
     ):
         """AGENT BEHAVIORAL: Text says "OVERWHELMING PROOF" but p=0.73 → agent flags it.
 
@@ -248,12 +280,27 @@ class TestAgentDetectsStatisticalOverclaiming:
         response = agent.review(prompt, max_turns=10)
 
         # The agent should flag the contradiction
-        assert _response_contains_any(response, [
-            "WEAK", "not significant", "0.73", "contradicts",
-            "does not match", "doesn't match", "overstated", "inflated",
-            "misleading", "overclaim", "negligible", "not supported",
-            "no evidence", "exaggerat", "mismatch", "unsupported",
-        ]), (
+        assert _response_contains_any(
+            response,
+            [
+                "WEAK",
+                "not significant",
+                "0.73",
+                "contradicts",
+                "does not match",
+                "doesn't match",
+                "overstated",
+                "inflated",
+                "misleading",
+                "overclaim",
+                "negligible",
+                "not supported",
+                "no evidence",
+                "exaggerat",
+                "mismatch",
+                "unsupported",
+            ],
+        ), (
             f"Agent failed to detect narrative overclaiming with p=0.73.\n"
             f"Agent response:\n{response[:800]}"
         )
@@ -263,13 +310,16 @@ class TestAgentDetectsStatisticalOverclaiming:
 # Test class 4: Wrong enrollment number
 # ===================================================================
 
+
 @requires_llm
 @pytest.mark.integration
 class TestAgentDetectsWrongNumbers:
     """The agent must catch when a well-known statistic is reported incorrectly."""
 
     def test_catches_wrong_medicare_enrollment_count(
-        self, review_tools, findings_wrong_enrollment_number,
+        self,
+        review_tools,
+        findings_wrong_enrollment_number,
     ):
         """AGENT BEHAVIORAL: 45.2M cited instead of ~65.7M → agent flags it.
 
@@ -298,11 +348,24 @@ class TestAgentDetectsWrongNumbers:
         response = agent.review(prompt, max_turns=10)
 
         # The agent should catch the 45.2M vs 65.7M discrepancy
-        assert _response_contains_any(response, [
-            "65.7", "65,7", "incorrect", "discrepancy", "does not match",
-            "doesn't match", "wrong", "inaccurate", "off by",
-            "should be", "actual", "differs", "mismatch",
-        ]), (
+        assert _response_contains_any(
+            response,
+            [
+                "65.7",
+                "65,7",
+                "incorrect",
+                "discrepancy",
+                "does not match",
+                "doesn't match",
+                "wrong",
+                "inaccurate",
+                "off by",
+                "should be",
+                "actual",
+                "differs",
+                "mismatch",
+            ],
+        ), (
             f"Agent failed to detect wrong enrollment number (45.2M vs 65.7M).\n"
             f"Agent response:\n{response[:800]}"
         )
@@ -325,7 +388,9 @@ class TestAgentWebVerification:
     """The agent uses web_search to verify a citation against the real source."""
 
     def test_verifies_cms_source_via_web_search(
-        self, tmp_path, findings_cms_misattributed_to_cdc,
+        self,
+        tmp_path,
+        findings_cms_misattributed_to_cdc,
     ):
         """AGENT BEHAVIORAL: Agent fetches CMS URL to confirm source attribution.
 
@@ -388,10 +453,16 @@ class TestAgentWebVerification:
         response = agent.review(prompt, max_turns=12)
 
         # The agent should reference CMS as the correct source
-        assert _response_contains_any(response, [
-            "CMS", "Centers for Medicare",
-            "misattribut", "incorrect", "wrong source",
-        ]), (
+        assert _response_contains_any(
+            response,
+            [
+                "CMS",
+                "Centers for Medicare",
+                "misattribut",
+                "incorrect",
+                "wrong source",
+            ],
+        ), (
             f"Agent failed to verify CMS as correct source via web search.\n"
             f"Agent response:\n{response[:800]}"
         )

@@ -53,9 +53,21 @@ class TestWriteNarrative:
         output_dir = tmp_path / "output"
         output_dir.mkdir()
         tool = WriteNarrativeTool(output_path=str(output_dir))
-        tool.execute(operation="write_section", section_id="intro", content="Introduction content", sequence=1)
-        tool.execute(operation="write_section", section_id="results", content="Results content", sequence=2)
-        tool.execute(operation="write_section", section_id="conclusion", content="Conclusion content", sequence=3)
+        tool.execute(
+            operation="write_section",
+            section_id="intro",
+            content="Introduction content",
+            sequence=1,
+        )
+        tool.execute(
+            operation="write_section", section_id="results", content="Results content", sequence=2
+        )
+        tool.execute(
+            operation="write_section",
+            section_id="conclusion",
+            content="Conclusion content",
+            sequence=3,
+        )
 
         result = tool.execute(operation="assemble")
         assert result.success is True

@@ -218,7 +218,7 @@ class DynamicToolBuilderTool(BaseTool):
                     "type": "object",
                     "description": (
                         "JSON Schema for the tool's input parameters. "
-                        "Example: {\"type\": \"object\", \"properties\": {\"file_path\": {\"type\": \"string\"}}, \"required\": [\"file_path\"]}"
+                        'Example: {"type": "object", "properties": {"file_path": {"type": "string"}}, "required": ["file_path"]}'
                     ),
                 },
                 "code": {
@@ -234,11 +234,11 @@ class DynamicToolBuilderTool(BaseTool):
                         "CRITICAL: Use ONLY vectorized pandas ops. NEVER .apply(lambda), "
                         ".iterrows(), or Python for-loops over rows. See the tool description "
                         "for the full list of best practices. "
-                        "Example: 'df = pd.read_csv(kwargs[\"file_path\"])\n"
-                        "df[\"fips\"] = pad_fips_series(df[\"fips\"], width=5)\n"
-                        "agg = df.groupby(\"county_fips\").sum().reset_index()\n"
-                        "stage_dataframe(\"my_source\", agg)\n"
-                        "return ToolResult(success=True, data={\"rows\": len(agg)}, summary=\"Aggregated and staged\")'"
+                        'Example: \'df = pd.read_csv(kwargs["file_path"])\n'
+                        'df["fips"] = pad_fips_series(df["fips"], width=5)\n'
+                        'agg = df.groupby("county_fips").sum().reset_index()\n'
+                        'stage_dataframe("my_source", agg)\n'
+                        'return ToolResult(success=True, data={"rows": len(agg)}, summary="Aggregated and staged")\''
                     ),
                 },
             },
@@ -325,6 +325,7 @@ class DynamicToolBuilderTool(BaseTool):
                 raise RuntimeError(
                     "stage_dataframe is not available — no transformer tool configured."
                 )
+
             extra_scope["stage_dataframe"] = _no_stage
 
         # Try to compile and create the tool

@@ -220,8 +220,10 @@ class SchemaDesignerTool(BaseTool):
         # Support column_names shorthand — auto-generate full column defs
         if column_names and not columns:
             columns = self._auto_map_columns(
-                column_names, join_key_source_column,
-                type_overrides or {}, name_overrides or {},
+                column_names,
+                join_key_source_column,
+                type_overrides or {},
+                name_overrides or {},
             )
 
         if not columns:
@@ -230,7 +232,7 @@ class SchemaDesignerTool(BaseTool):
                 error=(
                     "Missing columns. Use one of:\n"
                     "  1. column_names=['FIPS','STATE','E_TOTPOP',...] — simple list of source column names (RECOMMENDED for large schemas)\n"
-                    "  2. columns=[{\"target_name\":\"county_fips_code\",\"data_type\":\"STRING\",\"source_name\":\"FIPS\"},...] — full definitions\n"
+                    '  2. columns=[{"target_name":"county_fips_code","data_type":"STRING","source_name":"FIPS"},...] — full definitions\n'
                     "For column_names mode, also provide join_key_source_column to identify the join key."
                 ),
             )
@@ -251,9 +253,13 @@ class SchemaDesignerTool(BaseTool):
             # Defensive: Claude may pass strings instead of dicts
             if isinstance(col_def, str):
                 col_def = {"target_name": col_def, "data_type": "STRING", "source_name": col_def}
-                warnings.append(f"Column {i} was a plain string '{col_def['target_name']}', converted to dict with STRING type")
+                warnings.append(
+                    f"Column {i} was a plain string '{col_def['target_name']}', converted to dict with STRING type"
+                )
             if not isinstance(col_def, dict):
-                errors.append(f"Column {i} has unexpected type {type(col_def).__name__}, expected dict")
+                errors.append(
+                    f"Column {i} has unexpected type {type(col_def).__name__}, expected dict"
+                )
                 continue
 
             target = col_def.get("target_name", "")
@@ -272,9 +278,21 @@ class SchemaDesignerTool(BaseTool):
             seen_targets.add(target)
 
             data_type = col_def.get("data_type", "STRING").upper()
-            valid_types = {"STRING", "INT", "BIGINT", "DOUBLE", "FLOAT", "DATE", "TIMESTAMP", "BOOLEAN", "DECIMAL"}
+            valid_types = {
+                "STRING",
+                "INT",
+                "BIGINT",
+                "DOUBLE",
+                "FLOAT",
+                "DATE",
+                "TIMESTAMP",
+                "BOOLEAN",
+                "DECIMAL",
+            }
             if data_type not in valid_types:
-                warnings.append(f"Column '{target}' has unusual type '{data_type}', defaulting to STRING")
+                warnings.append(
+                    f"Column '{target}' has unusual type '{data_type}', defaulting to STRING"
+                )
                 data_type = "STRING"
 
             # Accept both is_fips (legacy) and is_join_key
@@ -293,15 +311,17 @@ class SchemaDesignerTool(BaseTool):
                     )
                     data_type = expected_type
 
-            validated_cols.append(ColumnDefinition(
-                target_name=target,
-                data_type=data_type,
-                source_name=col_def.get("source_name", target),
-                description=col_def.get("description", ""),
-                nullable=col_def.get("nullable", True),
-                is_fips=is_join_key,
-                transform_expression=col_def.get("transform_expression", ""),
-            ))
+            validated_cols.append(
+                ColumnDefinition(
+                    target_name=target,
+                    data_type=data_type,
+                    source_name=col_def.get("source_name", target),
+                    description=col_def.get("description", ""),
+                    nullable=col_def.get("nullable", True),
+                    is_fips=is_join_key,
+                    transform_expression=col_def.get("transform_expression", ""),
+                )
+            )
 
         if not has_join_key:
             # Check if an alternative key (contract_id, plan_id, etc.) is present
@@ -471,15 +491,34 @@ class SchemaDesignerTool(BaseTool):
         - Name is mostly consonants / looks like an abbreviation
         """
         known_short_names = {
-            "id", "url", "lat", "lon", "year", "name", "type", "date",
-            "code", "fips", "rank", "rate", "flag", "area", "pop",
-            "state", "county",
+            "id",
+            "url",
+            "lat",
+            "lon",
+            "year",
+            "name",
+            "type",
+            "date",
+            "code",
+            "fips",
+            "rank",
+            "rate",
+            "flag",
+            "area",
+            "pop",
+            "state",
+            "county",
         }
         # Skip metadata columns
         meta_names = {
-            "source_file_name", "source_year", "source_period_start",
-            "load_timestamp", "county_fips_code", "state_fips_code",
-            "state_abbreviation", "county_name",
+            "source_file_name",
+            "source_year",
+            "source_period_start",
+            "load_timestamp",
+            "county_fips_code",
+            "state_fips_code",
+            "state_abbreviation",
+            "county_name",
         }
 
         cryptic = []
@@ -498,7 +537,8 @@ class SchemaDesignerTool(BaseTool):
             # Check 2: Any part has digits mixed with letters (e.g., 'pov150')
             has_mixed = any(
                 any(c.isdigit() for c in p) and any(c.isalpha() for c in p)
-                for p in parts if len(p) > 1
+                for p in parts
+                if len(p) > 1
             )
             if has_mixed:
                 cryptic.append(name)

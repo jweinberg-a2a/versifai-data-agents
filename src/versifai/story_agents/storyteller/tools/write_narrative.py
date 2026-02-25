@@ -27,7 +27,7 @@ class WriteNarrativeTool(BaseTool):
         self._output_filename = output_filename
         self._include_toc = include_toc
         self._sections: dict[str, str] = {}  # section_id -> markdown content
-        self._section_order: list[str] = []   # ordered section IDs
+        self._section_order: list[str] = []  # ordered section IDs
         self._section_sequence: dict[str, int] = {}  # section_id -> sequence number
         self.sections_written: int = 0
 
@@ -53,8 +53,11 @@ class WriteNarrativeTool(BaseTool):
                 "operation": {
                     "type": "string",
                     "enum": [
-                        "write_section", "read_section", "update_section",
-                        "list_sections", "assemble",
+                        "write_section",
+                        "read_section",
+                        "update_section",
+                        "list_sections",
+                        "assemble",
                     ],
                     "description": "Which operation to run.",
                 },
@@ -103,9 +106,7 @@ class WriteNarrativeTool(BaseTool):
             if section_id not in self._section_order:
                 self._section_order.append(section_id)
                 # Sort by sequence if we can infer it
-                self._section_order.sort(
-                    key=lambda sid: self._section_sequence.get(sid, 999)
-                )
+                self._section_order.sort(key=lambda sid: self._section_sequence.get(sid, 999))
 
             self._section_sequence[section_id] = sequence
             self.sections_written += 1
@@ -122,7 +123,7 @@ class WriteNarrativeTool(BaseTool):
                     "total_sections": len(self._sections),
                 },
                 summary=f"Wrote section '{section_id}' ({word_count} words). "
-                        f"Total: {len(self._sections)} sections.",
+                f"Total: {len(self._sections)} sections.",
             )
 
         elif operation == "read_section":
@@ -164,11 +165,13 @@ class WriteNarrativeTool(BaseTool):
             section_list = []
             for sid in self._section_order:
                 content = self._sections.get(sid, "")
-                section_list.append({
-                    "section_id": sid,
-                    "word_count": len(content.split()),
-                    "sequence": self._section_sequence.get(sid, 0),
-                })
+                section_list.append(
+                    {
+                        "section_id": sid,
+                        "word_count": len(content.split()),
+                        "sequence": self._section_sequence.get(sid, 0),
+                    }
+                )
             return ToolResult(
                 success=True,
                 data={"sections": section_list, "total": len(section_list)},
@@ -247,7 +250,6 @@ class WriteNarrativeTool(BaseTool):
                 "sections_assembled": len(ordered_ids),
             },
             summary=(
-                f"Assembled {len(ordered_ids)} sections into {output_file} "
-                f"({word_count} words)."
+                f"Assembled {len(ordered_ids)} sections into {output_file} ({word_count} words)."
             ),
         )

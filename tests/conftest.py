@@ -87,11 +87,7 @@ def sample_csv(tmp_path):
 def sample_tsv(tmp_path):
     """Write a tab-separated file and return its path."""
     tsv_path = tmp_path / "data.tsv"
-    tsv_path.write_text(
-        "col_a\tcol_b\tcol_c\n"
-        "1\thello\t3.14\n"
-        "2\tworld\t2.72\n"
-    )
+    tsv_path.write_text("col_a\tcol_b\tcol_c\n1\thello\t3.14\n2\tworld\t2.72\n")
     return str(tsv_path)
 
 

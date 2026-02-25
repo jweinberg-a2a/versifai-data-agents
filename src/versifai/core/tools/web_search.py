@@ -131,10 +131,12 @@ class WebSearchTool(BaseTool):
                 resp = requests.get(url, headers=headers, timeout=20, allow_redirects=True)
                 resp.raise_for_status()
                 content = self._extract_text(resp.text)
-                results.append({
-                    "url": url,
-                    "content": content[:max_chars // max(len(matched_urls), 1)],
-                })
+                results.append(
+                    {
+                        "url": url,
+                        "content": content[: max_chars // max(len(matched_urls), 1)],
+                    }
+                )
             except requests.RequestException as e:
                 results.append({"url": url, "error": str(e)})
 
@@ -167,6 +169,7 @@ class WebSearchTool(BaseTool):
         """Extract readable text from HTML content."""
         try:
             from bs4 import BeautifulSoup
+
             soup = BeautifulSoup(html_content, "html.parser")
 
             # Remove script/style elements

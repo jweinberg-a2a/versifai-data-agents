@@ -84,13 +84,15 @@ class ReadFindingsTool(BaseTool):
         if operation == "list":
             summaries = []
             for i, f in enumerate(findings):
-                summaries.append({
-                    "index": i,
-                    "theme": f.get("research_question_id", ""),
-                    "title": f.get("title", ""),
-                    "significance": f.get("significance", ""),
-                    "effect_size": f.get("effect_size", ""),
-                })
+                summaries.append(
+                    {
+                        "index": i,
+                        "theme": f.get("research_question_id", ""),
+                        "title": f.get("title", ""),
+                        "significance": f.get("significance", ""),
+                        "effect_size": f.get("effect_size", ""),
+                    }
+                )
             return ToolResult(
                 success=True,
                 data={"total": len(findings), "findings": summaries},
@@ -102,7 +104,7 @@ class ReadFindingsTool(BaseTool):
             if idx < 0 or idx >= len(findings):
                 return ToolResult(
                     success=False,
-                    error=f"Index {idx} out of range (0-{len(findings)-1}).",
+                    error=f"Index {idx} out of range (0-{len(findings) - 1}).",
                 )
             return ToolResult(
                 success=True,
@@ -112,10 +114,7 @@ class ReadFindingsTool(BaseTool):
 
         elif operation == "by_theme":
             theme_id = kwargs.get("theme_id", "")
-            matches = [
-                f for f in findings
-                if f.get("research_question_id", "") == theme_id
-            ]
+            matches = [f for f in findings if f.get("research_question_id", "") == theme_id]
             return ToolResult(
                 success=True,
                 data={"theme": theme_id, "count": len(matches), "findings": matches},
@@ -124,8 +123,7 @@ class ReadFindingsTool(BaseTool):
 
         elif operation == "high_significance":
             high = [
-                f for f in findings
-                if f.get("significance", "").lower() in ("high", "critical")
+                f for f in findings if f.get("significance", "").lower() in ("high", "critical")
             ]
             return ToolResult(
                 success=True,

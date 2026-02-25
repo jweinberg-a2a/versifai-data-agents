@@ -100,33 +100,35 @@ class DataAnalystAgent:
         """Get tool definitions including ask_human."""
         tools = self._registry.to_claude_tools()
 
-        tools.append({
-            "name": "ask_human",
-            "description": (
-                "Pause execution and ask the human operator a question. "
-                "Use this when you need clarification about expected data "
-                "behavior, acceptable ranges, or ambiguous findings."
-            ),
-            "input_schema": {
-                "type": "object",
-                "properties": {
-                    "question": {
-                        "type": "string",
-                        "description": "The question to ask the operator.",
+        tools.append(
+            {
+                "name": "ask_human",
+                "description": (
+                    "Pause execution and ask the human operator a question. "
+                    "Use this when you need clarification about expected data "
+                    "behavior, acceptable ranges, or ambiguous findings."
+                ),
+                "input_schema": {
+                    "type": "object",
+                    "properties": {
+                        "question": {
+                            "type": "string",
+                            "description": "The question to ask the operator.",
+                        },
+                        "context": {
+                            "type": "string",
+                            "description": "Additional context to help the operator answer.",
+                        },
+                        "options": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "Optional list of suggested answers.",
+                        },
                     },
-                    "context": {
-                        "type": "string",
-                        "description": "Additional context to help the operator answer.",
-                    },
-                    "options": {
-                        "type": "array",
-                        "items": {"type": "string"},
-                        "description": "Optional list of suggested answers.",
-                    },
+                    "required": ["question"],
                 },
-                "required": ["question"],
-            },
-        })
+            }
+        )
 
         return tools
 
@@ -244,7 +246,7 @@ class DataAnalystAgent:
         # Try to find a JSON block in the response
         import re
 
-        json_match = re.search(r'```json\s*(\{.*?\})\s*```', text, re.DOTALL)
+        json_match = re.search(r"```json\s*(\{.*?\})\s*```", text, re.DOTALL)
         if json_match:
             try:
                 return json.loads(json_match.group(1))

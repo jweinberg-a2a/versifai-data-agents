@@ -17,12 +17,20 @@ from versifai.core.tools.base import BaseTool, ToolResult
 
 # File extensions considered documentation
 DOC_EXTENSIONS = {
-    "txt", "text", "readme", "md", "rst",
-    "html", "htm",
+    "txt",
+    "text",
+    "readme",
+    "md",
+    "rst",
+    "html",
+    "htm",
     "pdf",
-    "doc", "docx", "rtf",
+    "doc",
+    "docx",
+    "rtf",
     "csv",  # Some data dictionaries are CSVs
-    "xlsx", "xls",  # Layout files sometimes in Excel
+    "xlsx",
+    "xls",  # Layout files sometimes in Excel
 }
 
 # Filename patterns that suggest documentation rather than data
@@ -194,6 +202,7 @@ class DocumentationReaderTool(BaseTool):
 
         try:
             import pdfplumber
+
             with pdfplumber.open(file_path) as pdf:
                 pages = []
                 for page in pdf.pages[:50]:
@@ -208,11 +217,15 @@ class DocumentationReaderTool(BaseTool):
         except ImportError:
             pass
 
-        return "[PDF reading requires pypdf or pdfplumber — neither is installed. Install with: pip install pypdf]", "pdf"
+        return (
+            "[PDF reading requires pypdf or pdfplumber — neither is installed. Install with: pip install pypdf]",
+            "pdf",
+        )
 
     def _read_csv_dict(self, file_path: str) -> tuple[str, str]:
         """Read a CSV that might be a data dictionary / layout file."""
         import pandas as pd
+
         try:
             df = pd.read_csv(file_path, nrows=500, on_bad_lines="skip")
             header = f"Columns: {list(df.columns)}\n\n"
@@ -223,6 +236,7 @@ class DocumentationReaderTool(BaseTool):
     def _read_excel_dict(self, file_path: str) -> tuple[str, str]:
         """Read an Excel file that might be a data dictionary / layout file."""
         import pandas as pd
+
         try:
             xls = pd.ExcelFile(file_path)
             parts = [f"Sheets: {xls.sheet_names}\n"]
@@ -257,7 +271,10 @@ class DocumentationReaderTool(BaseTool):
                 return "documentation"
 
         # Content-based classification
-        if any(kw in content_lower for kw in ["field name", "column name", "variable name", "field description"]):
+        if any(
+            kw in content_lower
+            for kw in ["field name", "column name", "variable name", "field description"]
+        ):
             return "data_dictionary"
         if any(kw in content_lower for kw in ["record layout", "file layout", "field position"]):
             return "record_layout"
@@ -320,14 +337,16 @@ class ScanForDocumentationTool(BaseTool):
 
                 if is_doc_ext or is_doc_name:
                     priority = self._prioritize(fname, ext)
-                    found_docs.append({
-                        "file_path": full_path,
-                        "file_name": fname,
-                        "extension": ext,
-                        "size_bytes": os.path.getsize(full_path),
-                        "priority": priority,
-                        "reason": self._reason(fname, ext),
-                    })
+                    found_docs.append(
+                        {
+                            "file_path": full_path,
+                            "file_name": fname,
+                            "extension": ext,
+                            "size_bytes": os.path.getsize(full_path),
+                            "priority": priority,
+                            "reason": self._reason(fname, ext),
+                        }
+                    )
 
         # Sort by priority (highest first)
         found_docs.sort(key=lambda d: d["priority"], reverse=True)

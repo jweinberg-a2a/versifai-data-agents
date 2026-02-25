@@ -164,8 +164,11 @@ class EvaluateEvidenceTool(BaseTool):
 
             # Sort by evidence strength
             tier_order = {
-                "DEFINITIVE": 0, "STRONG": 1, "SUGGESTIVE": 2,
-                "CONTEXTUAL": 3, "WEAK": 4,
+                "DEFINITIVE": 0,
+                "STRONG": 1,
+                "SUGGESTIVE": 2,
+                "CONTEXTUAL": 3,
+                "WEAK": 4,
             }
             classified.sort(key=lambda c: tier_order.get(c["tier"], 5))
 

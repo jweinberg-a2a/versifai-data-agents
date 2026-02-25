@@ -57,10 +57,7 @@ class ReadTableTool(BaseTool):
         """List all CSV files in the tables directory."""
         if not os.path.isdir(self._tables_path):
             return []
-        return sorted(
-            f for f in os.listdir(self._tables_path)
-            if f.lower().endswith(".csv")
-        )
+        return sorted(f for f in os.listdir(self._tables_path) if f.lower().endswith(".csv"))
 
     def _execute(self, **kwargs: Any) -> ToolResult:
         operation = kwargs["operation"]

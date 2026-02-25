@@ -154,13 +154,18 @@ class ModelFittingTool(BaseTool):
         from scipy import stats as sp_stats
 
         if not target_column or not feature_columns:
-            return ToolResult(success=False, error="'target_column' and 'feature_columns' are required.")
+            return ToolResult(
+                success=False, error="'target_column' and 'feature_columns' are required."
+            )
 
         # Prepare data
         all_cols = [target_column] + feature_columns
         clean = df[all_cols].dropna()
         if len(clean) < len(feature_columns) + 2:
-            return ToolResult(success=False, error=f"Too few rows ({len(clean)}) for {len(feature_columns)} features.")
+            return ToolResult(
+                success=False,
+                error=f"Too few rows ({len(clean)}) for {len(feature_columns)} features.",
+            )
 
         y = clean[target_column].astype(float)
         X = clean[feature_columns].astype(float)
@@ -172,6 +177,7 @@ class ModelFittingTool(BaseTool):
         vif_values = {}
         if len(feature_columns) > 1:
             from statsmodels.stats.outliers_influence import variance_inflation_factor
+
             for i, col in enumerate(feature_columns):
                 try:
                     vif_values[col] = round(variance_inflation_factor(X_const.values, i + 1), 2)
@@ -180,23 +186,30 @@ class ModelFittingTool(BaseTool):
 
         # Residual diagnostics
         residuals = model.resid
-        _, norm_p = sp_stats.shapiro(residuals[:min(len(residuals), 5000)])
+        _, norm_p = sp_stats.shapiro(residuals[: min(len(residuals), 5000)])
 
         # Coefficients
         coefs = []
         for name, coef, se, t, p, ci_low, ci_high in zip(
-            model.params.index, model.params, model.bse, model.tvalues, model.pvalues,
-            model.conf_int()[0], model.conf_int()[1],
+            model.params.index,
+            model.params,
+            model.bse,
+            model.tvalues,
+            model.pvalues,
+            model.conf_int()[0],
+            model.conf_int()[1],
         ):
-            coefs.append({
-                "variable": name,
-                "coefficient": round(float(coef), 6),
-                "std_error": round(float(se), 6),
-                "t_statistic": round(float(t), 4),
-                "p_value": round(float(p), 6),
-                "ci_95": [round(float(ci_low), 6), round(float(ci_high), 6)],
-                "significant": p < 0.05,
-            })
+            coefs.append(
+                {
+                    "variable": name,
+                    "coefficient": round(float(coef), 6),
+                    "std_error": round(float(se), 6),
+                    "t_statistic": round(float(t), 4),
+                    "p_value": round(float(p), 6),
+                    "ci_95": [round(float(ci_low), 6), round(float(ci_high), 6)],
+                    "significant": p < 0.05,
+                }
+            )
 
         # Standardized coefficients (beta weights)
         X_std = (X - X.mean()) / X.std()
@@ -226,7 +239,7 @@ class ModelFittingTool(BaseTool):
                 "durbin_watson": round(float(sm.stats.stattools.durbin_watson(residuals)), 4),
             },
             "interpretation": (
-                f"Model explains {model.rsquared_adj*100:.1f}% of variance in {target_column}. "
+                f"Model explains {model.rsquared_adj * 100:.1f}% of variance in {target_column}. "
                 f"F-test p={model.f_pvalue:.4g} — model is "
                 f"{'statistically significant' if model.f_pvalue < 0.05 else 'NOT significant'}."
             ),
@@ -255,17 +268,23 @@ class ModelFittingTool(BaseTool):
         from sklearn.preprocessing import StandardScaler
 
         if not target_column or not feature_columns:
-            return ToolResult(success=False, error="'target_column' and 'feature_columns' are required.")
+            return ToolResult(
+                success=False, error="'target_column' and 'feature_columns' are required."
+            )
 
         clean = df[[target_column] + feature_columns].dropna()
         y = clean[target_column].astype(float)
         X = clean[feature_columns].astype(float)
 
         if y.nunique() != 2:
-            return ToolResult(success=False, error=f"Target must be binary. Found {y.nunique()} unique values.")
+            return ToolResult(
+                success=False, error=f"Target must be binary. Found {y.nunique()} unique values."
+            )
 
         # Split and scale
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=0.2, random_state=42, stratify=y
+        )
         scaler = StandardScaler()
         X_train_s = scaler.fit_transform(X_train)
         X_test_s = scaler.transform(X_test)
@@ -274,7 +293,9 @@ class ModelFittingTool(BaseTool):
         params = kwargs.get("params", {})
         class_weight = params.get("class_weight", None)
         model = LogisticRegression(
-            max_iter=1000, random_state=42, class_weight=class_weight,
+            max_iter=1000,
+            random_state=42,
+            class_weight=class_weight,
         )
         model.fit(X_train_s, y_train)
 
@@ -283,8 +304,14 @@ class ModelFittingTool(BaseTool):
 
         # Feature importance (absolute coefficient)
         importance = sorted(
-            [{"feature": f, "coefficient": round(float(c), 4), "odds_ratio": round(float(np.exp(c)), 4)}
-             for f, c in zip(feature_columns, model.coef_[0])],
+            [
+                {
+                    "feature": f,
+                    "coefficient": round(float(c), 4),
+                    "odds_ratio": round(float(np.exp(c)), 4),
+                }
+                for f, c in zip(feature_columns, model.coef_[0])
+            ],
             key=lambda x: abs(x["coefficient"]),
             reverse=True,
         )
@@ -318,7 +345,9 @@ class ModelFittingTool(BaseTool):
         from sklearn.model_selection import train_test_split
 
         if not target_column or not feature_columns:
-            return ToolResult(success=False, error="'target_column' and 'feature_columns' are required.")
+            return ToolResult(
+                success=False, error="'target_column' and 'feature_columns' are required."
+            )
 
         clean = df[[target_column] + feature_columns].dropna()
         y = clean[target_column].astype(float)
@@ -332,11 +361,17 @@ class ModelFittingTool(BaseTool):
 
         if is_classification:
             model = RandomForestClassifier(
-                n_estimators=n_estimators, max_depth=max_depth, random_state=42, n_jobs=-1,
+                n_estimators=n_estimators,
+                max_depth=max_depth,
+                random_state=42,
+                n_jobs=-1,
             )
         else:
             model = RandomForestRegressor(
-                n_estimators=n_estimators, max_depth=max_depth, random_state=42, n_jobs=-1,
+                n_estimators=n_estimators,
+                max_depth=max_depth,
+                random_state=42,
+                n_jobs=-1,
             )
 
         model.fit(X_train, y_train)
@@ -344,8 +379,10 @@ class ModelFittingTool(BaseTool):
 
         # Feature importance
         importance = sorted(
-            [{"feature": f, "importance": round(float(imp), 4)}
-             for f, imp in zip(feature_columns, model.feature_importances_)],
+            [
+                {"feature": f, "importance": round(float(imp), 4)}
+                for f, imp in zip(feature_columns, model.feature_importances_)
+            ],
             key=lambda x: x["importance"],
             reverse=True,
         )
@@ -360,8 +397,11 @@ class ModelFittingTool(BaseTool):
 
         if is_classification:
             from sklearn.metrics import accuracy_score, f1_score
+
             result["accuracy"] = round(float(accuracy_score(y_test, y_pred)), 4)
-            result["f1_score"] = round(float(f1_score(y_test, y_pred, average="weighted", zero_division=0)), 4)
+            result["f1_score"] = round(
+                float(f1_score(y_test, y_pred, average="weighted", zero_division=0)), 4
+            )
         else:
             result["r_squared"] = round(float(r2_score(y_test, y_pred)), 4)
             result["mae"] = round(float(mean_absolute_error(y_test, y_pred)), 4)
@@ -370,21 +410,28 @@ class ModelFittingTool(BaseTool):
         # Partial dependence for top 3 features
         try:
             from sklearn.inspection import partial_dependence
+
             top_features = [f["feature"] for f in importance[:3]]
             pd_results = []
             for feat in top_features:
                 feat_idx = feature_columns.index(feat)
                 pdp = partial_dependence(model, X_train, features=[feat_idx], kind="average")
-                pd_results.append({
-                    "feature": feat,
-                    "values": [round(float(v), 4) for v in pdp["values"][0][:10]],
-                    "effects": [round(float(v), 4) for v in pdp["average"][0][:10]],
-                })
+                pd_results.append(
+                    {
+                        "feature": feat,
+                        "values": [round(float(v), 4) for v in pdp["values"][0][:10]],
+                        "effects": [round(float(v), 4) for v in pdp["average"][0][:10]],
+                    }
+                )
             result["partial_dependence"] = pd_results
         except Exception:
             pass
 
-        metric_str = f"R²={result.get('r_squared', 'N/A')}" if not is_classification else f"accuracy={result.get('accuracy', 'N/A')}"
+        metric_str = (
+            f"R²={result.get('r_squared', 'N/A')}"
+            if not is_classification
+            else f"accuracy={result.get('accuracy', 'N/A')}"
+        )
         return ToolResult(
             success=True,
             data=result,
@@ -395,13 +442,17 @@ class ModelFittingTool(BaseTool):
     # Gradient boosting
     # ------------------------------------------------------------------
 
-    def _gradient_boosting(self, df, target_column, feature_columns, params, **kwargs) -> ToolResult:
+    def _gradient_boosting(
+        self, df, target_column, feature_columns, params, **kwargs
+    ) -> ToolResult:
         from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
         from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
         from sklearn.model_selection import train_test_split
 
         if not target_column or not feature_columns:
-            return ToolResult(success=False, error="'target_column' and 'feature_columns' are required.")
+            return ToolResult(
+                success=False, error="'target_column' and 'feature_columns' are required."
+            )
 
         clean = df[[target_column] + feature_columns].dropna()
         y = clean[target_column].astype(float)
@@ -416,19 +467,27 @@ class ModelFittingTool(BaseTool):
 
         if is_classification:
             model = GradientBoostingClassifier(
-                n_estimators=n_estimators, learning_rate=learning_rate, max_depth=max_depth, random_state=42,
+                n_estimators=n_estimators,
+                learning_rate=learning_rate,
+                max_depth=max_depth,
+                random_state=42,
             )
         else:
             model = GradientBoostingRegressor(
-                n_estimators=n_estimators, learning_rate=learning_rate, max_depth=max_depth, random_state=42,
+                n_estimators=n_estimators,
+                learning_rate=learning_rate,
+                max_depth=max_depth,
+                random_state=42,
             )
 
         model.fit(X_train, y_train)
         y_pred = model.predict(X_test)
 
         importance = sorted(
-            [{"feature": f, "importance": round(float(imp), 4)}
-             for f, imp in zip(feature_columns, model.feature_importances_)],
+            [
+                {"feature": f, "importance": round(float(imp), 4)}
+                for f, imp in zip(feature_columns, model.feature_importances_)
+            ],
             key=lambda x: x["importance"],
             reverse=True,
         )
@@ -437,14 +496,21 @@ class ModelFittingTool(BaseTool):
             "model": f"Gradient Boosting {'Classifier' if is_classification else 'Regressor'}",
             "n_train": len(X_train),
             "n_test": len(X_test),
-            "hyperparameters": {"n_estimators": n_estimators, "learning_rate": learning_rate, "max_depth": max_depth},
+            "hyperparameters": {
+                "n_estimators": n_estimators,
+                "learning_rate": learning_rate,
+                "max_depth": max_depth,
+            },
             "feature_importance": importance,
         }
 
         if is_classification:
             from sklearn.metrics import accuracy_score, f1_score
+
             result["accuracy"] = round(float(accuracy_score(y_test, y_pred)), 4)
-            result["f1_score"] = round(float(f1_score(y_test, y_pred, average="weighted", zero_division=0)), 4)
+            result["f1_score"] = round(
+                float(f1_score(y_test, y_pred, average="weighted", zero_division=0)), 4
+            )
         else:
             result["r_squared"] = round(float(r2_score(y_test, y_pred)), 4)
             result["mae"] = round(float(mean_absolute_error(y_test, y_pred)), 4)
@@ -455,15 +521,21 @@ class ModelFittingTool(BaseTool):
                 staged_r2 = []
                 for i, y_stage in enumerate(model.staged_predict(X_test)):
                     if i % 10 == 0 or i == n_estimators - 1:
-                        staged_r2.append({
-                            "n_trees": i + 1,
-                            "r_squared": round(float(r2_score(y_test, y_stage)), 4),
-                        })
+                        staged_r2.append(
+                            {
+                                "n_trees": i + 1,
+                                "r_squared": round(float(r2_score(y_test, y_stage)), 4),
+                            }
+                        )
                 result["learning_curve"] = staged_r2
             except Exception:
                 pass
 
-        metric_str = f"R²={result.get('r_squared', 'N/A')}" if not is_classification else f"accuracy={result.get('accuracy', 'N/A')}"
+        metric_str = (
+            f"R²={result.get('r_squared', 'N/A')}"
+            if not is_classification
+            else f"accuracy={result.get('accuracy', 'N/A')}"
+        )
         return ToolResult(
             success=True,
             data=result,
@@ -481,7 +553,9 @@ class ModelFittingTool(BaseTool):
 
         features = feature_columns or list(df.select_dtypes(include="number").columns)
         if len(features) < 2:
-            return ToolResult(success=False, error="Need at least 2 numeric features for clustering.")
+            return ToolResult(
+                success=False, error="Need at least 2 numeric features for clustering."
+            )
 
         clean = df[features].dropna()
         if len(clean) < 10:
@@ -518,9 +592,7 @@ class ModelFittingTool(BaseTool):
                 "cluster": c,
                 "size": int(len(cluster_data)),
                 "pct": round(len(cluster_data) / len(clean) * 100, 1),
-                "means": {
-                    feat: round(float(cluster_data[feat].mean()), 4) for feat in features
-                },
+                "means": {feat: round(float(cluster_data[feat].mean()), 4) for feat in features},
             }
             # How this cluster differs from overall mean
             profile["deviations"] = {
@@ -537,7 +609,7 @@ class ModelFittingTool(BaseTool):
             "cluster_profiles": profiles,
         }
 
-        if 'silhouettes' in dir():
+        if "silhouettes" in dir():
             result["silhouette_by_k"] = silhouettes
 
         return ToolResult(
@@ -574,12 +646,14 @@ class ModelFittingTool(BaseTool):
         for i in range(1, len(values)):
             change = values[i] - values[i - 1]
             pct_change = (change / values[i - 1] * 100) if values[i - 1] != 0 else None
-            changes.append({
-                "from": str(times[i - 1]),
-                "to": str(times[i]),
-                "change": round(float(change), 4),
-                "pct_change": round(float(pct_change), 2) if pct_change is not None else None,
-            })
+            changes.append(
+                {
+                    "from": str(times[i - 1]),
+                    "to": str(times[i]),
+                    "change": round(float(change), 4),
+                    "pct_change": round(float(pct_change), 2) if pct_change is not None else None,
+                }
+            )
 
         # Detect acceleration/deceleration
         if len(values) >= 6:
@@ -604,14 +678,21 @@ class ModelFittingTool(BaseTool):
             future_x = len(values) - 1 + i
             predicted = intercept + slope * future_x
             # Prediction interval
-            se_pred = se * np.sqrt(1 + 1 / len(values) + (future_x - time_numeric.mean())**2 / ((time_numeric - time_numeric.mean())**2).sum())
+            se_pred = se * np.sqrt(
+                1
+                + 1 / len(values)
+                + (future_x - time_numeric.mean()) ** 2
+                / ((time_numeric - time_numeric.mean()) ** 2).sum()
+            )
             ci = 1.96 * se_pred
-            forecasts.append({
-                "period_ahead": i,
-                "predicted": round(float(predicted), 4),
-                "ci_lower": round(float(predicted - ci), 4),
-                "ci_upper": round(float(predicted + ci), 4),
-            })
+            forecasts.append(
+                {
+                    "period_ahead": i,
+                    "predicted": round(float(predicted), 4),
+                    "ci_lower": round(float(predicted - ci), 4),
+                    "ci_upper": round(float(predicted + ci), 4),
+                }
+            )
 
         # Volatility
         pct_changes = np.diff(values) / values[:-1] * 100
@@ -634,7 +715,9 @@ class ModelFittingTool(BaseTool):
                 "first_value": round(float(values[0]), 4),
                 "last_value": round(float(values[-1]), 4),
                 "total_change": round(float(values[-1] - values[0]), 4),
-                "total_pct_change": round(float((values[-1] - values[0]) / values[0] * 100), 2) if values[0] != 0 else None,
+                "total_pct_change": round(float((values[-1] - values[0]) / values[0] * 100), 2)
+                if values[0] != 0
+                else None,
                 "volatility_pct": round(volatility, 2),
             },
             "period_changes": changes,
@@ -661,7 +744,9 @@ class ModelFittingTool(BaseTool):
         from sklearn.ensemble import GradientBoostingRegressor
 
         if not target_column or not feature_columns:
-            return ToolResult(success=False, error="'target_column' and 'feature_columns' are required.")
+            return ToolResult(
+                success=False, error="'target_column' and 'feature_columns' are required."
+            )
 
         scenarios = params.get("scenarios", [])
         if not scenarios:
@@ -697,14 +782,16 @@ class ModelFittingTool(BaseTool):
             change = predicted - baseline_mean
             pct_change = (change / baseline_mean * 100) if baseline_mean != 0 else None
 
-            scenario_results.append({
-                "scenario_id": i + 1,
-                "conditions": scenario,
-                "predicted_outcome": round(predicted, 4),
-                "baseline_mean": round(baseline_mean, 4),
-                "change_from_baseline": round(change, 4),
-                "pct_change": round(pct_change, 2) if pct_change is not None else None,
-            })
+            scenario_results.append(
+                {
+                    "scenario_id": i + 1,
+                    "conditions": scenario,
+                    "predicted_outcome": round(predicted, 4),
+                    "baseline_mean": round(baseline_mean, 4),
+                    "change_from_baseline": round(change, 4),
+                    "pct_change": round(pct_change, 2) if pct_change is not None else None,
+                }
+            )
 
         # Also do population-level what-if: shift each feature by 1 std
         sensitivity = []
@@ -715,12 +802,16 @@ class ModelFittingTool(BaseTool):
             shifted_pred = model.predict(shifted_X)
             baseline_pred = model.predict(X)
             avg_change = float(np.mean(shifted_pred - baseline_pred))
-            sensitivity.append({
-                "feature": feat,
-                "shift": f"+1 std ({round(float(std), 4)})",
-                "avg_outcome_change": round(avg_change, 4),
-                "pct_outcome_change": round(avg_change / baseline_mean * 100, 2) if baseline_mean != 0 else None,
-            })
+            sensitivity.append(
+                {
+                    "feature": feat,
+                    "shift": f"+1 std ({round(float(std), 4)})",
+                    "avg_outcome_change": round(avg_change, 4),
+                    "pct_outcome_change": round(avg_change / baseline_mean * 100, 2)
+                    if baseline_mean != 0
+                    else None,
+                }
+            )
         sensitivity.sort(key=lambda x: abs(x["avg_outcome_change"]), reverse=True)
 
         result = {
@@ -750,14 +841,18 @@ class ModelFittingTool(BaseTool):
     # Bayesian regression
     # ------------------------------------------------------------------
 
-    def _bayesian_regression(self, df, target_column, feature_columns, params, **kwargs) -> ToolResult:
+    def _bayesian_regression(
+        self, df, target_column, feature_columns, params, **kwargs
+    ) -> ToolResult:
         """Bayesian linear regression with posterior credible intervals.
 
         Uses PyMC for full MCMC sampling when available, falls back to
         sklearn BayesianRidge otherwise.
         """
         if not target_column or not feature_columns:
-            return ToolResult(success=False, error="'target_column' and 'feature_columns' are required.")
+            return ToolResult(
+                success=False, error="'target_column' and 'feature_columns' are required."
+            )
 
         all_cols = [target_column] + feature_columns
         clean = df[all_cols].dropna()
@@ -772,6 +867,7 @@ class ModelFittingTool(BaseTool):
 
         # Standardize features for stable MCMC sampling
         from sklearn.preprocessing import StandardScaler
+
         scaler = StandardScaler()
         X_scaled = scaler.fit_transform(X)
         feature_means = scaler.mean_
@@ -782,18 +878,39 @@ class ModelFittingTool(BaseTool):
         # Try PyMC first, fall back to sklearn
         try:
             return self._bayesian_regression_pymc(
-                y, X_scaled, feature_columns, feature_means, feature_stds,
-                user_priors, params, clean, target_column,
+                y,
+                X_scaled,
+                feature_columns,
+                feature_means,
+                feature_stds,
+                user_priors,
+                params,
+                clean,
+                target_column,
             )
         except ImportError:
             return self._bayesian_regression_sklearn(
-                y, X_scaled, feature_columns, feature_means, feature_stds,
-                user_priors, clean, target_column,
+                y,
+                X_scaled,
+                feature_columns,
+                feature_means,
+                feature_stds,
+                user_priors,
+                clean,
+                target_column,
             )
 
     def _bayesian_regression_pymc(
-        self, y, X_scaled, feature_columns, feature_means, feature_stds,
-        user_priors, params, clean, target_column,
+        self,
+        y,
+        X_scaled,
+        feature_columns,
+        feature_means,
+        feature_stds,
+        user_priors,
+        params,
+        clean,
+        target_column,
     ) -> ToolResult:
         """Full MCMC Bayesian regression using PyMC."""
         import arviz as az
@@ -836,8 +953,11 @@ class ModelFittingTool(BaseTool):
 
             # Sample
             trace = pm.sample(
-                draws=n_draws, tune=n_tune, chains=n_chains,
-                return_inferencedata=True, progressbar=False,
+                draws=n_draws,
+                tune=n_tune,
+                chains=n_chains,
+                return_inferencedata=True,
+                progressbar=False,
                 random_seed=42,
             )
 
@@ -874,7 +994,9 @@ class ModelFittingTool(BaseTool):
         # Model fit
         y_pred = trace.posterior["intercept"].values.flatten().mean()
         for i, feat in enumerate(feature_columns):
-            y_pred = y_pred + trace.posterior[f"beta_{feat}"].values.flatten().mean() * X_scaled[:, i]
+            y_pred = (
+                y_pred + trace.posterior[f"beta_{feat}"].values.flatten().mean() * X_scaled[:, i]
+            )
 
         # Handle y_pred being a scalar or array
         if np.isscalar(y_pred):
@@ -903,6 +1025,7 @@ class ModelFittingTool(BaseTool):
 
         # OLS comparison
         import statsmodels.api as sm
+
         X_const = sm.add_constant(X_scaled)
         ols = sm.OLS(y, X_const).fit()
 
@@ -932,7 +1055,9 @@ class ModelFittingTool(BaseTool):
                 "ols_r_squared": round(float(ols.rsquared), 4),
                 "ols_coefficients": ols_coefficients,
             },
-            "interpretation": self._build_bayesian_interpretation(coefficients, r_squared, target_column),
+            "interpretation": self._build_bayesian_interpretation(
+                coefficients, r_squared, target_column
+            ),
         }
 
         return ToolResult(
@@ -942,8 +1067,15 @@ class ModelFittingTool(BaseTool):
         )
 
     def _bayesian_regression_sklearn(
-        self, y, X_scaled, feature_columns, feature_means, feature_stds,
-        user_priors, clean, target_column,
+        self,
+        y,
+        X_scaled,
+        feature_columns,
+        feature_means,
+        feature_stds,
+        user_priors,
+        clean,
+        target_column,
     ) -> ToolResult:
         """Fallback Bayesian regression using sklearn BayesianRidge."""
         from scipy import stats as sp_stats
@@ -995,6 +1127,7 @@ class ModelFittingTool(BaseTool):
 
         # OLS comparison
         import statsmodels.api as sm
+
         X_const = sm.add_constant(X_scaled)
         ols = sm.OLS(y, X_const).fit()
         ols_coefficients = {}
@@ -1023,7 +1156,9 @@ class ModelFittingTool(BaseTool):
                 "ols_r_squared": round(float(ols.rsquared), 4),
                 "ols_coefficients": ols_coefficients,
             },
-            "interpretation": self._build_bayesian_interpretation(coefficients, r_squared, target_column),
+            "interpretation": self._build_bayesian_interpretation(
+                coefficients, r_squared, target_column
+            ),
         }
 
         return ToolResult(
@@ -1071,7 +1206,9 @@ class ModelFittingTool(BaseTool):
         from sklearn.preprocessing import StandardScaler
 
         if not target_column or not feature_columns:
-            return ToolResult(success=False, error="'target_column' and 'feature_columns' are required.")
+            return ToolResult(
+                success=False, error="'target_column' and 'feature_columns' are required."
+            )
 
         clean = df[[target_column] + feature_columns].dropna()
         y = clean[target_column].astype(float)
@@ -1089,22 +1226,28 @@ class ModelFittingTool(BaseTool):
             "Ridge Regression": Ridge(alpha=1.0),
             "Lasso Regression": Lasso(alpha=0.1),
             "Random Forest": RandomForestRegressor(n_estimators=50, max_depth=5, random_state=42),
-            "Gradient Boosting": GradientBoostingRegressor(n_estimators=50, max_depth=3, random_state=42),
+            "Gradient Boosting": GradientBoostingRegressor(
+                n_estimators=50, max_depth=3, random_state=42
+            ),
         }
 
         results = []
         for name, model in models.items():
             try:
                 scores = cross_val_score(model, X_scaled, y, cv=n_folds, scoring="r2")
-                mae_scores = -cross_val_score(model, X_scaled, y, cv=n_folds, scoring="neg_mean_absolute_error")
-                results.append({
-                    "model": name,
-                    "mean_r2": round(float(scores.mean()), 4),
-                    "std_r2": round(float(scores.std()), 4),
-                    "mean_mae": round(float(mae_scores.mean()), 4),
-                    "std_mae": round(float(mae_scores.std()), 4),
-                    "fold_r2_scores": [round(float(s), 4) for s in scores],
-                })
+                mae_scores = -cross_val_score(
+                    model, X_scaled, y, cv=n_folds, scoring="neg_mean_absolute_error"
+                )
+                results.append(
+                    {
+                        "model": name,
+                        "mean_r2": round(float(scores.mean()), 4),
+                        "std_r2": round(float(scores.std()), 4),
+                        "mean_mae": round(float(mae_scores.mean()), 4),
+                        "std_mae": round(float(mae_scores.std()), 4),
+                        "fold_r2_scores": [round(float(s), 4) for s in scores],
+                    }
+                )
             except Exception as e:
                 results.append({"model": name, "error": str(e)})
 

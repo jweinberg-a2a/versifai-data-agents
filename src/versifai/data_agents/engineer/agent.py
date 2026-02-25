@@ -102,7 +102,8 @@ class DataEngineerAgent:
         # Build the tool registry with inter-tool dependencies
         self._schema_tool = SchemaDesignerTool(cfg=cfg)
         self._transformer_tool = DataTransformerTool(
-            schema_designer_tool=self._schema_tool, cfg=cfg,
+            schema_designer_tool=self._schema_tool,
+            cfg=cfg,
         )
         self._catalog_writer = CatalogWriterTool(transformer_tool=self._transformer_tool)
         # Back-reference so transformer can auto-flush to catalog
@@ -132,7 +133,8 @@ class DataEngineerAgent:
         """Register all tools the agent can use."""
         cfg = self._cfg
         self._dynamic_tool_builder = DynamicToolBuilderTool(
-            registry=self._registry, transformer_tool=self._transformer_tool,
+            registry=self._registry,
+            transformer_tool=self._transformer_tool,
         )
 
         tools = [
@@ -161,35 +163,37 @@ class DataEngineerAgent:
         tools = self._registry.to_claude_tools()
 
         # Add the ask_human pseudo-tool
-        tools.append({
-            "name": "ask_human",
-            "description": (
-                "Pause execution and ask the human operator a question. "
-                "Use this when you are uncertain about a data interpretation, "
-                "column mapping, file selection, or any decision that requires "
-                "human judgment. The operator is watching the notebook output "
-                "and will provide an answer."
-            ),
-            "input_schema": {
-                "type": "object",
-                "properties": {
-                    "question": {
-                        "type": "string",
-                        "description": "The question to ask the operator. Be specific and provide context.",
+        tools.append(
+            {
+                "name": "ask_human",
+                "description": (
+                    "Pause execution and ask the human operator a question. "
+                    "Use this when you are uncertain about a data interpretation, "
+                    "column mapping, file selection, or any decision that requires "
+                    "human judgment. The operator is watching the notebook output "
+                    "and will provide an answer."
+                ),
+                "input_schema": {
+                    "type": "object",
+                    "properties": {
+                        "question": {
+                            "type": "string",
+                            "description": "The question to ask the operator. Be specific and provide context.",
+                        },
+                        "context": {
+                            "type": "string",
+                            "description": "Additional context to help the operator answer.",
+                        },
+                        "options": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "Optional list of suggested answers.",
+                        },
                     },
-                    "context": {
-                        "type": "string",
-                        "description": "Additional context to help the operator answer.",
-                    },
-                    "options": {
-                        "type": "array",
-                        "items": {"type": "string"},
-                        "description": "Optional list of suggested answers.",
-                    },
+                    "required": ["question"],
                 },
-                "required": ["question"],
-            },
-        })
+            }
+        )
 
         return tools
 
@@ -229,26 +233,30 @@ class DataEngineerAgent:
             if source_path:
                 # ── Shortcut: Skip discovery, process a single directory ──
                 import os
+
                 source_name = os.path.basename(source_path.rstrip("/"))
                 file_count = 0
                 if os.path.isdir(source_path):
-                    file_count = len([
-                        f for f in os.listdir(source_path)
-                        if os.path.isfile(os.path.join(source_path, f))
-                    ])
+                    file_count = len(
+                        [
+                            f
+                            for f in os.listdir(source_path)
+                            if os.path.isfile(os.path.join(source_path, f))
+                        ]
+                    )
 
-                self._display.phase(
-                    f"Direct mode: {source_name} ({file_count} files)"
-                )
+                self._display.phase(f"Direct mode: {source_name} ({file_count} files)")
                 self._display.step("Skipping discovery — processing target directory only.")
 
-                self._discovered_sources = [{
-                    "name": source_name,
-                    "path": source_path,
-                    "file_count": file_count,
-                    "files": "",
-                    "mode": "full" if force_full else "check_incremental",
-                }]
+                self._discovered_sources = [
+                    {
+                        "name": source_name,
+                        "path": source_path,
+                        "file_count": file_count,
+                        "files": "",
+                        "mode": "full" if force_full else "check_incremental",
+                    }
+                ]
 
                 if not force_full:
                     self._display.phase("Incremental Status Check")
@@ -271,9 +279,7 @@ class DataEngineerAgent:
                 for fb_source in fallback_sources:
                     if fb_source["path"] not in existing_paths:
                         self._discovered_sources.append(fb_source)
-                        self._display.step(
-                            f"  Added from fallback: {fb_source['name']}"
-                        )
+                        self._display.step(f"  Added from fallback: {fb_source['name']}")
 
                 self._display.step(
                     f"Discovered {len(self._discovered_sources)} data sources to process"
@@ -289,9 +295,7 @@ class DataEngineerAgent:
                     self._display.phase("Phase 1.5: Incremental Status Check")
                     self._detect_incremental_status()
                 else:
-                    self._display.step(
-                        "Force full reload — skipping incremental detection."
-                    )
+                    self._display.step("Force full reload — skipping incremental detection.")
                     for source in self._discovered_sources:
                         source["mode"] = "full"
 
@@ -351,8 +355,7 @@ class DataEngineerAgent:
                 # Prepend carryover context if we have it
                 if carryover:
                     source_prompt = (
-                        f"## Context From Previous Sources\n{carryover}\n\n"
-                        f"---\n\n{source_prompt}"
+                        f"## Context From Previous Sources\n{carryover}\n\n---\n\n{source_prompt}"
                     )
 
                 # Process this source
@@ -363,8 +366,7 @@ class DataEngineerAgent:
 
                 # Log source completion
                 self._memory.log_source_summary(
-                    source_name,
-                    f"Processed from {source_path} ({file_count} files) [mode={mode}]"
+                    source_name, f"Processed from {source_path} ({file_count} files) [mode={mode}]"
                 )
                 self._display.success(f"Completed source: {source_name}")
 
@@ -412,13 +414,11 @@ class DataEngineerAgent:
 
                     if missing:
                         self._display.warning(
-                            f"After {retry_attempts} retries, still missing: "
-                            f"{', '.join(missing)}"
+                            f"After {retry_attempts} retries, still missing: {', '.join(missing)}"
                         )
                     else:
                         self._display.success(
-                            f"All {len(hint.files)} tables created for "
-                            f"{source_name}."
+                            f"All {len(hint.files)} tables created for {source_name}."
                         )
 
             # ── Phase 3: Table Completeness Check ─────────────────
@@ -605,39 +605,30 @@ class DataEngineerAgent:
         self._display.phase("DATA QUALITY CHECK")
         self._display.step(f"Target schema: {cfg.full_schema}")
         if tables:
-            self._display.step(
-                f"Focused on: {', '.join(tables)}"
-            )
+            self._display.step(f"Focused on: {', '.join(tables)}")
 
         try:
             # Pre-build the table inventory from Unity Catalog
             table_inventory = self._build_table_inventory()
 
             if not table_inventory:
-                self._display.error(
-                    "No tables found in Unity Catalog. Nothing to validate."
-                )
+                self._display.error("No tables found in Unity Catalog. Nothing to validate.")
                 return {"overall_status": "ERROR", "summary": "No tables found."}
 
             # Filter to requested tables if specified
             if tables:
                 tables_lower = {t.lower() for t in tables}
                 table_inventory = [
-                    t for t in table_inventory
-                    if t["table_name"].lower() in tables_lower
+                    t for t in table_inventory if t["table_name"].lower() in tables_lower
                 ]
                 if not table_inventory:
-                    self._display.error(
-                        f"None of the requested tables found: {tables}"
-                    )
+                    self._display.error(f"None of the requested tables found: {tables}")
                     return {
                         "overall_status": "ERROR",
                         "summary": f"Requested tables not found: {tables}",
                     }
 
-            self._display.step(
-                f"Found {len(table_inventory)} tables to validate."
-            )
+            self._display.step(f"Found {len(table_inventory)} tables to validate.")
 
             # Run the analyst with the pre-built inventory
             analyst = DataAnalystAgent(
@@ -653,22 +644,20 @@ class DataEngineerAgent:
             if verdicts:
                 verdict_rows = []
                 for table_name, verdict in verdicts.items():
-                    verdict_rows.append({
-                        "table": table_name,
-                        "status": verdict.get("status", "?"),
-                        "issues": str(len(verdict.get("issues", []))),
-                    })
-                self._display.summary_table(
-                    "Quality Check Verdicts", verdict_rows
-                )
+                    verdict_rows.append(
+                        {
+                            "table": table_name,
+                            "status": verdict.get("status", "?"),
+                            "issues": str(len(verdict.get("issues", []))),
+                        }
+                    )
+                self._display.summary_table("Quality Check Verdicts", verdict_rows)
 
             overall = feedback.get("overall_status", "NEEDS_REVIEW")
             if overall == "PASS":
                 self._display.success("All tables ACCEPTED.")
             else:
-                self._display.warning(
-                    f"Quality check: {overall}. Review verdicts above."
-                )
+                self._display.warning(f"Quality check: {overall}. Review verdicts above.")
 
         except KeyboardInterrupt:
             self._display.warning("Quality check interrupted by user.")
@@ -704,36 +693,26 @@ class DataEngineerAgent:
 
         inventory = []
         for t in tables_result.data.get("tables", []):
-            name = (
-                t.get("tableName")
-                or t.get("table_name")
-                or t.get("name", "")
-            )
+            name = t.get("tableName") or t.get("table_name") or t.get("name", "")
             if not name or name == "data_catalog":
                 continue
 
             full_name = f"{cfg.full_schema}.{name}"
 
             # DESCRIBE TABLE to get columns
-            desc_result = self._registry.execute(
-                "execute_sql", sql=f"DESCRIBE TABLE {full_name}"
-            )
+            desc_result = self._registry.execute("execute_sql", sql=f"DESCRIBE TABLE {full_name}")
             columns = []
             if desc_result.success:
                 for row in desc_result.data.get("rows", []):
-                    col_name = (
-                        row.get("col_name")
-                        or row.get("column_name", "")
-                    )
-                    col_type = (
-                        row.get("data_type")
-                        or row.get("type", "")
-                    )
+                    col_name = row.get("col_name") or row.get("column_name", "")
+                    col_type = row.get("data_type") or row.get("type", "")
                     if col_name and not col_name.startswith("#"):
-                        columns.append({
-                            "name": col_name,
-                            "type": col_type,
-                        })
+                        columns.append(
+                            {
+                                "name": col_name,
+                                "type": col_type,
+                            }
+                        )
 
             # Row count
             count_result = self._registry.execute(
@@ -749,10 +728,7 @@ class DataEngineerAgent:
             # Determine grain from columns and extract key column types
             col_lookup = {c["name"].lower(): c for c in columns}
             has_fips = cfg.join_key.column_name in col_lookup
-            has_contract = (
-                "contract_id" in col_lookup
-                or "contract_number" in col_lookup
-            )
+            has_contract = "contract_id" in col_lookup or "contract_number" in col_lookup
             if has_fips and has_contract:
                 grain = "bridge"
             elif has_fips:
@@ -777,21 +753,22 @@ class DataEngineerAgent:
             if contract_col_name:
                 key_types[contract_col_name] = col_lookup[contract_col_name]["type"]
 
-            inventory.append({
-                "table_name": name,
-                "full_name": full_name,
-                "columns": columns,
-                "row_count": row_count,
-                "grain": grain,
-                "key_types": key_types,
-            })
+            inventory.append(
+                {
+                    "table_name": name,
+                    "full_name": full_name,
+                    "columns": columns,
+                    "row_count": row_count,
+                    "grain": grain,
+                    "key_types": key_types,
+                }
+            )
 
         # Try to pull catalog descriptions to enrich the inventory
         catalog_result = self._registry.execute(
             "execute_sql",
             sql=(
-                f"SELECT source_table, column_name, description "
-                f"FROM {cfg.full_schema}.data_catalog"
+                f"SELECT source_table, column_name, description FROM {cfg.full_schema}.data_catalog"
             ),
         )
         if catalog_result.success:
@@ -809,9 +786,7 @@ class DataEngineerAgent:
                 for col in table_info["columns"]:
                     desc = desc_lookup.get(
                         (table_info["full_name"], col["name"]),
-                        desc_lookup.get(
-                            (table_info["table_name"], col["name"]), ""
-                        ),
+                        desc_lookup.get((table_info["table_name"], col["name"]), ""),
                     )
                     col["description"] = desc
 
@@ -848,25 +823,26 @@ class DataEngineerAgent:
             if verdicts:
                 verdict_rows = []
                 for table_name, verdict in verdicts.items():
-                    verdict_rows.append({
-                        "table": table_name,
-                        "status": verdict.get("status", "?"),
-                        "issues": str(len(verdict.get("issues", []))),
-                    })
+                    verdict_rows.append(
+                        {
+                            "table": table_name,
+                            "status": verdict.get("status", "?"),
+                            "issues": str(len(verdict.get("issues", []))),
+                        }
+                    )
                 self._display.summary_table(
                     f"Analyst Verdicts (Iteration {iteration})", verdict_rows
                 )
 
             # Check if everything passed
             if overall == "PASS":
-                self._display.success(
-                    "All tables ACCEPTED by the Data Analyst. Pipeline complete!"
-                )
+                self._display.success("All tables ACCEPTED by the Data Analyst. Pipeline complete!")
                 return
 
             # Count what needs fixing
             needs_fix = {
-                name: v for name, v in verdicts.items()
+                name: v
+                for name, v in verdicts.items()
                 if v.get("status") in ("NEEDS_FIX", "REJECTED")
             }
 
@@ -877,28 +853,24 @@ class DataEngineerAgent:
                         "Analyst did not produce structured verdicts. "
                         "Treating raw response as feedback."
                     )
-                    needs_fix = {"_raw": {
-                        "status": "NEEDS_REVIEW",
-                        "issues": [feedback.get("summary", "See raw response")],
-                        "fixes": [],
-                    }}
+                    needs_fix = {
+                        "_raw": {
+                            "status": "NEEDS_REVIEW",
+                            "issues": [feedback.get("summary", "See raw response")],
+                            "fixes": [],
+                        }
+                    }
                 else:
-                    self._display.success(
-                        "No issues found by analyst. Acceptance complete."
-                    )
+                    self._display.success("No issues found by analyst. Acceptance complete.")
                     return
 
-            self._display.phase(
-                f"Data Engineer: Fixing {len(needs_fix)} table(s)"
-            )
+            self._display.phase(f"Data Engineer: Fixing {len(needs_fix)} table(s)")
 
             # ── Engineer fixes ───────────────────────────────────
             # Build a focused feedback prompt for the engineer
             feedback_json = json.dumps(feedback, indent=2, default=str)
 
-            fix_prompt = ANALYST_FEEDBACK_PROMPT_TEMPLATE.format(
-                analyst_feedback=feedback_json
-            )
+            fix_prompt = ANALYST_FEEDBACK_PROMPT_TEMPLATE.format(analyst_feedback=feedback_json)
 
             # Fresh memory for the fix phase
             self._memory.reset_for_new_source()
@@ -911,8 +883,7 @@ class DataEngineerAgent:
             )
 
             self._display.success(
-                f"Engineer completed fixes for iteration {iteration}. "
-                f"Analyst will re-review."
+                f"Engineer completed fixes for iteration {iteration}. Analyst will re-review."
             )
 
         # If we exhausted iterations
@@ -964,12 +935,14 @@ class DataEngineerAgent:
                                 name = entry.get("name", "")
                                 if path and path not in seen_paths:
                                     seen_paths.add(path)
-                                    sources.append({
-                                        "name": name,
-                                        "path": path,
-                                        "file_count": entry.get("file_count", "?"),
-                                        "files": "",
-                                    })
+                                    sources.append(
+                                        {
+                                            "name": name,
+                                            "path": path,
+                                            "file_count": entry.get("file_count", "?"),
+                                            "files": "",
+                                        }
+                                    )
 
                     # Also look for direct file listings (recursive explore results)
                     if isinstance(data, dict) and "path" in data and "total_files" in data:
@@ -985,18 +958,19 @@ class DataEngineerAgent:
                                     if e.get("type") == "file"
                                 ]
                                 seen_paths.add(path)
-                                sources.append({
-                                    "name": name,
-                                    "path": path,
-                                    "file_count": data.get("total_files", len(file_names)),
-                                    "files": ", ".join(file_names[:10]),
-                                })
+                                sources.append(
+                                    {
+                                        "name": name,
+                                        "path": path,
+                                        "file_count": data.get("total_files", len(file_names)),
+                                        "files": ", ".join(file_names[:10]),
+                                    }
+                                )
 
         # If parsing didn't find sources, fall back to known subdirectories
         if not sources:
             self._display.warning(
-                "Could not auto-parse discovery results. "
-                "Falling back to direct directory listing."
+                "Could not auto-parse discovery results. Falling back to direct directory listing."
             )
             sources = self._fallback_discover_sources()
 
@@ -1008,22 +982,28 @@ class DataEngineerAgent:
         Lists subdirectories in the volume path.
         """
         import os
+
         try:
             entries = os.listdir(self._volume_path)
             sources = []
             for name in sorted(entries):
                 full_path = os.path.join(self._volume_path, name)
                 if os.path.isdir(full_path):
-                    file_count = len([
-                        f for f in os.listdir(full_path)
-                        if os.path.isfile(os.path.join(full_path, f))
-                    ])
-                    sources.append({
-                        "name": name,
-                        "path": full_path,
-                        "file_count": file_count,
-                        "files": "",
-                    })
+                    file_count = len(
+                        [
+                            f
+                            for f in os.listdir(full_path)
+                            if os.path.isfile(os.path.join(full_path, f))
+                        ]
+                    )
+                    sources.append(
+                        {
+                            "name": name,
+                            "path": full_path,
+                            "file_count": file_count,
+                            "files": "",
+                        }
+                    )
             return sources
         except Exception as e:
             self._display.error(f"Fallback discovery failed: {e}")
@@ -1034,7 +1014,8 @@ class DataEngineerAgent:
     # ------------------------------------------------------------------
 
     def _check_table_completeness(
-        self, source_names: list[str] | None = None,
+        self,
+        source_names: list[str] | None = None,
     ) -> list[str]:
         """
         Verify that expected tables exist in Unity Catalog.
@@ -1054,11 +1035,7 @@ class DataEngineerAgent:
 
         existing: set[str] = set()
         for t in tables_result.data.get("tables", []):
-            name = (
-                t.get("tableName")
-                or t.get("table_name")
-                or t.get("name", "")
-            )
+            name = t.get("tableName") or t.get("table_name") or t.get("name", "")
             if name:
                 existing.add(name.lower())
 
@@ -1077,22 +1054,16 @@ class DataEngineerAgent:
         extra = existing - expected - {"data_catalog"}
 
         if missing:
-            self._display.warning(
-                f"MISSING TABLES ({len(missing)}): {', '.join(missing)}"
-            )
+            self._display.warning(f"MISSING TABLES ({len(missing)}): {', '.join(missing)}")
         if extra:
-            self._display.step(
-                f"Extra tables (not in expected list): "
-                f"{', '.join(sorted(extra))}"
-            )
+            self._display.step(f"Extra tables (not in expected list): {', '.join(sorted(extra))}")
         if not missing:
-            self._display.success(
-                f"All {len(expected)} expected tables exist in Unity Catalog."
-            )
+            self._display.success(f"All {len(expected)} expected tables exist in Unity Catalog.")
         return missing
 
     def _check_source_tables(
-        self, source_name: str,
+        self,
+        source_name: str,
     ) -> list[str]:
         """Check which expected tables from a source's hint are still missing.
 
@@ -1108,19 +1079,11 @@ class DataEngineerAgent:
 
         existing: set[str] = set()
         for t in tables_result.data.get("tables", []):
-            name = (
-                t.get("tableName")
-                or t.get("table_name")
-                or t.get("name", "")
-            )
+            name = t.get("tableName") or t.get("table_name") or t.get("name", "")
             if name:
                 existing.add(name.lower())
 
-        return [
-            f.target_table
-            for f in hint.files
-            if f.target_table.lower() not in existing
-        ]
+        return [f.target_table for f in hint.files if f.target_table.lower() not in existing]
 
     def _build_retry_prompt(
         self,
@@ -1144,8 +1107,7 @@ class DataEngineerAgent:
                 if f.target_table == table_name:
                     desc = f.description or "see source documentation"
                     table_instructions.append(
-                        f"- **`{table_name}`**: file pattern `{f.file_pattern}` "
-                        f"— {desc}"
+                        f"- **`{table_name}`**: file pattern `{f.file_pattern}` — {desc}"
                     )
                     break
 
@@ -1205,11 +1167,7 @@ are MISSING and MUST be created now:
         existing_table_names: set[str] = set()
         for t in tables_result.data.get("tables", []):
             # SHOW TABLES returns tableName or table_name depending on method
-            name = (
-                t.get("tableName")
-                or t.get("table_name")
-                or t.get("name", "")
-            )
+            name = t.get("tableName") or t.get("table_name") or t.get("name", "")
             if name:
                 existing_table_names.add(name.lower())
 
@@ -1235,8 +1193,7 @@ are MISSING and MUST be created now:
                 source["mode"] = "full"
                 source["loaded_files"] = []
                 self._display.step(
-                    f"  {source['name']}: table exists but couldn't query "
-                    f"files — full processing"
+                    f"  {source['name']}: table exists but couldn't query files — full processing"
                 )
                 continue
 
@@ -1322,18 +1279,20 @@ are MISSING and MUST be created now:
                     # PRE-CHECK: Detect repeated missing-parameter failures
                     # before executing the tool. If the agent keeps dropping
                     # the same parameter, it's likely an LLM output limit issue.
-                    intercept = self._check_missing_param_pattern(
-                        tool_name, tool_input
-                    )
+                    intercept = self._check_missing_param_pattern(tool_name, tool_input)
                     if intercept:
                         # Don't execute — return guidance immediately
                         result_str = intercept
                         self._consecutive_errors += 1
                         self._display.tool_result(
-                            tool_name, intercept[:400], is_error=True,
+                            tool_name,
+                            intercept[:400],
+                            is_error=True,
                         )
                         self._memory.add_tool_result(
-                            tool_use_id, result_str, is_error=True,
+                            tool_use_id,
+                            result_str,
+                            is_error=True,
                         )
                         continue
 
@@ -1413,9 +1372,7 @@ are MISSING and MUST be created now:
         self, question: str, context: str = "", options: list[str] | None = None
     ) -> str:
         """Handle the ask_human tool by pausing for human input."""
-        answer = self._display.ask_human(
-            question=question, context=context, options=options
-        )
+        answer = self._display.ask_human(question=question, context=context, options=options)
         return answer or "(no response)"
 
     # ------------------------------------------------------------------
@@ -1423,7 +1380,9 @@ are MISSING and MUST be created now:
     # ------------------------------------------------------------------
 
     def _check_missing_param_pattern(
-        self, tool_name: str, tool_input: dict,
+        self,
+        tool_name: str,
+        tool_input: dict,
     ) -> str | None:
         """
         Detect when the LLM keeps calling a tool without a required parameter.
@@ -1463,9 +1422,7 @@ are MISSING and MUST be created now:
 
         # Check if any parameter has been missing 2+ times
         repeated = {
-            p: count
-            for p, count in self._missing_param_tracker[tracker_key].items()
-            if count >= 2
+            p: count for p, count in self._missing_param_tracker[tracker_key].items() if count >= 2
         }
 
         if not repeated:
@@ -1509,11 +1466,13 @@ are MISSING and MUST be created now:
         if tool_name not in self._error_tracker:
             self._error_tracker[tool_name] = []
 
-        self._error_tracker[tool_name].append({
-            "input": {k: str(v)[:100] for k, v in tool_input.items()},
-            "error": error[:300],
-            "timestamp": datetime.now().isoformat(),
-        })
+        self._error_tracker[tool_name].append(
+            {
+                "input": {k: str(v)[:100] for k, v in tool_input.items()},
+                "error": error[:300],
+                "timestamp": datetime.now().isoformat(),
+            }
+        )
         self._error_tracker[tool_name] = self._error_tracker[tool_name][-10:]
 
     def _get_error_context(self, tool_name: str) -> str:
@@ -1533,14 +1492,16 @@ are MISSING and MUST be created now:
     def _build_summary(self) -> dict:
         tables = []
         for name, source_state in self._state.sources.items():
-            tables.append({
-                "source": name,
-                "status": source_state.status.value,
-                "table": source_state.table_name,
-                "rows": source_state.rows_loaded,
-                "files": f"{source_state.files_processed}/{source_state.files_total}",
-                "errors": len(source_state.errors),
-            })
+            tables.append(
+                {
+                    "source": name,
+                    "status": source_state.status.value,
+                    "table": source_state.table_name,
+                    "rows": source_state.rows_loaded,
+                    "files": f"{source_state.files_processed}/{source_state.files_total}",
+                    "errors": len(source_state.errors),
+                }
+            )
 
         return {
             "phase": self._state.phase,

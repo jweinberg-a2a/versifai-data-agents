@@ -36,15 +36,19 @@ if TYPE_CHECKING:
 @dataclass
 class ResearchQuestion:
     """A specific research question the agent should investigate."""
+
     id: str
     question: str
     required_tables: list[str] = field(default_factory=list)
-    analysis_type: str = "descriptive"  # "descriptive", "comparative", "correlation", "trend", "simulation"
+    analysis_type: str = (
+        "descriptive"  # "descriptive", "comparative", "correlation", "trend", "simulation"
+    )
 
 
 @dataclass
 class SilverDatasetSpec:
     """Defines a silver-layer pre-joined dataset the agent should build."""
+
     name: str
     description: str
     source_tables: list[str] = field(default_factory=list)
@@ -56,6 +60,7 @@ class SilverDatasetSpec:
 @dataclass
 class ResearchReference:
     """A published research paper or report relevant to the thesis."""
+
     title: str
     url: str = ""
     description: str = ""
@@ -81,6 +86,7 @@ class AnalysisTheme:
       to create custom discovery-driven visuals when the agent finds something
       unexpected in the data.
     """
+
     id: str
     title: str
     question: str
@@ -153,8 +159,8 @@ class ResearchConfig:
     dependencies: list[AgentDependency] = field(default_factory=list)
 
     # ── MLflow integration ────────────────────────────────────────
-    mlflow_experiment: str = ""       # e.g. "/Shared/versifai/expansion_propensity"
-    mlflow_registry_name: str = ""    # e.g. "catalog.schema.model_name"
+    mlflow_experiment: str = ""  # e.g. "/Shared/versifai/expansion_propensity"
+    mlflow_registry_name: str = ""  # e.g. "catalog.schema.model_name"
 
     # ── Visualization settings ───────────────────────────────────
     chart_style: str = "seaborn-v0_8-whitegrid"
@@ -183,11 +189,13 @@ class ResearchConfig:
             tables = "\n".join(f"   - {t}" for t in theme.tables_to_produce)
             sig_viz = (
                 f"\n**Signature Visualization**:\n{theme.signature_visualization}"
-                if theme.signature_visualization else ""
+                if theme.signature_visualization
+                else ""
             )
             viz_notes = (
                 f"\n**Visualization Notes**: {theme.visualization_notes}"
-                if theme.visualization_notes else ""
+                if theme.visualization_notes
+                else ""
             )
             sections.append(
                 f"### Theme {theme.sequence}: {theme.title}\n"
@@ -245,6 +253,7 @@ class ResearchConfig:
 # Lazy import helper
 # ---------------------------------------------------------------------------
 
+
 def _default_project() -> ProjectConfig:
     """Lazy default — returns an empty ProjectConfig.
 
@@ -252,4 +261,5 @@ def _default_project() -> ProjectConfig:
     only to satisfy the dataclass default_factory contract.
     """
     from versifai.data_agents.engineer.config import ProjectConfig
+
     return ProjectConfig()

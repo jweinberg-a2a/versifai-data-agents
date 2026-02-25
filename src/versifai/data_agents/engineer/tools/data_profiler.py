@@ -115,6 +115,7 @@ class DataProfilerTool(BaseTool):
             return pd.read_excel(file_path, nrows=sample_size)
         if ext == "parquet":
             import pyarrow.parquet as pq
+
             pf = pq.ParquetFile(file_path)
             # Read only the first row group (usually enough for profiling)
             table = pf.read_row_groups([0]) if pf.metadata.num_row_groups > 0 else pf.read()
@@ -143,8 +144,12 @@ class DataProfilerTool(BaseTool):
                     else:
                         sep = ","
                 return pd.read_csv(
-                    file_path, sep=sep, encoding=enc, nrows=sample_size,
-                    on_bad_lines="skip", low_memory=False,
+                    file_path,
+                    sep=sep,
+                    encoding=enc,
+                    nrows=sample_size,
+                    on_bad_lines="skip",
+                    low_memory=False,
                 )
             except (UnicodeDecodeError, UnicodeError):
                 continue
@@ -190,14 +195,12 @@ class DataProfilerTool(BaseTool):
         if unique_count > 0 and unique_count <= 50:
             value_counts = non_null.value_counts().head(5)
             profile["top_values"] = [
-                {"value": str(v), "count": int(c)}
-                for v, c in value_counts.items()
+                {"value": str(v), "count": int(c)} for v, c in value_counts.items()
             ]
         elif unique_count > 50:
             value_counts = non_null.value_counts().head(3)
             profile["top_values"] = [
-                {"value": str(v), "count": int(c)}
-                for v, c in value_counts.items()
+                {"value": str(v), "count": int(c)} for v, c in value_counts.items()
             ]
 
         # FIPS detection heuristics
@@ -226,8 +229,20 @@ class DataProfilerTool(BaseTool):
     def _is_geo_like(self, col_lower: str) -> bool:
         """Heuristic: does this column name suggest geographic data?"""
         geo_keywords = [
-            "county", "state", "zip", "city", "region", "tract",
-            "latitude", "longitude", "lat", "lon", "lng",
-            "address", "cbsa", "msa", "metropolitan",
+            "county",
+            "state",
+            "zip",
+            "city",
+            "region",
+            "tract",
+            "latitude",
+            "longitude",
+            "lat",
+            "lon",
+            "lng",
+            "address",
+            "cbsa",
+            "msa",
+            "metropolitan",
         ]
         return any(kw in col_lower for kw in geo_keywords)

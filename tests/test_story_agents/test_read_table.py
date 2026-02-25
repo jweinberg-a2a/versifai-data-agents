@@ -35,7 +35,7 @@ class TestReadTable:
         tables_dir = tmp_path / "tables"
         tables_dir.mkdir()
         (tables_dir / "big.csv").write_text(
-            "id,value\n" + "".join(f"{i},{i*10}\n" for i in range(50))
+            "id,value\n" + "".join(f"{i},{i * 10}\n" for i in range(50))
         )
 
         tool = ReadTableTool(tables_path=str(tables_dir))

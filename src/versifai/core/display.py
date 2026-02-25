@@ -70,10 +70,12 @@ _CHAT_CSS = """
 </style>
 """
 
+
 def _in_databricks() -> bool:
     """Detect if we're running inside a Databricks notebook."""
     try:
         from pyspark.sql import SparkSession
+
         spark = SparkSession.getActiveSession()
         return spark is not None
     except Exception:
@@ -148,12 +150,10 @@ class AgentDisplay:
                 self._raw_html(
                     f'{_CHAT_CSS}<div class="agent-container">'
                     f'<div class="agent-step" style="color:#94a3b8;">'
-                    f'--- Earlier output truncated (see progress.txt in notes/) ---'
-                    f'</div></div>'
+                    f"--- Earlier output truncated (see progress.txt in notes/) ---"
+                    f"</div></div>"
                 )
-            self._raw_html(
-                f'{_CHAT_CSS}<div class="agent-container">{html_content}</div>'
-            )
+            self._raw_html(f'{_CHAT_CSS}<div class="agent-container">{html_content}</div>')
         else:
             plain = re.sub(r"<[^>]+>", "", html_content)
             print(plain.strip())
@@ -162,6 +162,7 @@ class AgentDisplay:
         """Clear the current cell's accumulated output."""
         try:
             from IPython.display import clear_output
+
             clear_output(wait=True)
         except Exception:
             pass
@@ -172,6 +173,7 @@ class AgentDisplay:
                 self._dbutils.notebook.displayHTML(content)
             else:
                 from IPython.display import HTML, display
+
                 display(HTML(content))
         except Exception:
             pass
@@ -182,15 +184,13 @@ class AgentDisplay:
 
     def phase(self, title: str) -> None:
         """Display a major phase header."""
-        self._append_log(f"\n{'='*72}\n  {title}\n{'='*72}")
+        self._append_log(f"\n{'=' * 72}\n  {title}\n{'=' * 72}")
         if self._is_databricks:
-            self._display_html(
-                f'<div class="agent-phase">{html.escape(title)}</div>'
-            )
+            self._display_html(f'<div class="agent-phase">{html.escape(title)}</div>')
         else:
-            print(f"\n{'='*60}")
+            print(f"\n{'=' * 60}")
             print(f"  {title}")
-            print(f"{'='*60}")
+            print(f"{'=' * 60}")
         logger.debug(f"PHASE: {title}")
 
     def step(self, message: str) -> None:
@@ -212,10 +212,12 @@ class AgentDisplay:
             self._display_html(
                 f'<div class="agent-bubble thinking">'
                 f'<div class="label">Agent Reasoning</div>'
-                f'{escaped}</div>'
+                f"{escaped}</div>"
             )
         else:
-            wrapped = textwrap.fill(display_text, width=88, initial_indent="  ", subsequent_indent="  ")
+            wrapped = textwrap.fill(
+                display_text, width=88, initial_indent="  ", subsequent_indent="  "
+            )
             print("\n  [Reasoning]")
             print(wrapped)
         logger.debug(f"THINKING: {thought[:200]}")
@@ -240,7 +242,7 @@ class AgentDisplay:
                 f'<div class="label">Tool Call</div>'
                 f'<code style="color:#93c5fd;">{html.escape(tool_name)}</code>'
                 f'<span style="color:#64748b;font-size:12px;margin-left:8px;">'
-                f'({params_html})</span></div>'
+                f"({params_html})</span></div>"
             )
         else:
             print(f"\n  > {tool_name}({params_plain})")
@@ -260,7 +262,7 @@ class AgentDisplay:
             self._display_html(
                 f'<div class="agent-bubble result{err_class}">'
                 f'<div class="label">{html.escape(tool_name)} - {label}</div>'
-                f'{escaped}</div>'
+                f"{escaped}</div>"
             )
         else:
             # Keep result output compact
@@ -282,7 +284,7 @@ class AgentDisplay:
             self._display_html(
                 f'<div class="agent-bubble success">'
                 f'<div class="label">Success</div>'
-                f'{html.escape(message)}</div>'
+                f"{html.escape(message)}</div>"
             )
         else:
             print(f"\n  [OK] {message}")
@@ -295,7 +297,7 @@ class AgentDisplay:
             self._display_html(
                 f'<div class="agent-bubble warn">'
                 f'<div class="label">Warning</div>'
-                f'{html.escape(message)}</div>'
+                f"{html.escape(message)}</div>"
             )
         else:
             print(f"\n  [!] {message}")
@@ -308,7 +310,7 @@ class AgentDisplay:
             self._display_html(
                 f'<div class="agent-bubble err">'
                 f'<div class="label">Error</div>'
-                f'{html.escape(message)}</div>'
+                f"{html.escape(message)}</div>"
             )
         else:
             print(f"\n  [X] {message}")
@@ -321,23 +323,18 @@ class AgentDisplay:
         headers = list(rows[0].keys())
 
         if self._is_databricks:
-            header_row = "".join(
-                f"<th>{html.escape(h)}</th>" for h in headers
-            )
+            header_row = "".join(f"<th>{html.escape(h)}</th>" for h in headers)
             body_rows = ""
             for row in rows:
-                cells = "".join(
-                    f"<td>{html.escape(str(row.get(h, '')))}</td>"
-                    for h in headers
-                )
+                cells = "".join(f"<td>{html.escape(str(row.get(h, '')))}</td>" for h in headers)
                 body_rows += f"<tr>{cells}</tr>"
 
             self._display_html(
                 f'<div class="agent-bubble">'
                 f'<div class="label">{html.escape(title)}</div>'
                 f'<table class="agent-table">'
-                f'<thead><tr>{header_row}</tr></thead>'
-                f'<tbody>{body_rows}</tbody></table></div>'
+                f"<thead><tr>{header_row}</tr></thead>"
+                f"<tbody>{body_rows}</tbody></table></div>"
             )
         else:
             print(f"\n  {title}")
@@ -378,24 +375,24 @@ class AgentDisplay:
             if context:
                 context_html = (
                     f'<div style="color:#94a3b8;font-size:12px;margin-top:8px;'
-                    f'padding:8px;background:#0f172a;border-radius:6px;'
+                    f"padding:8px;background:#0f172a;border-radius:6px;"
                     f'font-family:monospace;white-space:pre-wrap;">'
-                    f'{html.escape(context)}</div>'
+                    f"{html.escape(context)}</div>"
                 )
 
             self._display_html(
                 f'<div class="agent-bubble human">'
                 f'<div class="label">Agent Needs Your Input</div>'
                 f'<div style="font-size:15px;margin:8px 0;">{html.escape(question)}</div>'
-                f'{context_html}{options_html}'
+                f"{context_html}{options_html}"
                 f'<div style="color:#64748b;font-size:11px;margin-top:8px;">'
-                f'Type your answer below.</div></div>'
+                f"Type your answer below.</div></div>"
             )
 
         # Always print to stdout so the question is visible in all contexts
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print("  AGENT NEEDS YOUR INPUT")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
         print(f"  {question}")
         if context:
             print(f"\n  Context: {context[:500]}")
@@ -414,7 +411,7 @@ class AgentDisplay:
                 f'<div class="agent-bubble" style="border-left:3px solid #8b5cf6;'
                 f'background:#1e1b4b;">'
                 f'<div class="label" style="color:#a78bfa;">Human Response</div>'
-                f'{html.escape(answer)}</div>'
+                f"{html.escape(answer)}</div>"
             )
         print(f"  Human responded: {answer}")
         return answer

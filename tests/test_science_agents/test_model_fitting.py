@@ -76,7 +76,9 @@ class TestBehavioralModelFitting:
             for item in vif_data:
                 if isinstance(item, dict):
                     vif_val = item.get("vif", item.get("VIF", 0))
-                    assert float(vif_val) > 5, f"VIF should be high for collinear features, got {vif_val}"
+                    assert float(vif_val) > 5, (
+                        f"VIF should be high for collinear features, got {vif_val}"
+                    )
 
     def test_random_forest_feature_importance(self, tool):
         """BEHAVIORAL: Dominant predictor ranked first in importance."""
@@ -96,7 +98,9 @@ class TestBehavioralModelFitting:
             feature_columns=["signal", "noise"],
         )
         assert result.success is True
-        importances = result.data.get("feature_importance", result.data.get("feature_importances", []))
+        importances = result.data.get(
+            "feature_importance", result.data.get("feature_importances", [])
+        )
         if isinstance(importances, list) and len(importances) >= 2:
             # Signal should have higher importance than noise
             imp_dict = {}
@@ -106,8 +110,9 @@ class TestBehavioralModelFitting:
                     importance = item.get("importance", item.get("value", 0))
                     imp_dict[name] = float(importance)
             if "signal" in imp_dict and "noise" in imp_dict:
-                assert imp_dict["signal"] > imp_dict["noise"], \
+                assert imp_dict["signal"] > imp_dict["noise"], (
                     f"Signal importance ({imp_dict['signal']}) should exceed noise ({imp_dict['noise']})"
+                )
 
 
 class TestTimeSeries:
@@ -138,5 +143,7 @@ class TestCrossValidation:
         )
         assert result.success is True
         # Should return results for multiple models
-        models = result.data.get("model_comparison", result.data.get("models", result.data.get("results", [])))
+        models = result.data.get(
+            "model_comparison", result.data.get("models", result.data.get("results", []))
+        )
         assert len(models) >= 2
