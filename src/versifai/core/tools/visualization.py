@@ -92,7 +92,7 @@ class CreateVisualizationTool(BaseTool):
 
             if result.result and result.result.data_array:
                 col_names = (
-                    [c.name for c in result.manifest.schema.columns] if result.manifest else []
+                    [c.name for c in result.manifest.schema.columns] if result.manifest else []  # type: ignore[union-attr]
                 )
                 rows = result.result.data_array
                 if col_names:

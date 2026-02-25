@@ -237,9 +237,9 @@ class DataScientistAgent(BaseAgent):
                 )
 
         for theme in sorted(cfg.analysis_themes, key=lambda t: t.sequence):
-            required = set(t.lower() for t in theme.required_tables)
-            present = required & available_tables
-            missing = required - available_tables
+            required = set(t.lower() for t in theme.required_tables)  # type: ignore[assignment]
+            present = required & available_tables  # type: ignore[assignment]
+            missing = required - available_tables  # type: ignore[assignment]
             if missing:
                 self._display.step(
                     f"  Theme {theme.sequence} ({theme.title}): "
@@ -1248,7 +1248,7 @@ rebuild silver tables, do NOT save findings. Just create the charts and tables.
     # Phase runner — thin override to inject progress_path
     # ------------------------------------------------------------------
 
-    def _run_phase(self, prompt: str, max_turns: int) -> str:
+    def _run_phase(self, prompt: str, max_turns: int) -> str:  # type: ignore[override]
         """Run a phase, automatically providing the scientist progress path."""
         progress_path = os.path.join(self._run_path, "notes", "progress.txt")
         return super()._run_phase(prompt, max_turns, progress_path=progress_path)

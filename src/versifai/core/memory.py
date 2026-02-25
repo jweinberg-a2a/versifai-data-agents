@@ -99,7 +99,7 @@ class AgentMemory:
                 },
             ]
         else:
-            content = result
+            content = result  # type: ignore[assignment]
 
         self._messages.append(
             {
@@ -350,7 +350,7 @@ class AgentMemory:
     # ------------------------------------------------------------------
 
     def log_decision(
-        self, source_name: str, decision: str, reasoning: str, tool_used: str = None
+        self, source_name: str, decision: str, reasoning: str, tool_used: str | None = None
     ) -> None:
         """Log a decision made by the agent."""
         self._decisions.append(

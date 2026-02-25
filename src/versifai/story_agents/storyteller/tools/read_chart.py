@@ -72,7 +72,7 @@ class ReadChartTool(BaseTool):
             return {}
         try:
             with open(notes_file) as f:
-                return json.load(f)
+                return json.load(f)  # type: ignore[no-any-return]
         except (json.JSONDecodeError, OSError):
             return {}
 

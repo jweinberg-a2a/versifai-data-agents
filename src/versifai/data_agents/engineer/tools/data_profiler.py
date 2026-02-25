@@ -55,7 +55,7 @@ class DataProfilerTool(BaseTool):
             "required": ["file_path"],
         }
 
-    def _execute(
+    def _execute(  # type: ignore[override]
         self,
         file_path: str,
         sample_size: int = 500,

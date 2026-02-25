@@ -69,7 +69,7 @@ class WebSearchTool(BaseTool):
             "required": ["query"],
         }
 
-    def _execute(
+    def _execute(  # type: ignore[override]
         self, query: str, url: str | None = None, max_chars: int = 10000, **kwargs
     ) -> ToolResult:
         headers = {

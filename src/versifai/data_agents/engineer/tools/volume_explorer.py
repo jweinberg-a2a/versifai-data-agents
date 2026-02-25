@@ -46,7 +46,7 @@ class VolumeExplorerTool(BaseTool):
             "required": ["path"],
         }
 
-    def _execute(self, path: str, recursive: bool = False, **kwargs) -> ToolResult:
+    def _execute(self, path: str, recursive: bool = False, **kwargs) -> ToolResult:  # type: ignore[override]
         if not os.path.exists(path):
             return ToolResult(
                 success=False,
@@ -115,7 +115,7 @@ class VolumeExplorerTool(BaseTool):
                         max_depth=max_depth,
                         current_depth=current_depth + 1,
                     )
-                    entry["children"] = children
+                    entry["children"] = children  # type: ignore[assignment]
             else:
                 _, ext = os.path.splitext(item_name)
                 entries.append(

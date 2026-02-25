@@ -87,7 +87,7 @@ class DocumentationReaderTool(BaseTool):
             "required": ["file_path"],
         }
 
-    def _execute(self, file_path: str, max_chars: int = 15000, **kwargs) -> ToolResult:
+    def _execute(self, file_path: str, max_chars: int = 15000, **kwargs) -> ToolResult:  # type: ignore[override]
         if not os.path.isfile(file_path):
             return ToolResult(success=False, error=f"File not found: {file_path}")
 
@@ -317,7 +317,7 @@ class ScanForDocumentationTool(BaseTool):
             "required": ["path"],
         }
 
-    def _execute(self, path: str, **kwargs) -> ToolResult:
+    def _execute(self, path: str, **kwargs) -> ToolResult:  # type: ignore[override]
         if not os.path.isdir(path):
             return ToolResult(success=False, error=f"Directory not found: {path}")
 

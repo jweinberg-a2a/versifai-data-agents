@@ -128,7 +128,7 @@ class DynamicTool(BaseTool):
     def _execute(self, **kwargs) -> ToolResult:
         if self._compiled_fn is None:
             return ToolResult(success=False, error="Dynamic tool was not compiled successfully.")
-        return self._compiled_fn(**kwargs)
+        return self._compiled_fn(**kwargs)  # type: ignore[no-any-return]
 
 
 class DynamicToolBuilderTool(BaseTool):
@@ -245,7 +245,7 @@ class DynamicToolBuilderTool(BaseTool):
             "required": ["tool_name", "tool_description", "parameters", "code"],
         }
 
-    def _execute(
+    def _execute(  # type: ignore[override]
         self,
         tool_name: str,
         tool_description: str,

@@ -63,7 +63,7 @@ class CatalogWriterTool(BaseTool):
             "required": ["source_name", "table_name"],
         }
 
-    def _execute(
+    def _execute(  # type: ignore[override]
         self, source_name: str, table_name: str, mode: str = "overwrite", **kwargs
     ) -> ToolResult:
         # Check for auto-flush state (parquet batches on staging volume)
@@ -92,7 +92,7 @@ class CatalogWriterTool(BaseTool):
         # ── Large data path: parquet batches exist from auto-flush ────
         if flushed_rows > 0:
             return self._write_from_flushed_parquet(
-                flush_state,
+                flush_state,  # type: ignore[arg-type]
                 df,
                 table_name,
                 mode,
@@ -377,7 +377,7 @@ class ExecuteSQLTool(BaseTool):
     # error message telling it to simplify.
     QUERY_TIMEOUT_SECONDS = 600  # 10 minutes
 
-    def _execute(self, sql: str, **kwargs) -> ToolResult:
+    def _execute(self, sql: str, **kwargs) -> ToolResult:  # type: ignore[override]
         import time
 
         t0 = time.time()
@@ -523,7 +523,7 @@ class ExecuteSQLTool(BaseTool):
         is_ddl = stripped.startswith(("CREATE", "DROP", "ALTER", "INSERT", "MERGE"))
         initial_timeout = "300s" if is_ddl else "120s"
 
-        result = client.statement_execution.execute_statement(
+        result = client.statement_execution.execute_statement(  # type: ignore[assignment]
             warehouse_id=warehouse_id,
             statement=sql,
             wait_timeout=initial_timeout,
@@ -603,7 +603,7 @@ class SilverOnlyExecuteSQLTool(ExecuteSQLTool):
             "UPDATE, DELETE) is only allowed on silver_ tables. Bronze tables are read-only."
         )
 
-    def _execute(self, sql: str, **kwargs) -> ToolResult:
+    def _execute(self, sql: str, **kwargs) -> ToolResult:  # type: ignore[override]
         import re
 
         # Check if this is a write operation
@@ -702,8 +702,8 @@ class ListCatalogTablesTool(BaseTool):
         if not warehouses:
             return ToolResult(success=False, error="No SQL warehouse found.")
 
-        result = client.statement_execution.execute_statement(
-            warehouse_id=warehouses[0].id, statement=sql, wait_timeout="30s"
+        result = client.statement_execution.execute_statement(  # type: ignore[assignment]
+            warehouse_id=warehouses[0].id, statement=sql, wait_timeout="30s"  # type: ignore[arg-type]
         )
 
         tables = []

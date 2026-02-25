@@ -137,7 +137,7 @@ class ModelFittingTool(BaseTool):
                 error=f"Unknown model_type '{model_type}'. Use: {list(dispatch.keys())}",
             )
 
-        return handler(
+        return handler(  # type: ignore[no-any-return, operator]
             df=df,
             target_column=target_column,
             feature_columns=feature_columns or [],
@@ -1251,7 +1251,7 @@ class ModelFittingTool(BaseTool):
             except Exception as e:
                 results.append({"model": name, "error": str(e)})
 
-        results.sort(key=lambda x: x.get("mean_r2", -999), reverse=True)
+        results.sort(key=lambda x: x.get("mean_r2", -999), reverse=True)  # type: ignore[arg-type, return-value]
         best = results[0]
 
         return ToolResult(

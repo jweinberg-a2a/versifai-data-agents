@@ -157,7 +157,7 @@ class ValidateStatisticsTool(BaseTool):
                 error=f"Unknown check_type '{check_type}'. Use: {list(dispatch.keys())}",
             )
 
-        return handler(
+        return handler(  # type: ignore[no-any-return, operator]
             data=data,
             p_values=p_values,
             alpha=alpha,
@@ -659,11 +659,11 @@ class ValidateStatisticsTool(BaseTool):
         directions = [
             v["direction"] for v in variants if v["direction"] not in ("insufficient_data",)
         ]
-        r_values = [abs(v["r"]) for v in variants if v["r"] is not None]
+        r_values: list[float] = [abs(v["r"]) for v in variants if v["r"] is not None]  # type: ignore[arg-type]
 
         direction_consistent = len(set(directions)) <= 1
         # All variants should be significant (or all not)
-        sig_flags = [v["p_value"] < 0.05 for v in variants if v["p_value"] is not None]
+        sig_flags = [v["p_value"] < 0.05 for v in variants if v["p_value"] is not None]  # type: ignore[operator]
         significance_consistent = len(set(sig_flags)) <= 1
 
         # Magnitude stability: max/min ratio of |r| values

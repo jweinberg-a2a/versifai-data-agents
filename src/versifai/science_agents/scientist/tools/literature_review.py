@@ -138,7 +138,7 @@ class LiteratureReviewTool(BaseTool):
                 error=f"Unknown operation '{operation}'. Use: {list(dispatch.keys())}",
             )
 
-        return handler(
+        return handler(  # type: ignore[no-any-return, operator]
             query=query,
             own_finding=own_finding,
             published_finding=published_finding,

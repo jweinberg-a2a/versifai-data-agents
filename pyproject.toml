@@ -142,6 +142,7 @@ module = [
     "PIL.*",
     "bs4.*",
     "lxml.*",
+    "requests.*",
 ]
 ignore_missing_imports = true
 

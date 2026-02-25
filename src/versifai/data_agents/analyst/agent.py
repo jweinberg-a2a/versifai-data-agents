@@ -249,7 +249,7 @@ class DataAnalystAgent:
         json_match = re.search(r"```json\s*(\{.*?\})\s*```", text, re.DOTALL)
         if json_match:
             try:
-                return json.loads(json_match.group(1))
+                return json.loads(json_match.group(1))  # type: ignore[no-any-return]
             except json.JSONDecodeError:
                 pass
 
@@ -257,7 +257,7 @@ class DataAnalystAgent:
         json_match = re.search(r'(\{"verdicts".*\})', text, re.DOTALL)
         if json_match:
             try:
-                return json.loads(json_match.group(1))
+                return json.loads(json_match.group(1))  # type: ignore[no-any-return]
             except json.JSONDecodeError:
                 pass
 

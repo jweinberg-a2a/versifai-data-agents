@@ -70,7 +70,7 @@ class RenameColumnsTool(BaseTool):
             "required": ["table_name", "column_renames"],
         }
 
-    def _execute(self, table_name: str, column_renames: dict, **kwargs) -> ToolResult:
+    def _execute(self, table_name: str, column_renames: dict, **kwargs) -> ToolResult:  # type: ignore[override]
         if not column_renames:
             return ToolResult(
                 success=False,
@@ -175,7 +175,7 @@ class RenameColumnsTool(BaseTool):
             raise RuntimeError("No SQL warehouse available")
 
         result = client.statement_execution.execute_statement(
-            warehouse_id=warehouses[0].id,
+            warehouse_id=warehouses[0].id,  # type: ignore[arg-type]
             statement=sql,
             wait_timeout="30s",
         )

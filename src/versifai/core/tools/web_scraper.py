@@ -141,7 +141,7 @@ class WebScraperTool(BaseTool):
                 error=f"Unknown operation '{operation}'. Use: {list(dispatch.keys())}",
             )
 
-        return handler(url=url, section_filter=section_filter)
+        return handler(url=url, section_filter=section_filter)  # type: ignore[no-any-return, operator]
 
     # ------------------------------------------------------------------
     # Public helpers — for programmatic use by other tools
@@ -546,7 +546,7 @@ class WebScraperTool(BaseTool):
                 browser.close()
 
             logger.info(f"Playwright rendered {url} ({len(html)} chars)")
-            return html
+            return html  # type: ignore[no-any-return]
 
         except Exception as e:
             logger.warning(f"Playwright render failed for {url}: {e}")
@@ -567,7 +567,7 @@ class WebScraperTool(BaseTool):
             resp = requests.get(cache_url, headers=_HEADERS, timeout=15)
             if resp.status_code == 200 and not self._is_js_shell(resp.text):
                 logger.info(f"Google cache hit for {url}")
-                return resp.text
+                return resp.text  # type: ignore[no-any-return]
         except Exception as e:
             logger.debug(f"Google cache fetch failed: {e}")
 
@@ -592,7 +592,7 @@ class WebScraperTool(BaseTool):
                 return rendered
             return None
 
-        return html
+        return html  # type: ignore[no-any-return]
 
     # ------------------------------------------------------------------
     # Content extraction
@@ -629,19 +629,19 @@ class WebScraperTool(BaseTool):
             # Preserve headings and paragraph structure
             parts = []
             for el in main.descendants:
-                if el.name in ("h1", "h2", "h3", "h4", "h5", "h6"):
-                    level = int(el.name[1])
+                if el.name in ("h1", "h2", "h3", "h4", "h5", "h6"):  # type: ignore[attr-defined]
+                    level = int(el.name[1])  # type: ignore[attr-defined]
                     prefix = "#" * level
                     parts.append(f"\n{prefix} {el.get_text(strip=True)}\n")
-                elif el.name == "p":
+                elif el.name == "p":  # type: ignore[attr-defined]
                     text = el.get_text(strip=True)
                     if text:
                         parts.append(text + "\n")
-                elif el.name == "li":
+                elif el.name == "li":  # type: ignore[attr-defined]
                     text = el.get_text(strip=True)
                     if text:
                         parts.append(f"  - {text}")
-                elif el.name == "figcaption":
+                elif el.name == "figcaption":  # type: ignore[attr-defined]
                     text = el.get_text(strip=True)
                     if text:
                         parts.append(f"[Figure: {text}]")

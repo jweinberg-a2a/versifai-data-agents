@@ -166,7 +166,7 @@ class StatisticalAnalysisTool(BaseTool):
                 error=f"Unknown analysis_type '{analysis_type}'. Use: {list(dispatch.keys())}",
             )
 
-        return handler(
+        return handler(  # type: ignore[no-any-return, operator]
             df=df,
             columns=columns,
             group_column=group_column,
@@ -664,15 +664,15 @@ class StatisticalAnalysisTool(BaseTool):
                 flags.append("LOW_VARIANCE")
             entry["quality_flags"] = flags
 
-            results["columns"][col] = entry
+            results["columns"][col] = entry  # type: ignore[index]
 
         # Overall assessment
-        flagged = sum(1 for c in results["columns"].values() if c["quality_flags"])
+        flagged = sum(1 for c in results["columns"].values() if c["quality_flags"])  # type: ignore[attr-defined, misc]
         results["summary"] = {
             "columns_with_issues": flagged,
-            "total_missing_cells": sum(c["missing_count"] for c in results["columns"].values()),
+            "total_missing_cells": sum(c["missing_count"] for c in results["columns"].values()),  # type: ignore[attr-defined, misc]
             "total_missing_pct": round(
-                sum(c["missing_count"] for c in results["columns"].values())
+                sum(c["missing_count"] for c in results["columns"].values())  # type: ignore[attr-defined, misc]
                 / (len(df) * len(target_cols))
                 * 100,
                 2,

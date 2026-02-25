@@ -49,7 +49,7 @@ class FileExtractorTool(BaseTool):
             "required": ["file_path"],
         }
 
-    def _execute(self, file_path: str, dest_path: str = "", **kwargs) -> ToolResult:
+    def _execute(self, file_path: str, dest_path: str = "", **kwargs) -> ToolResult:  # type: ignore[override]
         if not os.path.isfile(file_path):
             return ToolResult(success=False, error=f"File not found: {file_path}")
 

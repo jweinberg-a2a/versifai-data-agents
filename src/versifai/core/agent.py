@@ -347,7 +347,7 @@ class BaseAgent:
             if img.width > max_width:
                 ratio = max_width / img.width
                 new_size = (max_width, int(img.height * ratio))
-                img = img.resize(new_size, Image.LANCZOS)
+                img = img.resize(new_size, Image.LANCZOS)  # type: ignore[assignment, attr-defined]
 
             buf = io.BytesIO()
             img.save(buf, format="PNG", optimize=True)

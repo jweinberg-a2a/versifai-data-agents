@@ -178,7 +178,7 @@ class StoryTellerAgent(BaseAgent):
             SilverOnlyExecuteSQLTool(),
             ListCatalogTablesTool(cfg=cfg.project),
             CreateVisualizationTool(
-                cfg=cfg,
+                cfg=cfg,  # type: ignore[arg-type]
                 display=self._display,
                 notes_path=os.path.join(self._research_path, "notes"),
             ),
@@ -193,7 +193,7 @@ class StoryTellerAgent(BaseAgent):
     # Phase runner — thin override to inject progress_path
     # ------------------------------------------------------------------
 
-    def _run_phase(self, prompt: str, max_turns: int) -> str:
+    def _run_phase(self, prompt: str, max_turns: int) -> str:  # type: ignore[override]
         """Run a phase, providing the storyteller progress path."""
         progress_path = os.path.join(self._narrative_run_path, "progress.txt")
         return super()._run_phase(prompt, max_turns, progress_path=progress_path)

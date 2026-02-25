@@ -195,7 +195,7 @@ class ValidateSilverTool(BaseTool):
                 error=f"Unknown check_type '{check_type}'. Use: {list(dispatch.keys())}",
             )
 
-        return handler(
+        return handler(  # type: ignore[no-any-return, operator]
             df=df,
             primary_key_columns=primary_key_columns,
             enrollment_columns=enrollment_columns,
@@ -675,15 +675,15 @@ class ValidateSilverTool(BaseTool):
             if "fips" in cl:
                 ranges[col] = {"type": "fips"}
             elif any(k in cl for k in ["_pct", "percent", "rate", "penetration"]):
-                ranges[col] = {"type": "percentage", "min": 0, "max": 100}
+                ranges[col] = {"type": "percentage", "min": 0, "max": 100}  # type: ignore[dict-item]
             elif "svi" in cl:
-                ranges[col] = {"type": "proportion", "min": 0, "max": 1}
+                ranges[col] = {"type": "proportion", "min": 0, "max": 1}  # type: ignore[dict-item]
             elif "prevalence" in cl:
-                ranges[col] = {"type": "percentage", "min": 0, "max": 100}
+                ranges[col] = {"type": "percentage", "min": 0, "max": 100}  # type: ignore[dict-item]
             elif any(k in cl for k in ["star", "rating", "overall_rating"]):
-                ranges[col] = {"type": "stars", "min": 1, "max": 5}
+                ranges[col] = {"type": "stars", "min": 1, "max": 5}  # type: ignore[dict-item]
             elif any(k in cl for k in ["enrollment", "members", "beneficiaries"]):
-                ranges[col] = {"type": "enrollment", "min": 0, "max": 1_000_000}
+                ranges[col] = {"type": "enrollment", "min": 0, "max": 1_000_000}  # type: ignore[dict-item]
         return ranges
 
     def _check_fips_column(self, df: pd.DataFrame, col: str) -> dict | None:
@@ -692,7 +692,7 @@ class ValidateSilverTool(BaseTool):
             from versifai._utils.fips import validate_fips
         except ImportError:
 
-            def validate_fips(x):
+            def validate_fips(x):  # type: ignore[misc]
                 return isinstance(x, str) and len(x) == 5 and x.isdigit()
 
         vals = df[col].dropna().astype(str)

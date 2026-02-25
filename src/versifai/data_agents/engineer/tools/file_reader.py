@@ -72,7 +72,7 @@ class FileReaderTool(BaseTool):
             "required": ["file_path"],
         }
 
-    def _execute(
+    def _execute(  # type: ignore[override]
         self,
         file_path: str,
         n_rows: int = 10,

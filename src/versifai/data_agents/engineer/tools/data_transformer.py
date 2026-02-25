@@ -157,7 +157,7 @@ class DataTransformerTool(BaseTool):
             "required": ["source_name"],
         }
 
-    def _execute(
+    def _execute(  # type: ignore[override]
         self,
         source_name: str,
         file_path: str | None = None,
@@ -969,7 +969,7 @@ class DataTransformerTool(BaseTool):
             for col in sample.columns:
                 sample[col] = sample[col].astype(object).fillna("").astype(str)
                 sample[col] = sample[col].replace({"nan": "", "None": "", "<NA>": ""})
-            return sample.to_dict(orient="records")
+            return sample.to_dict(orient="records")  # type: ignore[no-any-return]
         except Exception:
             return [{"_note": f"Could not serialize sample ({len(df)} rows transformed)"}]
 

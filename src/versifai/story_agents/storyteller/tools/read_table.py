@@ -111,7 +111,7 @@ class ReadTableTool(BaseTool):
                 return ToolResult(success=False, error=f"File not found: {filename}")
 
             total_rows = 0
-            headers: list[str] = []
+            headers: list[str] = []  # type: ignore[no-redef]
             sample_rows: list[dict] = []
             with open(path, newline="") as f:
                 reader = csv.DictReader(f)

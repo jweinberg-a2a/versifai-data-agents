@@ -37,11 +37,11 @@ class LLMResponse:
 
     @property
     def input_tokens(self) -> int:
-        return self.usage.get("prompt_tokens", 0)
+        return int(self.usage.get("prompt_tokens", 0))
 
     @property
     def output_tokens(self) -> int:
-        return self.usage.get("completion_tokens", 0)
+        return int(self.usage.get("completion_tokens", 0))
 
 
 class LLMClient:
