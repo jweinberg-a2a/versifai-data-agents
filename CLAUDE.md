@@ -140,8 +140,22 @@ tests/
 └── test_integration/                  # Real LLM integration tests (@pytest.mark.integration)
 
 docs/
+├── index.md                           # Landing page (mkdocs)
+├── getting-started.md                 # Installation, quick start, config
 ├── architecture.md                    # System design and data flow
-└── tool-inventory.md                  # Complete tool reference (tables)
+├── tool-inventory.md                  # Complete tool reference (tables)
+├── data-engineer.md                   # Data Engineer agent guide
+├── data-scientist.md                  # Data Scientist agent guide
+├── storyteller.md                     # StoryTeller agent guide
+├── custom-agents.md                   # Building custom agents
+├── contributing.md                    # Contributing guide (includes CONTRIBUTING.md)
+├── changelog.md                       # Changelog (includes CHANGELOG.md)
+├── assets/                            # Logo, favicon
+└── api/                               # Auto-generated API reference (mkdocstrings)
+    ├── core.md
+    ├── data-agents.md
+    ├── science-agents.md
+    └── story-agents.md
 
 examples/
 └── medicare_advantage/                # Reference implementation
@@ -392,7 +406,9 @@ Configs flow from orchestrator → agent → tools. Each tool receives only the 
 
 Before submitting a pull request, verify:
 
-- [ ] `make lint` passes (ruff check + ruff format --check)
+- [ ] `ruff format --check src/ tests/` passes (formatting)
+- [ ] `ruff check src/ tests/` passes (linting)
+- [ ] `mypy src/versifai --ignore-missing-imports` passes (type checking)
 - [ ] `make test` passes (all unit + behavioral tests)
 - [ ] `pytest tests/test_integration/ -v -m integration` passes (if you have API key)
 - [ ] New tools have unit tests with edge cases
@@ -531,16 +547,115 @@ Store in `.env` (git-ignored). Never hardcode secrets.
 
 ---
 
+## CI & Code Quality
+
+### CI Pipeline (`.github/workflows/ci.yml`)
+
+Every push and PR to `main` runs four checks — **all must pass**:
+
+| Job | What it runs | Command |
+|-----|-------------|---------|
+| **Lint** | ruff check + format | `ruff check src/ tests/` and `ruff format --check src/ tests/` |
+| **Test** | Unit + behavioral tests (3.10, 3.11, 3.12) | `pytest tests/ -v --tb=short -m "not integration"` |
+| **Type Check** | mypy static analysis | `mypy src/versifai --ignore-missing-imports` |
+| **Build** | Package build + import verification | `python -m build` + smoke-test imports |
+
+Integration tests (`tests/test_integration/`) are **excluded from CI** — they require LLM API keys (`ANTHROPIC_API_KEY` or `OPENAI_API_KEY`) which are not available in the GitHub environment. Run them locally when you have keys set.
+
+### Ruff (Linting & Formatting)
+
+Configuration lives in `pyproject.toml` under `[tool.ruff]`:
+
+```bash
+ruff format src/ tests/     # Auto-format all files
+ruff check --fix src/ tests/ # Lint + auto-fix what's possible
+ruff check src/ tests/       # Lint check only (CI runs this)
+ruff format --check src/ tests/ # Format check only (CI runs this)
+```
+
+- **Line length:** 100 characters
+- **Target:** Python 3.10
+- **Import sorting:** isort via ruff with `known-first-party = ["versifai"]`
+- **Always run `make format` before committing** to avoid CI lint failures
+
+### Mypy (Type Checking)
+
+Configuration lives in `pyproject.toml` under `[tool.mypy]`:
+
+```bash
+mypy src/versifai --ignore-missing-imports  # CI runs this exact command
+mypy src/versifai/                          # Also works (trailing slash)
+```
+
+Key mypy settings:
+- `python_version = "3.10"`
+- `warn_return_any = true`, `warn_unused_configs = true`
+- `disallow_untyped_defs = false` (not enforced yet)
+
+**Suppressing mypy errors:**
+
+When adding `# type: ignore` comments, **always include the specific error code(s)**:
+
+```python
+# CORRECT — specific error codes
+result = some_call()  # type: ignore[no-any-return]
+value = obj.attr      # type: ignore[attr-defined, union-attr]
+
+# WRONG — bare ignore (hides real errors)
+result = some_call()  # type: ignore
+```
+
+If a line has **multiple** mypy errors, list all codes in a single comment:
+```python
+# If mypy reports both [no-any-return] and [operator] on the same line:
+x = foo() + bar()  # type: ignore[no-any-return, operator]
+```
+
+**Per-module ignores** for untyped third-party libraries are in `pyproject.toml`:
+```toml
+[[tool.mypy.overrides]]
+module = ["litellm.*", "databricks.*", "requests.*", ...]
+ignore_missing_imports = true
+```
+
+### Documentation Site
+
+Docs are built with **MkDocs Material** and deployed to GitHub Pages via `.github/workflows/docs.yml`:
+
+```bash
+make docs-serve     # Local preview with live reload (localhost:8000)
+make docs-build     # Build site in strict mode (catches broken links)
+make docs-deploy    # Deploy to GitHub Pages (gh-pages branch)
+```
+
+- API reference is auto-generated from docstrings via **mkdocstrings**
+- Docs deploy triggers on push to `main` when `docs/`, `mkdocs.yml`, or `src/` change
+- Configuration: `mkdocs.yml`
+- Dependencies: `pip install -e ".[docs]"` (separate from `dev` extras)
+
+---
+
 ## Quick Reference
 
 ### Common Commands
 
 ```bash
 make install-dev    # Install with all dev dependencies + pre-commit hooks
-make lint           # ruff check + format check
-make format         # Auto-fix formatting
+make lint           # ruff check + mypy
+make format         # Auto-fix formatting (ruff format + ruff check --fix)
 make test           # Run all unit tests
 make test-cov       # Run tests with coverage report
+make docs-serve     # Preview docs locally (localhost:8000)
+make docs-build     # Build docs (strict mode)
+```
+
+### Pre-Commit Checklist
+
+```bash
+make format                    # Auto-fix formatting
+ruff check src/ tests/         # Verify lint passes
+mypy src/versifai --ignore-missing-imports  # Verify types pass
+pytest tests/ -v -m "not integration"      # Verify tests pass
 ```
 
 ### Key Files to Read First
@@ -554,6 +669,7 @@ make test-cov       # Run tests with coverage report
 
 ### Links
 
+- [Documentation Site](https://jweinberg-a2a.github.io/versifai-data-agents/) — full docs on GitHub Pages
 - [Tool Inventory](docs/tool-inventory.md) — every tool, every parameter, every return value
 - [Architecture](docs/architecture.md) — system design and data flow
 - [Contributing](CONTRIBUTING.md) — development setup and PR process

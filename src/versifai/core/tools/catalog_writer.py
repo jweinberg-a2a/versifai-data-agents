@@ -703,7 +703,9 @@ class ListCatalogTablesTool(BaseTool):
             return ToolResult(success=False, error="No SQL warehouse found.")
 
         result = client.statement_execution.execute_statement(  # type: ignore[assignment]
-            warehouse_id=warehouses[0].id, statement=sql, wait_timeout="30s"  # type: ignore[arg-type]
+            warehouse_id=warehouses[0].id,  # type: ignore[arg-type]
+            statement=sql,
+            wait_timeout="30s",
         )
 
         tables = []
