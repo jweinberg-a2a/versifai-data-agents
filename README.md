@@ -11,6 +11,7 @@
   <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json" alt="Ruff"></a>
   <a href="https://pypi.org/project/versifai/"><img src="https://img.shields.io/pypi/v/versifai.svg" alt="PyPI version"></a>
   <a href="https://github.com/python/mypy"><img src="https://img.shields.io/badge/types-Mypy-blue.svg" alt="types - Mypy"></a>
+  <a href="https://jweinberg-a2a.github.io/versifai-data-agents/"><img src="https://img.shields.io/badge/docs-Versifai-5a7fa3.svg" alt="Documentation"></a>
 </p>
 
 ---
