@@ -7,23 +7,12 @@ edit_uri: edit/main/docs/
 
 theme:
   name: material
-  logo: assets/logo.png
+  logo: assets/FullLogo_Transparent_NoBuffer.png
   favicon: assets/IconOnly_NoBuffer.png
   palette:
-    - media: "(prefers-color-scheme: light)"
-      scheme: default
-      primary: custom
-      accent: custom
-      toggle:
-        icon: material/brightness-7
-        name: Switch to dark mode
-    - media: "(prefers-color-scheme: dark)"
-      scheme: slate
-      primary: custom
-      accent: custom
-      toggle:
-        icon: material/brightness-4
-        name: Switch to light mode
+    scheme: default
+    primary: custom
+    accent: custom
   features:
     - navigation.instant
     - navigation.tracking
