@@ -7,7 +7,7 @@ install: ## Install the package
 	pip install -e .
 
 install-dev: ## Install with all development dependencies
-	pip install -e ".[all]"
+	pip install -e ".[dev]"
 	pre-commit install
 
 lint: ## Run linters (ruff + mypy)

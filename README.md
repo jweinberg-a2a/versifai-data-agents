@@ -55,23 +55,11 @@ Built on [LiteLLM](https://docs.litellm.ai/) for multi-provider LLM support (Ant
 ### From PyPI
 
 ```bash
-# Core framework only
+# Install with all runtime dependencies
 pip install versifai
 
-# With data engineering extras (pandas, pyarrow, openpyxl, etc.)
-pip install "versifai[data]"
-
-# With science extras (matplotlib, seaborn, scikit-learn, statsmodels, scipy)
-pip install "versifai[science]"
-
-# With storytelling extras
-pip install "versifai[story]"
-
-# With Databricks integration
-pip install "versifai[databricks]"
-
-# Everything
-pip install "versifai[all]"
+# With development tools (ruff, mypy, pytest, pre-commit)
+pip install "versifai[dev]"
 ```
 
 ### From Source (development)
