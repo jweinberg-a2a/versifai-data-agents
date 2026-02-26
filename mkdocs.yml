@@ -32,6 +32,7 @@ nav:
   - Getting Started: getting-started.md
   - "Tutorial: Silly Weather": tutorial-silly-weather.md
   - Architecture: architecture.md
+  - Run Management & Reproducibility: run-management.md
   - Agent Guides:
       - Data Engineer: data-engineer.md
       - Data Scientist: data-scientist.md
@@ -49,7 +50,11 @@ nav:
 markdown_extensions:
   - admonition
   - pymdownx.details
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.inlinehilite

@@ -17,30 +17,68 @@ All example files live in
 
 ---
 
-## How Versifai Projects Work
+## What You're About to Build
 
-Every Versifai project follows the same three-stage pipeline:
+Here's the full plan. Three agents run in sequence — each one picks up where
+the last one left off.
 
+```mermaid
+flowchart TD
+    subgraph stage1["Stage 1 — Data Engineer"]
+        direction TB
+        RAW[/"**Raw Data Volume**\n\nnoaa_weather/ → 3 CSVs\nduck_observations/ → ZIP archive\nice_cream/ → Excel\nforecast_accuracy/ → CSV"/]
+        RAW --> DISCOVER["**Discover & Profile**\n\nexplore_volume → map files\nread_file_header → peek at columns\nprofile_data → stats, nulls, types"]
+        DISCOVER --> DESIGN["**Design & Load**\n\ndesign_schema → CREATE TABLE SQL\ntransform_and_load → map columns, cast types\nwrite_to_catalog → Delta tables"]
+        DESIGN --> VALIDATE["**Validate**\n\nAnalyst agent runs SQL checks\n→ join key integrity\n→ null rates, ranges\n→ cross-table joinability"]
+    end
+
+    subgraph tables["Unity Catalog"]
+        DT[("**4 Delta Tables**\n\nsilver_daily_weather\nsilver_quack_frequency\nsilver_feather_fluffing\nsilver_ice_cream_sales")]
+    end
+
+    subgraph stage2["Stage 2 — Data Scientist"]
+        direction TB
+        JOIN["**Build Silver Datasets**\n\nexecute_sql → JOIN weather +\nduck + ice cream tables\nvalidate_silver → quality checks"]
+        JOIN --> ANALYZE["**7 Research Themes**\n\n0. The Quack Census\n1. Quack Before the Storm\n2. The Fluff Factor\n3. The Ice Cream Confounder\n4. V-Formation Tornado Warning\n5. Duck vs Doppler\n6. Grand Unified Duck Theory"]
+        ANALYZE --> TOOLS["**Per Theme**\n\nstatistical_analysis → correlations, tests\nfit_model → regression, classification\ncheck_confounders → Simpson's Paradox\ncreate_visualization → charts\nsave_finding → structured evidence"]
+    end
+
+    subgraph outputs["Research Outputs"]
+        FO[/"**findings.json** — 14 findings\n**charts/** — 9 visualizations\n**tables/** — 6 CSV summaries\n**notes/** — per-theme reasoning"/]
+    end
+
+    subgraph stage3["Stage 3 — StoryTeller"]
+        direction TB
+        READ["**Inventory & Evaluate**\n\nread_findings → load all findings\nevaluate_evidence → score strength\ncurate → rank for each section"]
+        READ --> WRITE["**Write 8 Sections**\n\n1. Abstract\n2. The Quack Census\n3. Quack Before the Storm\n4. The Fluff Factor\n5. Duck vs Doppler Showdown\n6. Grand Unified Duck Theory\n7. Limitations\n8. Conclusions"]
+        WRITE --> FINISH["**Finalize**\n\nCoherence pass → fix transitions\ncite_source → bibliography\nassemble → table of contents\n→ duck_weather_report.md"]
+    end
+
+    VALIDATE --> DT
+    DT --> JOIN
+    TOOLS --> FO
+    FO --> READ
+
+    style stage1 fill:#f7f9fc,stroke:#4a6f93
+    style tables fill:#f0f0f0,stroke:#666
+    style stage2 fill:#f7faf7,stroke:#4a8a4a
+    style outputs fill:#f0f0f0,stroke:#666
+    style stage3 fill:#fefaf2,stroke:#b38600
 ```
-┌──────────────┐     ┌──────────────────┐     ┌───────────────┐
-│  Data         │     │  Data             │     │  Story         │
-│  Engineer     │────▶│  Scientist        │────▶│  Teller        │
-│               │     │                   │     │                │
-│  Raw files    │     │  Silver tables    │     │  Findings +    │
-│  → Delta      │     │  → Findings +     │     │  Charts →      │
-│    tables     │     │    Charts +       │     │  Narrative     │
-│               │     │    Tables         │     │  Report        │
-└──────────────┘     └──────────────────┘     └───────────────┘
-```
 
-Each stage has:
+Each stage has exactly three parts:
 
-- A **config** — a Python dataclass that holds all domain knowledge
-- An **agent** — a generic Python class that reads the config and does the work
-- A **notebook** — a Databricks notebook that creates the agent and runs it
+| Part | What It Is | What Changes Between Projects |
+|------|-----------|-------------------------------|
+| **Config** | A Python dataclass holding all domain knowledge | Everything — this is where your project lives |
+| **Agent** | A generic Python class that reads the config and does work | Nothing — agents are reusable across projects |
+| **Notebook** | A Databricks notebook that creates the agent and runs it | Just the import path to your config |
 
 The agents are generic. All the domain-specific knowledge lives in the configs.
 This means you never modify agent code — you just write new configs.
+
+For a deeper look at the ReAct loop, tool system, and agent internals, see the
+[Architecture](architecture.md) page.
 
 ---
 
@@ -501,9 +539,219 @@ agent.run_editor(instructions="Tighten the transition between sections 2 and 3."
 
 ---
 
-## Output Structure
+## How Data Flows: Raw Files → Tables → Analysis → Report
 
-After running all three agents, your results Volume will contain:
+This section shows what actually happens to your data at each stage — from
+raw files on disk to a finished narrative report.
+
+### Stage 1: Raw Files → Delta Tables
+
+You start by uploading raw data files to a Databricks Volume. The Data Engineer
+agent discovers them and turns each source into a clean Delta table.
+
+```mermaid
+flowchart LR
+    subgraph volume["Databricks Volume: /Volumes/.../raw_data/"]
+        direction TB
+        F1["noaa_weather/\n├── weather_2020.csv\n├── weather_2021.csv\n└── weather_2022.csv"]
+        F2["duck_observations/\n└── duck_obs.zip\n    ├── quack_frequency.csv\n    └── feather_index.csv"]
+        F3["ice_cream/\n└── ice_cream_sales.xlsx"]
+        F4["forecast_accuracy/\n└── nws_forecasts.csv"]
+    end
+
+    subgraph engineer["Data Engineer Agent"]
+        direction TB
+        PROFILE["Profile & Design\n\nReads headers, detects types,\ndesigns CREATE TABLE SQL\nfor each source"]
+        TRANSFORM["Transform & Load\n\nRenames columns to snake_case,\ncasts types, adds metadata,\nbatch-processes multi-file sources"]
+    end
+
+    subgraph catalog["Unity Catalog: my_catalog.silly_weather"]
+        direction TB
+        T1["**silver_daily_weather**\n\nstation_id · observation_date\ntemp_max_c · temp_min_c\nprecip_mm · snow_depth_mm\nwind_speed_ms\nsource_file_name · load_timestamp\n\n*1.1M rows · 3 years*"]
+        T2["**silver_quack_frequency**\n\nstation_id · observation_date\nhour_of_day · quack_count\nambient_noise_db\nsource_file_name · load_timestamp\n\n*890K rows*"]
+        T3["**silver_feather_fluffing**\n\nstation_id · observation_date\nfluff_intensity · humidity_pct\nsource_file_name · load_timestamp\n\n*365K rows*"]
+        T4["**silver_ice_cream_sales**\n\nstation_id · month · year\nunits_sold · revenue_usd\navg_temp_c\nsource_file_name · load_timestamp\n\n*18K rows*"]
+    end
+
+    F1 --> PROFILE
+    F2 --> PROFILE
+    F3 --> PROFILE
+    F4 --> PROFILE
+    PROFILE --> TRANSFORM
+    TRANSFORM --> T1
+    TRANSFORM --> T2
+    TRANSFORM --> T3
+    TRANSFORM --> T4
+
+    style volume fill:#fff8e1,stroke:#b38600
+    style engineer fill:#e8f0fe,stroke:#4a6f93
+    style catalog fill:#e8f4e8,stroke:#4a8a4a
+```
+
+Every table gets:
+
+- **snake_case column names** — the agent renames `TMAX` → `temp_max_c`, `PRCP` → `precip_mm`
+- **Proper types** — dates become `DATE`, measurements become `DOUBLE`, IDs stay `STRING`
+- **Metadata columns** — `source_file_name` and `load_timestamp` for audit
+- **Join key** — `station_id` in every table so they can be joined
+
+### Stage 2: Silver Datasets → Statistical Analysis
+
+The Data Scientist joins the source tables into analytical datasets, then runs
+each research theme against them.
+
+```mermaid
+flowchart TD
+    subgraph source_tables["Source Tables (from Engineer)"]
+        T1["silver_daily_weather"]
+        T2["silver_quack_frequency"]
+        T3["silver_feather_fluffing"]
+        T4["silver_ice_cream_sales"]
+    end
+
+    subgraph silver_construction["Silver Dataset Construction (SQL JOINs)"]
+        J1["**silver_weather_duck_daily**\n\nJOIN weather + quacks + fluffing\nON station_id + observation_date\n\n→ 365K rows, 15 columns\n→ Weather + duck behavior per day"]
+        J2["**silver_duck_forecast_comparison**\n\nJOIN duck signals + NWS forecasts\nwith next-day actual weather\n\n→ 365K rows\n→ Who predicted better?"]
+        J3["**silver_ice_cream_weather**\n\nJOIN ice cream sales + weather\n+ duck activity (monthly agg)\n\n→ 18K rows\n→ Confounder analysis"]
+    end
+
+    subgraph analysis["Theme Analysis (7 themes)"]
+        direction TB
+        TH0["Theme 0: **Quack Census**\n*describe* → summary stats\n*distribution* → normality tests\n→ 2 findings, 1 chart"]
+        TH1["Theme 1: **Quack Before the Storm**\n*correlation* → r=0.42, p<0.001\n*hypothesis_test* → Mann-Whitney\n→ 3 findings, 2 charts"]
+        TH5["Theme 5: **Duck vs Doppler**\n*fit_model* → logistic regression\n*cross_validate* → F1 comparison\n→ 2 findings, 2 charts"]
+        TH6["Theme 6: **Grand Unified Duck Theory**\n*fit_model* → gradient boosting\n*check_confounders* → Simpson's check\n→ 2 findings, 1 chart"]
+    end
+
+    T1 --> J1
+    T2 --> J1
+    T3 --> J1
+    T2 --> J2
+    T1 --> J3
+    T4 --> J3
+    J1 --> TH0
+    J1 --> TH1
+    J2 --> TH5
+    J1 --> TH6
+    J3 --> TH6
+
+    style source_tables fill:#e8f4e8,stroke:#4a8a4a
+    style silver_construction fill:#dcefd8,stroke:#4a8a4a
+    style analysis fill:#d0ead0,stroke:#4a8a4a
+```
+
+### Stage 3: Findings → Narrative Report
+
+The StoryTeller reads the structured findings, evaluates evidence strength,
+and writes each section of the report grounded in statistical evidence.
+
+### What the Final Report Looks Like
+
+The StoryTeller produces a complete Markdown report. Here's a mockup of what
+the silly weather report looks like:
+
+---
+
+<div style="background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 24px; margin: 16px 0; font-family: Georgia, serif;">
+
+<h2 style="text-align: center; margin-bottom: 4px;">Do Ducks Predict Rain Better Than Meteorologists?</h2>
+<p style="text-align: center; color: #666; font-style: italic; margin-top: 0;">A Rigorous Statistical Investigation</p>
+
+**Table of Contents**
+
+1. Abstract
+2. The Quack Census: Baseline Characterization
+3. Quack Before the Storm: The Core Signal
+4. The Fluff Factor: Feather-Based Forecasting
+5. The Ice Cream Confounder
+6. Duck vs. Doppler: The Showdown
+7. The Grand Unified Duck Theory
+8. Limitations & Future Work
+9. Conclusions
+10. References
+
+---
+
+**1. Abstract**
+
+This investigation examines whether observable duck behaviors — specifically
+quack frequency, feather-fluffing intensity, and V-formation flight patterns —
+contain genuine meteorological information. Analysis of 1.1 million daily
+observations across 47 weather stations reveals a statistically significant
+correlation between quack frequency and next-day precipitation
+(Spearman ρ = 0.42, p < 0.001). However, the National Weather Service
+maintains a decisive advantage in 24-hour precipitation forecasting
+(F1 = 0.83 vs. duck-based F1 = 0.71, McNemar's p = 0.02).
+
+---
+
+**3. Quack Before the Storm: The Core Signal**
+
+The central question of this investigation — whether ducks quack more before
+rain — yields an unambiguous answer: they do.
+
+A Spearman rank correlation between daily quack frequency and next-day
+precipitation reveals ρ = 0.42 (p < 0.001, n = 312,847). The relationship
+holds across all four seasons, though summer exhibits the strongest signal
+(ρ = 0.51) while winter shows the weakest (ρ = 0.28).
+
+*[Figure 2: Lag-correlation plot showing quack frequency vs. precipitation at
+lags 0–3 days, stratified by season. The lag-1 peak is consistent across all
+seasons, with 95% confidence bands shown.]*
+
+A Mann-Whitney U test confirms that pre-rain quack counts (median = 847
+quacks/hr) significantly exceed fair-weather counts (median = 612 quacks/hr,
+U = 2.34 × 10⁹, p = 0.003). The effect is not subtle — Cohen's d = 0.38
+places it firmly in the "small to medium" range.
+
+---
+
+**6. Duck vs. Doppler: The Showdown**
+
+The precision-recall curves tell a humbling story. While duck-based forecasting
+achieves respectable precision (0.74) at the 50% recall threshold, the National
+Weather Service's Doppler-based system maintains precision of 0.89 at the same
+recall level [1].
+
+The McNemar test on paired 2×2 contingency tables confirms this is not a
+statistical artifact (χ² = 5.41, p = 0.02). The NWS correctly predicts 83% of
+rain events that ducks miss entirely — primarily light precipitation events
+below 5mm.
+
+However, ducks show a surprising advantage for heavy precipitation events
+(> 25mm): duck-based recall = 0.91 vs. NWS recall = 0.84. The biological
+signal appears strongest precisely when it matters most.
+
+---
+
+**9. Conclusions**
+
+Ducks do not predict rain better than meteorologists. But they predict it
+better than random chance, and in certain extreme weather scenarios, they
+outperform professional forecasting systems. The combined duck-Doppler model
+(gradient boosting, F1 = 0.87) suggests the optimal meteorological strategy is
+to check both the radar and the nearest pond.
+
+---
+
+**References**
+
+[1] National Weather Service. "Forecast Verification Statistics 2020-2022."
+weather.gov/verification.
+
+[2] Lorenz, K. "Animal Behavior as Environmental Indicators." *Journal of
+Ethology*, 1973.
+
+</div>
+
+---
+
+### Output File Structure
+
+After running all three agents, your results Volume will contain everything
+needed to verify the work without the AI. For a deep dive into run isolation,
+smart resume, and the reproducibility contract, see
+[Run Management & Reproducibility](run-management.md).
 
 ```
 /Volumes/my_catalog/silly_weather/
@@ -512,13 +760,34 @@ After running all three agents, your results Volume will contain:
 │   ├── duck_observations/
 │   ├── ice_cream/
 │   └── forecast_accuracy/
-├── results/                           # DataScientist outputs
-│   ├── findings.json                  # Structured findings with p-values
+│
+├── results/                           # Data Scientist outputs
+│   ├── findings.json                  # 14 structured findings with p-values
 │   ├── charts/                        # PNG visualizations
+│   │   ├── quack_census_distribution.png
+│   │   ├── quack_rain_scatter.png
+│   │   ├── lag_correlation_by_season.png
+│   │   ├── fluff_storm_severity.png
+│   │   ├── ice_cream_confounder_partial.png
+│   │   ├── precision_recall_comparison.png
+│   │   ├── feature_importance_unified.png
+│   │   ├── v_formation_tornado.png
+│   │   └── duck_doppler_confusion_matrix.png
 │   ├── tables/                        # CSV summary tables
+│   │   ├── correlation_matrix.csv
+│   │   ├── model_comparison.csv
+│   │   ├── seasonal_breakdown.csv
+│   │   ├── confounder_decomposition.csv
+│   │   ├── forecast_accuracy_paired.csv
+│   │   └── unified_model_coefficients.csv
 │   └── notes/                         # Per-theme reasoning logs
+│       ├── theme_0.md
+│       ├── theme_1.md
+│       ├── ...
+│       └── theme_6.md
+│
 └── narrative/                         # StoryTeller outputs
-    └── duck_weather_report.md         # The final report
+    └── duck_weather_report.md         # The final report (~4,000 words)
 ```
 
 ---
