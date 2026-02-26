@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/logo.png" alt="Versifai" width="400">
+  <img src="https://raw.githubusercontent.com/jweinberg-a2a/versifai-data-agents/main/docs/assets/logo.png" alt="Versifai" width="400">
 </p>
 
 <p align="center"><strong>Agentic AI framework for autonomous data engineering, science, and storytelling.</strong></p>
@@ -44,7 +44,7 @@ Built on [LiteLLM](https://docs.litellm.ai/) for multi-provider LLM support (Ant
 - **Databricks native** -First-class support for Notebooks, Unity Catalog, Delta tables, and Volumes.
 
 <p align="center">
-  <img src="docs/assets/data_engineer_notebook.png" alt="Versifai" width="1200">
+  <img src="https://raw.githubusercontent.com/jweinberg-a2a/versifai-data-agents/main/docs/assets/data_engineer_notebook.png" alt="Versifai" width="1200">
 </p>
 
 ### See It In Action

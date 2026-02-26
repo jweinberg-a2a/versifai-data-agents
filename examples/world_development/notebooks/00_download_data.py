@@ -31,8 +31,8 @@
 
 CATALOG = "my_catalog"
 SCHEMA = "world_development"
-VOLUME = "raw_data"
-VOLUME_PATH = f"/Volumes/{CATALOG}/{SCHEMA}/{VOLUME}"
+VOLUMES = ["raw_data", "staging", "results"]
+RAW_DATA_PATH = f"/Volumes/{CATALOG}/{SCHEMA}/raw_data"
 
 # World Bank indicator codes → friendly filenames
 INDICATORS = {
@@ -49,8 +49,10 @@ INDICATORS = {
 # ── Create Volume if needed ────────────────────────────────────────
 
 spark.sql(f"CREATE SCHEMA IF NOT EXISTS {CATALOG}.{SCHEMA}")
-spark.sql(f"CREATE VOLUME IF NOT EXISTS {CATALOG}.{SCHEMA}.{VOLUME}")
-print(f"Volume ready: {VOLUME_PATH}")
+for vol in VOLUMES:
+    spark.sql(f"CREATE VOLUME IF NOT EXISTS {CATALOG}.{SCHEMA}.{vol}")
+    print(f"  Volume ready: /Volumes/{CATALOG}/{SCHEMA}/{vol}")
+print(f"\nAll {len(VOLUMES)} volumes created.")
 
 # COMMAND ----------
 
@@ -67,7 +69,7 @@ import os
 import urllib.request
 
 for code, name in INDICATORS.items():
-    dest = os.path.join(VOLUME_PATH, f"{name}.zip")
+    dest = os.path.join(RAW_DATA_PATH, f"{name}.zip")
 
     if os.path.exists(dest):
         size = os.path.getsize(dest)
@@ -84,10 +86,10 @@ for code, name in INDICATORS.items():
 
 # ── Verify downloads ───────────────────────────────────────────────
 
-print(f"\nFiles in {VOLUME_PATH}:\n")
+print(f"\nFiles in {RAW_DATA_PATH}:\n")
 total_bytes = 0
-for f in sorted(os.listdir(VOLUME_PATH)):
-    size = os.path.getsize(os.path.join(VOLUME_PATH, f))
+for f in sorted(os.listdir(RAW_DATA_PATH)):
+    size = os.path.getsize(os.path.join(RAW_DATA_PATH, f))
     total_bytes += size
     print(f"  {f:40s} {size:>10,d} bytes")
 

@@ -24,6 +24,13 @@ from versifai.story_agents.storyteller.config import (
 )
 
 # ═══════════════════════════════════════════════════════════════════════
+# USER SETTINGS — Update these to match your Databricks environment
+# ═══════════════════════════════════════════════════════════════════════
+
+CATALOG = "my_catalog"
+SCHEMA = "world_development"
+
+# ═══════════════════════════════════════════════════════════════════════
 # Style guide — voice, audience, and editorial rules
 # ═══════════════════════════════════════════════════════════════════════
 
@@ -289,9 +296,9 @@ WORLD_DEVELOPMENT_STORY = StorytellerConfig(
         "Our World in Data, OECD reports, and classic texts on growth theory and "
         "the Preston Curve."
     ),
-    research_results_path="/Volumes/my_catalog/world_development/results",
-    narrative_output_path="/Volumes/my_catalog/world_development/narrative",
-    project=ProjectConfig(catalog="my_catalog", schema="world_development"),
+    research_results_path=f"/Volumes/{CATALOG}/{SCHEMA}/results",
+    narrative_output_path=f"/Volumes/{CATALOG}/{SCHEMA}/results/narrative",
+    project=ProjectConfig(catalog=CATALOG, schema=SCHEMA),
     narrative_sections=_sections,
     evidence_threshold=_evidence,
     style_guide=_style,

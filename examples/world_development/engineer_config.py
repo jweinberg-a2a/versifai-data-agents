@@ -14,7 +14,7 @@ Usage in a Databricks notebook::
 
     from examples.world_development.engineer_config import WORLD_DEVELOPMENT
     agent = DataEngineerAgent(cfg=WORLD_DEVELOPMENT, dbutils=dbutils)
-    agent.run(source_path=WORLD_DEVELOPMENT.volume_path)
+    agent.run()
 """
 
 from __future__ import annotations
@@ -28,6 +28,13 @@ from versifai.data_agents.engineer.config import (
     SourceFileHint,
     SourceProcessingHint,
 )
+
+# ═══════════════════════════════════════════════════════════════════════
+# USER SETTINGS — Update these to match your Databricks environment
+# ═══════════════════════════════════════════════════════════════════════
+
+CATALOG = "my_catalog"
+SCHEMA = "world_development"
 
 # ═══════════════════════════════════════════════════════════════════════
 # Wide-format pivot notes — shared across all indicator source hints
@@ -67,13 +74,12 @@ WORLD_DEVELOPMENT = ProjectConfig(
     domain_expertise="Development Economics, Global Health, Environmental Science",
     analyst_specialty="International Development Data Analyst",
     # ── Unity Catalog target ────────────────────────────────────
-    #    Replace these with YOUR catalog and schema names.
-    catalog="my_catalog",
-    schema="world_development",
+    catalog=CATALOG,
+    schema=SCHEMA,
     # ── Data source location ────────────────────────────────────
-    #    Run 00_download_data.py first to populate this Volume.
-    volume_path="/Volumes/my_catalog/world_development/raw_data",
-    staging_path="/Volumes/my_catalog/world_development/staging",
+    #    Run 00_download_data.py first to populate these Volumes.
+    volume_path=f"/Volumes/{CATALOG}/{SCHEMA}/raw_data",
+    staging_path=f"/Volumes/{CATALOG}/{SCHEMA}/staging",
     # ── Primary join key ────────────────────────────────────────
     #    ISO 3166-1 alpha-3 country code — the canonical key
     #    linking all indicator tables and country metadata.
@@ -209,13 +215,13 @@ WORLD_DEVELOPMENT = ProjectConfig(
             files=[
                 SourceFileHint(
                     file_pattern="API_NY.GDP.PCAP.CD",
-                    target_table="silver_gdp_per_capita",
+                    target_table="gdp_per_capita",
                     description="GDP per capita by country and year",
                     used_in="theme_0, theme_1, theme_2, theme_4, theme_5",
                 ),
                 SourceFileHint(
                     file_pattern="Metadata_Country",
-                    target_table="silver_country_metadata",
+                    target_table="country_metadata",
                     description="Country classifications: region, income group, special notes",
                     used_in="All themes (join for stratification)",
                 ),
@@ -229,7 +235,7 @@ WORLD_DEVELOPMENT = ProjectConfig(
             files=[
                 SourceFileHint(
                     file_pattern="API_SP.DYN.LE00.IN",
-                    target_table="silver_life_expectancy",
+                    target_table="life_expectancy",
                     description="Life expectancy by country and year",
                     used_in="theme_0, theme_1, theme_3, theme_5",
                 ),
@@ -247,7 +253,7 @@ WORLD_DEVELOPMENT = ProjectConfig(
             files=[
                 SourceFileHint(
                     file_pattern="API_SE.PRM.NENR",
-                    target_table="silver_school_enrollment",
+                    target_table="school_enrollment",
                     description="Net primary enrollment rate by country and year",
                     used_in="theme_0, theme_2",
                 ),
@@ -268,7 +274,7 @@ WORLD_DEVELOPMENT = ProjectConfig(
             files=[
                 SourceFileHint(
                     file_pattern="API_SH.XPD.CHEX.PC.CD",
-                    target_table="silver_health_expenditure",
+                    target_table="health_expenditure",
                     description="Health expenditure per capita by country and year",
                     used_in="theme_0, theme_3",
                 ),
@@ -289,7 +295,7 @@ WORLD_DEVELOPMENT = ProjectConfig(
             files=[
                 SourceFileHint(
                     file_pattern="API_EN.ATM.CO2E.PC",
-                    target_table="silver_co2_emissions",
+                    target_table="co2_emissions",
                     description="CO2 emissions per capita by country and year",
                     used_in="theme_0, theme_4",
                 ),
@@ -308,7 +314,7 @@ WORLD_DEVELOPMENT = ProjectConfig(
             files=[
                 SourceFileHint(
                     file_pattern="API_SP.POP.TOTL",
-                    target_table="silver_population",
+                    target_table="population",
                     description="Total population by country and year",
                     used_in="theme_0, theme_1 (bubble sizing)",
                 ),

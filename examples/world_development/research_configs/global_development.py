@@ -27,13 +27,19 @@ from versifai.science_agents.scientist.config import (
 )
 
 # ═══════════════════════════════════════════════════════════════════════
-# Shared project reference (catalog/schema only — the engineer config
-# has the full ProjectConfig; here we just need the catalog coordinates)
+# USER SETTINGS — Update these to match your Databricks environment
+# ═══════════════════════════════════════════════════════════════════════
+
+CATALOG = "my_catalog"
+SCHEMA = "world_development"
+
+# ═══════════════════════════════════════════════════════════════════════
+# Shared project reference
 # ═══════════════════════════════════════════════════════════════════════
 
 _project = ProjectConfig(
-    catalog="my_catalog",
-    schema="world_development",
+    catalog=CATALOG,
+    schema=SCHEMA,
 )
 
 
@@ -50,19 +56,19 @@ _silver_datasets = [
             "One row per country per year. This is the primary analytical dataset."
         ),
         source_tables=[
-            "silver_gdp_per_capita",
-            "silver_life_expectancy",
-            "silver_school_enrollment",
-            "silver_health_expenditure",
-            "silver_co2_emissions",
-            "silver_population",
-            "silver_country_metadata",
+            "gdp_per_capita",
+            "life_expectancy",
+            "school_enrollment",
+            "health_expenditure",
+            "co2_emissions",
+            "population",
+            "country_metadata",
         ],
         join_key="country_code",
         time_column="year",
         data_notes=(
             "JOIN all 6 indicator tables on (country_code, year) using FULL OUTER JOIN "
-            "to preserve all observations. LEFT JOIN silver_country_metadata on "
+            "to preserve all observations. LEFT JOIN country_metadata on "
             "country_code only (metadata has no year dimension). Not every indicator is "
             "available for every country-year — expect NULLs. GDP coverage is best from "
             "1960; health expenditure starts ~2000; school enrollment is patchy before 1970."
@@ -81,7 +87,7 @@ _silver_datasets = [
         data_notes=(
             "Filter silver_development_panel WHERE year >= 2000. Exclude aggregate entities "
             "— keep only individual countries (those with a non-NULL, non-empty region in "
-            "silver_country_metadata). Aggregates like 'World', 'East Asia & Pacific', etc. "
+            "country_metadata). Aggregates like 'World', 'East Asia & Pacific', etc. "
             "have region = NULL or are classified differently."
         ),
     ),
@@ -93,9 +99,9 @@ _silver_datasets = [
             "with GDP and life expectancy data in both 1960 and 2020 (balanced panel)."
         ),
         source_tables=[
-            "silver_gdp_per_capita",
-            "silver_life_expectancy",
-            "silver_country_metadata",
+            "gdp_per_capita",
+            "life_expectancy",
+            "country_metadata",
         ],
         join_key="country_code",
         time_column="year",
@@ -125,13 +131,13 @@ _themes = [
         analysis_type="descriptive",
         sequence=0,
         required_tables=[
-            "silver_gdp_per_capita",
-            "silver_life_expectancy",
-            "silver_school_enrollment",
-            "silver_health_expenditure",
-            "silver_co2_emissions",
-            "silver_population",
-            "silver_country_metadata",
+            "gdp_per_capita",
+            "life_expectancy",
+            "school_enrollment",
+            "health_expenditure",
+            "co2_emissions",
+            "population",
+            "country_metadata",
         ],
         analysis_steps=[
             "Count countries, year ranges, and row counts for each silver table",
@@ -544,7 +550,7 @@ GLOBAL_DEVELOPMENT = ResearchConfig(
         "- Label outlier countries by name — readers want to know which dots are theirs.\n"
     ),
     project=_project,
-    results_volume_path="/Volumes/my_catalog/world_development/results",
+    results_volume_path=f"/Volumes/{CATALOG}/{SCHEMA}/results",
     analysis_themes=_themes,
     silver_datasets=_silver_datasets,
     research_references=_references,

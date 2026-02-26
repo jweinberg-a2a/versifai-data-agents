@@ -53,6 +53,8 @@ dependencies = [
     "scipy>=1.11.0",
     # Databricks
     "databricks-sdk>=0.20.0",
+    # Pin to avoid conflict with Databricks opentelemetry-api
+    "importlib-metadata<8.7.0",
 ]
 
 [project.optional-dependencies]

@@ -90,7 +90,7 @@ agent = DataEngineerAgent(cfg=cfg, dbutils=dbutils)
 
 # COMMAND ----------
 
-results = agent.run(source_path=cfg.volume_path)
+results = agent.run()
 logger.info("Pipeline complete. Result: %s", results)
 
 # COMMAND ----------
