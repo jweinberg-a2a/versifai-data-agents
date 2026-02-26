@@ -26,6 +26,11 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
+/* Hide redundant site name at top of left sidebar */
+.md-nav--primary > .md-nav__title {
+  display: none;
+}
+
 /* Hide "Made with Material for MkDocs" footer */
 .md-footer-meta {
   display: none;

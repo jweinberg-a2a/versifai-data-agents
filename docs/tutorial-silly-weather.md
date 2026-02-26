@@ -19,54 +19,156 @@ All example files live in
 
 ## What You're About to Build
 
-Here's the full plan. Three agents run in sequence — each one picks up where
-the last one left off.
+Three agents run in sequence — each one picks up where the last one left off.
+
+### Stage 1: Data Engineer — Raw Files to Delta Tables
+
+The engineer discovers files in a Databricks Volume, profiles each one, then
+designs schemas and loads them into Unity Catalog.
 
 ```mermaid
-flowchart TD
-    subgraph stage1["Stage 1 — Data Engineer"]
-        direction TB
-        RAW[/"**Raw Data Volume**<br><br>noaa_weather/ → 3 CSVs<br>duck_observations/ → ZIP archive<br>ice_cream/ → Excel<br>forecast_accuracy/ → CSV"/]
-        RAW --> DISCOVER["**Discover & Profile**<br><br>explore_volume → map files<br>read_file_header → peek at columns<br>profile_data → stats, nulls, types"]
-        DISCOVER --> DESIGN["**Design & Load**<br><br>design_schema → CREATE TABLE SQL<br>transform_and_load → map columns, cast types<br>write_to_catalog → Delta tables"]
-        DESIGN --> VALIDATE["**Validate**<br><br>Analyst agent runs SQL checks<br>→ join key integrity<br>→ null rates, ranges<br>→ cross-table joinability"]
+flowchart LR
+    subgraph volume["Raw Data Volume"]
+        F1["weather_2020.csv"]
+        F2["weather_2021.csv"]
+        F3["weather_2022.csv"]
+        F4["duck_obs.zip"]
+        F5["ice_cream.xlsx"]
+        F6["forecast.csv"]
     end
 
-    subgraph tables["Unity Catalog"]
-        DT[("**4 Delta Tables**<br><br>silver_daily_weather<br>silver_quack_frequency<br>silver_feather_fluffing<br>silver_ice_cream_sales")]
+    subgraph discover["Discover"]
+        EV[explore_volume]
+        RH[read_file_header]
+        PD[profile_data]
+        EV --> RH --> PD
     end
 
-    subgraph stage2["Stage 2 — Data Scientist"]
-        direction TB
-        JOIN["**Build Silver Datasets**<br><br>execute_sql → JOIN weather +<br>duck + ice cream tables<br>validate_silver → quality checks"]
-        JOIN --> ANALYZE["**7 Research Themes**<br><br>0. The Quack Census<br>1. Quack Before the Storm<br>2. The Fluff Factor<br>3. The Ice Cream Confounder<br>4. V-Formation Tornado Warning<br>5. Duck vs Doppler<br>6. Grand Unified Duck Theory"]
-        ANALYZE --> TOOLS["**Per Theme**<br><br>statistical_analysis → correlations, tests<br>fit_model → regression, classification<br>check_confounders → Simpson's Paradox<br>create_visualization → charts<br>save_finding → structured evidence"]
+    subgraph load["Design & Load"]
+        DS[design_schema]
+        TL[transform_and_load]
+        WC[write_to_catalog]
+        DS --> TL --> WC
     end
 
-    subgraph outputs["Research Outputs"]
-        FO[/"**findings.json** — 14 findings<br>**charts/** — 9 visualizations<br>**tables/** — 6 CSV summaries<br>**notes/** — per-theme reasoning"/]
+    subgraph validate["Validate"]
+        AQ["Analyst reviews:<br>join keys, nulls,<br>ranges, joinability"]
     end
 
-    subgraph stage3["Stage 3 — StoryTeller"]
-        direction TB
-        READ["**Inventory & Evaluate**<br><br>read_findings → load all findings<br>evaluate_evidence → score strength<br>curate → rank for each section"]
-        READ --> WRITE["**Write 8 Sections**<br><br>1. Abstract<br>2. The Quack Census<br>3. Quack Before the Storm<br>4. The Fluff Factor<br>5. Duck vs Doppler Showdown<br>6. Grand Unified Duck Theory<br>7. Limitations<br>8. Conclusions"]
-        WRITE --> FINISH["**Finalize**<br><br>Coherence pass → fix transitions<br>cite_source → bibliography<br>assemble → table of contents<br>→ duck_weather_report.md"]
-    end
+    F1 & F2 & F3 & F4 & F5 & F6 --> EV
+    PD --> DS
+    WC --> AQ
 
-    VALIDATE --> DT
-    DT --> JOIN
-    TOOLS --> FO
-    FO --> READ
-
-    style stage1 fill:#f7f9fc,stroke:#4a6f93
-    style tables fill:#f0f0f0,stroke:#666
-    style stage2 fill:#f7faf7,stroke:#4a8a4a
-    style outputs fill:#f0f0f0,stroke:#666
-    style stage3 fill:#fefaf2,stroke:#b38600
+    style volume fill:#fff8e1,stroke:#b38600
+    style discover fill:#e8f0fe,stroke:#4a6f93
+    style load fill:#e8f0fe,stroke:#4a6f93
+    style validate fill:#e8f4e8,stroke:#4a8a4a
 ```
 
-Each stage has exactly three parts:
+**Result:** 4 clean Delta tables in Unity Catalog — `silver_daily_weather`,
+`silver_quack_frequency`, `silver_feather_fluffing`, `silver_ice_cream_sales`.
+
+### Stage 2: Data Scientist — Tables to Findings
+
+The scientist joins engineer tables into analytical datasets, then runs
+7 research themes — each producing statistical tests, charts, and findings.
+
+```mermaid
+flowchart LR
+    subgraph tables["Unity Catalog Tables"]
+        T1[silver_daily_weather]
+        T2[silver_quack_frequency]
+        T3[silver_feather_fluffing]
+        T4[silver_ice_cream_sales]
+    end
+
+    subgraph silver["Build Silver"]
+        EX[execute_sql]
+        VS[validate_silver]
+        EX --> VS
+    end
+
+    subgraph themes["Per Research Theme × 7"]
+        SA[statistical_analysis]
+        FM[fit_model]
+        CC[check_confounders]
+        CV[create_visualization]
+        SF[save_finding]
+        SA --> FM --> CC
+        SA --> CV
+        CC --> SF
+    end
+
+    subgraph artifacts["Outputs"]
+        FJ[/"findings.json"/]
+        CH[/"charts/"/]
+        TB[/"tables/"/]
+        NT[/"notes/"/]
+    end
+
+    T1 & T2 & T3 & T4 --> EX
+    VS --> SA
+    SF --> FJ
+    CV --> CH
+    SA --> TB
+    SA --> NT
+
+    style tables fill:#e8f4e8,stroke:#4a8a4a
+    style silver fill:#e8f0fe,stroke:#4a6f93
+    style themes fill:#e8f0fe,stroke:#4a6f93
+    style artifacts fill:#fff8e1,stroke:#b38600
+```
+
+**Result:** 14 structured findings, 9 charts, 6 CSV summaries, and per-theme
+reasoning notes — all persisted to the run directory.
+
+### Stage 3: StoryTeller — Findings to Report
+
+The storyteller reads the scientist's outputs, evaluates evidence strength,
+writes narrative sections, and assembles the final report.
+
+```mermaid
+flowchart LR
+    subgraph inputs["Scientist Outputs"]
+        FJ2[/"findings.json"/]
+        CH2[/"charts/"/]
+        NT2[/"notes/"/]
+    end
+
+    subgraph evaluate["Evaluate"]
+        RF[read_findings]
+        EE[evaluate_evidence]
+        RF --> EE
+    end
+
+    subgraph write["Write Sections"]
+        WN[write_narrative]
+        CS[cite_source]
+        WN --> CS
+    end
+
+    subgraph assemble["Finalize"]
+        CP["coherence pass"]
+        RPT[/"duck_weather_report.md"/]
+        CP --> RPT
+    end
+
+    FJ2 & CH2 & NT2 --> RF
+    EE --> WN
+    CS --> CP
+
+    style inputs fill:#fff8e1,stroke:#b38600
+    style evaluate fill:#e8f0fe,stroke:#4a6f93
+    style write fill:#e8f0fe,stroke:#4a6f93
+    style assemble fill:#e8f4e8,stroke:#4a8a4a
+```
+
+**Result:** A ~4,000-word narrative report with table of contents, inline
+citations, and a bibliography — ready for editorial review.
+
+---
+
+### How It All Connects
 
 | Part | What It Is | What Changes Between Projects |
 |------|-----------|-------------------------------|
@@ -652,95 +754,139 @@ the silly weather report looks like:
 
 ---
 
-<div style="background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 24px; margin: 16px 0; font-family: Georgia, serif;">
+<div style="background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 28px 32px; margin: 16px 0; font-family: Georgia, 'Times New Roman', serif; line-height: 1.7; color: #333;">
 
-<h2 style="text-align: center; margin-bottom: 4px;">Do Ducks Predict Rain Better Than Meteorologists?</h2>
-<p style="text-align: center; color: #666; font-style: italic; margin-top: 0;">A Rigorous Statistical Investigation</p>
+<h2 style="text-align: center; margin: 0 0 4px 0; font-size: 1.4em;">Do Ducks Predict Rain Better Than Meteorologists?</h2>
+<p style="text-align: center; color: #666; font-style: italic; margin: 0 0 24px 0;">A Rigorous Statistical Investigation</p>
 
-**Table of Contents**
+<p style="font-weight: bold; margin-bottom: 6px;">Table of Contents</p>
+<ol style="margin: 0 0 20px 0; padding-left: 20px; color: #555;">
+<li>Abstract</li>
+<li>The Quack Census: Baseline Characterization</li>
+<li>Quack Before the Storm: The Core Signal</li>
+<li>The Fluff Factor: Feather-Based Forecasting</li>
+<li>The Ice Cream Confounder</li>
+<li>Duck vs. Doppler: The Showdown</li>
+<li>The Grand Unified Duck Theory</li>
+<li>Limitations &amp; Future Work</li>
+<li>Conclusions</li>
+<li>References</li>
+</ol>
 
-1. Abstract
-2. The Quack Census: Baseline Characterization
-3. Quack Before the Storm: The Core Signal
-4. The Fluff Factor: Feather-Based Forecasting
-5. The Ice Cream Confounder
-6. Duck vs. Doppler: The Showdown
-7. The Grand Unified Duck Theory
-8. Limitations & Future Work
-9. Conclusions
-10. References
+<hr style="border: none; border-top: 1px solid #ccc; margin: 20px 0;">
 
----
+<h3 style="font-size: 1.1em; margin-bottom: 8px;">1. Abstract</h3>
+<p>This investigation examines whether observable duck behaviors — specifically quack frequency, feather-fluffing intensity, and V-formation flight patterns — contain genuine meteorological information. Analysis of 1.1 million daily observations across 47 weather stations reveals a statistically significant correlation between quack frequency and next-day precipitation (Spearman ρ = 0.42, p &lt; 0.001). However, the National Weather Service maintains a decisive advantage in 24-hour precipitation forecasting (F1 = 0.83 vs. duck-based F1 = 0.71, McNemar's p = 0.02).</p>
 
-**1. Abstract**
+<hr style="border: none; border-top: 1px solid #ccc; margin: 20px 0;">
 
-This investigation examines whether observable duck behaviors — specifically
-quack frequency, feather-fluffing intensity, and V-formation flight patterns —
-contain genuine meteorological information. Analysis of 1.1 million daily
-observations across 47 weather stations reveals a statistically significant
-correlation between quack frequency and next-day precipitation
-(Spearman ρ = 0.42, p < 0.001). However, the National Weather Service
-maintains a decisive advantage in 24-hour precipitation forecasting
-(F1 = 0.83 vs. duck-based F1 = 0.71, McNemar's p = 0.02).
+<h3 style="font-size: 1.1em; margin-bottom: 8px;">3. Quack Before the Storm: The Core Signal</h3>
+<p>The central question of this investigation — whether ducks quack more before rain — yields an unambiguous answer: they do.</p>
+<p>A Spearman rank correlation between daily quack frequency and next-day precipitation reveals ρ = 0.42 (p &lt; 0.001, n = 312,847). The relationship holds across all four seasons, though summer exhibits the strongest signal (ρ = 0.51) while winter shows the weakest (ρ = 0.28).</p>
+<div style="background: #fff; border: 1px solid #ddd; border-radius: 4px; padding: 16px; margin: 16px 0; text-align: center;">
+<svg viewBox="0 0 420 200" style="max-width: 420px; width: 100%;" xmlns="http://www.w3.org/2000/svg">
+  <text x="210" y="16" text-anchor="middle" font-size="11" font-family="sans-serif" font-weight="bold" fill="#333">Figure 2: Lag-Correlation — Quack Frequency vs. Precipitation</text>
+  <!-- axes -->
+  <line x1="50" y1="30" x2="50" y2="170" stroke="#999" stroke-width="1"/>
+  <line x1="50" y1="170" x2="400" y2="170" stroke="#999" stroke-width="1"/>
+  <!-- y-axis labels -->
+  <text x="46" y="35" text-anchor="end" font-size="8" fill="#666">0.6</text>
+  <text x="46" y="75" text-anchor="end" font-size="8" fill="#666">0.4</text>
+  <text x="46" y="115" text-anchor="end" font-size="8" fill="#666">0.2</text>
+  <text x="46" y="155" text-anchor="end" font-size="8" fill="#666">0.0</text>
+  <!-- y-axis title -->
+  <text x="14" y="100" text-anchor="middle" font-size="9" fill="#666" transform="rotate(-90,14,100)">Spearman ρ</text>
+  <!-- x-axis labels -->
+  <text x="107" y="184" text-anchor="middle" font-size="8" fill="#666">Lag 0</text>
+  <text x="222" y="184" text-anchor="middle" font-size="8" fill="#666">Lag 1</text>
+  <text x="338" y="184" text-anchor="middle" font-size="8" fill="#666">Lag 2</text>
+  <!-- x-axis title -->
+  <text x="210" y="197" text-anchor="middle" font-size="9" fill="#666">Lag (days)</text>
+  <!-- grid lines -->
+  <line x1="50" y1="75" x2="400" y2="75" stroke="#eee" stroke-width="1"/>
+  <line x1="50" y1="115" x2="400" y2="115" stroke="#eee" stroke-width="1"/>
+  <!-- Summer line (strongest) -->
+  <polyline points="107,105 222,52 338,112" fill="none" stroke="#e07b39" stroke-width="2"/>
+  <circle cx="107" cy="105" r="3" fill="#e07b39"/><circle cx="222" cy="52" r="3" fill="#e07b39"/><circle cx="338" cy="112" r="3" fill="#e07b39"/>
+  <!-- All-season line -->
+  <polyline points="107,115 222,75 338,125" fill="none" stroke="#5a7fa3" stroke-width="2.5"/>
+  <circle cx="107" cy="115" r="3" fill="#5a7fa3"/><circle cx="222" cy="75" r="3" fill="#5a7fa3"/><circle cx="338" cy="125" r="3" fill="#5a7fa3"/>
+  <!-- Winter line (weakest) -->
+  <polyline points="107,130 222,103 338,138" fill="none" stroke="#7bae7f" stroke-width="2"/>
+  <circle cx="107" cy="130" r="3" fill="#7bae7f"/><circle cx="222" cy="103" r="3" fill="#7bae7f"/><circle cx="338" cy="138" r="3" fill="#7bae7f"/>
+  <!-- Confidence band (all-season, simplified) -->
+  <polygon points="107,105 222,60 338,115 338,135 222,90 107,125" fill="#5a7fa3" fill-opacity="0.08"/>
+  <!-- Legend -->
+  <line x1="280" y1="30" x2="296" y2="30" stroke="#e07b39" stroke-width="2"/><text x="300" y="33" font-size="8" fill="#666">Summer (ρ=0.51)</text>
+  <line x1="280" y1="42" x2="296" y2="42" stroke="#5a7fa3" stroke-width="2.5"/><text x="300" y="45" font-size="8" fill="#666">All seasons (ρ=0.42)</text>
+  <line x1="280" y1="54" x2="296" y2="54" stroke="#7bae7f" stroke-width="2"/><text x="300" y="57" font-size="8" fill="#666">Winter (ρ=0.28)</text>
+</svg>
+</div>
+<p>A Mann-Whitney U test confirms that pre-rain quack counts (median = 847 quacks/hr) significantly exceed fair-weather counts (median = 612 quacks/hr, U = 2.34 × 10⁹, p = 0.003). The effect is not subtle — Cohen's d = 0.38 places it firmly in the "small to medium" range.</p>
 
----
+<hr style="border: none; border-top: 1px solid #ccc; margin: 20px 0;">
 
-**3. Quack Before the Storm: The Core Signal**
+<h3 style="font-size: 1.1em; margin-bottom: 8px;">6. Duck vs. Doppler: The Showdown</h3>
+<p>The precision-recall curves tell a humbling story. While duck-based forecasting achieves respectable precision (0.74) at the 50% recall threshold, the National Weather Service's Doppler-based system maintains precision of 0.89 at the same recall level [1].</p>
 
-The central question of this investigation — whether ducks quack more before
-rain — yields an unambiguous answer: they do.
+<div style="background: #fff; border: 1px solid #ddd; border-radius: 4px; padding: 16px; margin: 16px 0; text-align: center;">
+<svg viewBox="0 0 420 220" style="max-width: 420px; width: 100%;" xmlns="http://www.w3.org/2000/svg">
+  <text x="210" y="16" text-anchor="middle" font-size="11" font-family="sans-serif" font-weight="bold" fill="#333">Figure 6: Precision-Recall Comparison</text>
+  <!-- axes -->
+  <line x1="55" y1="30" x2="55" y2="180" stroke="#999" stroke-width="1"/>
+  <line x1="55" y1="180" x2="390" y2="180" stroke="#999" stroke-width="1"/>
+  <!-- y-axis labels -->
+  <text x="50" y="35" text-anchor="end" font-size="8" fill="#666">1.0</text>
+  <text x="50" y="72" text-anchor="end" font-size="8" fill="#666">0.8</text>
+  <text x="50" y="110" text-anchor="end" font-size="8" fill="#666">0.6</text>
+  <text x="50" y="147" text-anchor="end" font-size="8" fill="#666">0.4</text>
+  <text x="50" y="180" text-anchor="end" font-size="8" fill="#666">0.2</text>
+  <text x="14" y="105" text-anchor="middle" font-size="9" fill="#666" transform="rotate(-90,14,105)">Precision</text>
+  <!-- x-axis labels -->
+  <text x="55" y="194" text-anchor="middle" font-size="8" fill="#666">0.0</text>
+  <text x="139" y="194" text-anchor="middle" font-size="8" fill="#666">0.25</text>
+  <text x="222" y="194" text-anchor="middle" font-size="8" fill="#666">0.50</text>
+  <text x="306" y="194" text-anchor="middle" font-size="8" fill="#666">0.75</text>
+  <text x="390" y="194" text-anchor="middle" font-size="8" fill="#666">1.0</text>
+  <text x="222" y="210" text-anchor="middle" font-size="9" fill="#666">Recall</text>
+  <!-- grid -->
+  <line x1="55" y1="72" x2="390" y2="72" stroke="#f0f0f0" stroke-width="1"/>
+  <line x1="55" y1="110" x2="390" y2="110" stroke="#f0f0f0" stroke-width="1"/>
+  <line x1="55" y1="147" x2="390" y2="147" stroke="#f0f0f0" stroke-width="1"/>
+  <!-- NWS curve (higher) -->
+  <polyline points="55,33 100,36 139,40 180,48 222,58 260,72 306,95 350,125 390,160" fill="none" stroke="#5a7fa3" stroke-width="2.5"/>
+  <!-- Duck curve (lower) -->
+  <polyline points="55,42 100,50 139,60 180,75 222,92 260,112 306,135 350,155 390,172" fill="none" stroke="#e07b39" stroke-width="2" stroke-dasharray="6,3"/>
+  <!-- Combined model (highest) -->
+  <polyline points="55,30 100,32 139,35 180,40 222,48 260,60 306,80 350,108 390,145" fill="none" stroke="#4a8a4a" stroke-width="2"/>
+  <!-- 50% recall reference line -->
+  <line x1="222" y1="30" x2="222" y2="180" stroke="#ccc" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="226" y="168" font-size="7" fill="#999">50% recall</text>
+  <!-- Legend -->
+  <line x1="70" y1="210" x2="86" y2="210" stroke="#5a7fa3" stroke-width="2.5"/><text x="90" y="213" font-size="8" fill="#666">NWS Doppler (F1=0.83)</text>
+  <line x1="210" y1="210" x2="226" y2="210" stroke="#e07b39" stroke-width="2" stroke-dasharray="6,3"/><text x="230" y="213" font-size="8" fill="#666">Duck-based (F1=0.71)</text>
+  <line x1="70" y1="220" x2="86" y2="220" stroke="#4a8a4a" stroke-width="2"/><text x="90" y="223" font-size="8" fill="#666">Combined duck+Doppler (F1=0.87)</text>
+</svg>
+</div>
 
-A Spearman rank correlation between daily quack frequency and next-day
-precipitation reveals ρ = 0.42 (p < 0.001, n = 312,847). The relationship
-holds across all four seasons, though summer exhibits the strongest signal
-(ρ = 0.51) while winter shows the weakest (ρ = 0.28).
+<p>The McNemar test on paired 2×2 contingency tables confirms this is not a statistical artifact (χ² = 5.41, p = 0.02). The NWS correctly predicts 83% of rain events that ducks miss entirely — primarily light precipitation events below 5mm.</p>
+<p>However, ducks show a surprising advantage for heavy precipitation events (&gt; 25mm): duck-based recall = 0.91 vs. NWS recall = 0.84. The biological signal appears strongest precisely when it matters most.</p>
 
-*[Figure 2: Lag-correlation plot showing quack frequency vs. precipitation at
-lags 0–3 days, stratified by season. The lag-1 peak is consistent across all
-seasons, with 95% confidence bands shown.]*
+<hr style="border: none; border-top: 1px solid #ccc; margin: 20px 0;">
 
-A Mann-Whitney U test confirms that pre-rain quack counts (median = 847
-quacks/hr) significantly exceed fair-weather counts (median = 612 quacks/hr,
-U = 2.34 × 10⁹, p = 0.003). The effect is not subtle — Cohen's d = 0.38
-places it firmly in the "small to medium" range.
+<h3 style="font-size: 1.1em; margin-bottom: 8px;">9. Conclusions</h3>
+<p>Ducks do not predict rain better than meteorologists. But they predict it better than random chance, and in certain extreme weather scenarios, they outperform professional forecasting systems. The combined duck-Doppler model (gradient boosting, F1 = 0.87) suggests the optimal meteorological strategy is to check both the radar and the nearest pond.</p>
 
----
+<hr style="border: none; border-top: 1px solid #ccc; margin: 20px 0;">
 
-**6. Duck vs. Doppler: The Showdown**
-
-The precision-recall curves tell a humbling story. While duck-based forecasting
-achieves respectable precision (0.74) at the 50% recall threshold, the National
-Weather Service's Doppler-based system maintains precision of 0.89 at the same
-recall level [1].
-
-The McNemar test on paired 2×2 contingency tables confirms this is not a
-statistical artifact (χ² = 5.41, p = 0.02). The NWS correctly predicts 83% of
-rain events that ducks miss entirely — primarily light precipitation events
-below 5mm.
-
-However, ducks show a surprising advantage for heavy precipitation events
-(> 25mm): duck-based recall = 0.91 vs. NWS recall = 0.84. The biological
-signal appears strongest precisely when it matters most.
-
----
-
-**9. Conclusions**
-
-Ducks do not predict rain better than meteorologists. But they predict it
-better than random chance, and in certain extreme weather scenarios, they
-outperform professional forecasting systems. The combined duck-Doppler model
-(gradient boosting, F1 = 0.87) suggests the optimal meteorological strategy is
-to check both the radar and the nearest pond.
-
----
-
-**References**
-
-[1] National Weather Service. "Forecast Verification Statistics 2020-2022."
-weather.gov/verification.
-
-[2] Lorenz, K. "Animal Behavior as Environmental Indicators." *Journal of
-Ethology*, 1973.
+<h3 style="font-size: 1.1em; margin-bottom: 12px;">References</h3>
+<table style="border: none; border-collapse: collapse; font-size: 0.9em; color: #555; width: 100%;">
+<tr style="vertical-align: top;"><td style="padding: 4px 10px 4px 0; white-space: nowrap; border: none;">[1]</td><td style="padding: 4px 0; border: none;">National Weather Service. "Forecast Verification Statistics 2020–2022." <em>NOAA National Weather Service Verification Portal</em>, 2023. Available: weather.gov/verification.</td></tr>
+<tr style="vertical-align: top;"><td style="padding: 4px 10px 4px 0; white-space: nowrap; border: none;">[2]</td><td style="padding: 4px 0; border: none;">Lorenz, K. "Animal Behavior as Environmental Indicators." <em>Journal of Ethology</em>, vol. 12, no. 3, pp. 145–162, 1973.</td></tr>
+<tr style="vertical-align: top;"><td style="padding: 4px 10px 4px 0; white-space: nowrap; border: none;">[3]</td><td style="padding: 4px 0; border: none;">Weatherly, P. &amp; Chen, S. "Barometric Sensitivity in Anatidae: A Meta-Analysis of 47 Field Studies." <em>Animal Cognition</em>, vol. 28, no. 1, pp. 89–103, 2024.</td></tr>
+<tr style="vertical-align: top;"><td style="padding: 4px 10px 4px 0; white-space: nowrap; border: none;">[4]</td><td style="padding: 4px 0; border: none;">U.S. Census Bureau. "Ice Cream Consumption and Seasonal Climate Patterns." <em>Statistical Brief SB-2022-07</em>, 2022.</td></tr>
+<tr style="vertical-align: top;"><td style="padding: 4px 10px 4px 0; white-space: nowrap; border: none;">[5]</td><td style="padding: 4px 0; border: none;">Weinberg, J. "Versifai: Autonomous Data Agents for Reproducible Analysis." GitHub, 2026. Available: github.com/jweinberg-a2a/versifai-data-agents.</td></tr>
+</table>
 
 </div>
 
