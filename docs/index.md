@@ -7,11 +7,17 @@ hide:
   <img src="assets/FullLogo_Transparent_NoBuffer.png" alt="Versifai" width="400">
 </p>
 
+<div style="background: #f0f2f5; border-left: 4px solid #5a7fa3; border-radius: 4px; padding: 20px 24px; margin: 16px 0 28px 0; font-style: italic; color: #444; line-height: 1.7;">
+
+If the work of data science is going to be automated, it should be done in open source — by the people who have a passion for data and genuinely love the craft. As we reinvent this profession, we should hold certain principles at our core: reproducibility, transparency, and respect for the rigor that makes data science trustworthy. That is why I created Versifai, and why it will remain open source at its heart.
+
+<div style="text-align: right; font-style: normal; margin-top: 8px; color: #666;">— Jason Weinberg, Creator</div>
+
+</div>
+
 **Open-source AI agents for autonomous data engineering, science, and storytelling.**
 
 Versifai provides specialized AI agents that automate the complete data lifecycle — from raw file discovery and schema design, through statistical analysis and modeling, to compelling narrative reports with citations and evidence.
-
-If this profession is to be automated, it should be automated **in open source, by practitioners, for practitioners.** Not behind a paywall, not in a black box — in a library you can read, extend, and trust.
 
 ---
 
