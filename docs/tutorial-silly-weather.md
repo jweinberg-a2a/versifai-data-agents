@@ -248,6 +248,37 @@ metadata_columns = [
 ]
 ```
 
+### Domain Guidance — Help the Agent Understand Your Data
+
+Two optional fields inject domain expertise into the agent's prompts,
+replacing the need for hardcoded logic inside the agent itself:
+
+```python
+SILLY_WEATHER = ProjectConfig(
+    ...,
+    # How to detect data grain (station? county? pond?)
+    grain_detection_guidance=(
+        "Station-level: Look for station_id or NOAA identifiers (USW/USC prefix)\n"
+        "Pond-level: Look for pond_id identifiers\n"
+        "County-level: Look for county_fips or FIPS codes\n"
+        "If data has both station_id AND pond_id, it's a crosswalk table"
+    ),
+    # Domain-specific column renaming examples
+    column_naming_examples=(
+        "`TMAX` → `temp_max_c` (daily max temp in Celsius)\n"
+        "`PRCP` → `precip_mm` (daily precipitation in mm)\n"
+        "`QPH` → `quacks_per_hour` (quack frequency per hour)\n"
+        "`FFI` → `fluff_index` (feather fluffing intensity 0-10)"
+    ),
+)
+```
+
+!!! tip "Why these fields exist"
+    Agent prompts are **domain-agnostic** — they contain statistical
+    methodology, not business logic. These config fields let you inject
+    domain-specific knowledge (column conventions, grain detection rules)
+    without modifying agent code.
+
 ### Putting It All Together
 
 See the complete config in
@@ -364,6 +395,45 @@ silver_weather_duck = SilverDatasetSpec(
 The agent builds these in its "Silver Construction" phase before running
 any theme analysis.
 
+### Agent Identity & Domain Context
+
+Three optional fields customize the agent's identity and inject domain
+knowledge into its system prompt:
+
+```python
+DUCK_RAIN = ResearchConfig(
+    ...,
+    # Who is this agent? (appears in system prompt)
+    agent_role="Waterfowl-Atmospheric Research Scientist",
+
+    # Domain-specific guidance: data quirks, validation ranges, sense-checks
+    domain_context=(
+        "NOAA temperatures are stored in tenths of degrees Celsius — "
+        "verify values are divided by 10 before analysis.\n"
+        "Quacks-per-hour (QPH) typically ranges 200-1500.\n"
+        "Duck observations have ~15% weekend dropout.\n"
+        "Rain threshold: precip_mm > 2.54 (0.1 inch)."
+    ),
+
+    # Override methodology for specific analysis types
+    analysis_method_guidance={
+        "simulation": (
+            "Use the Duck Barometer Index (DBI) combining quack frequency, "
+            "fluff index, and formation flights. Cut-points: DBI < 3 → 'Fair', "
+            "3-7 → 'Rain Likely', > 7 → 'Storm Warning'."
+        ),
+    },
+)
+```
+
+!!! info "How domain context is used"
+    The `domain_context` string is injected into the agent's system prompt
+    as a "Domain-Specific Guidance" section. This replaces hardcoded domain
+    logic — the agent prompts are generic, but the config makes them
+    domain-aware. The `analysis_method_guidance` dict overrides built-in
+    methodology guidance for specific analysis types (e.g., `"simulation"`,
+    `"comparative"`, `"trend"`).
+
 ### Research References
 
 Point the agent to relevant published work:
@@ -458,6 +528,32 @@ evidence = EvidenceThreshold(
     max_unsupported_claims=0,              # Zero tolerance for ungrounded claims
 )
 ```
+
+### Domain Writing Rules & Citation Guidance
+
+Two optional fields inject domain-specific editorial rules and citation
+preferences:
+
+```python
+DUCK_STORY = StorytellerConfig(
+    ...,
+    # Domain-specific editorial rules
+    domain_writing_rules=(
+        "MAINTAIN DEADPAN SCIENTIFIC TONE: This paper treats duck-based weather "
+        "prediction with the same methodological rigor as any peer-reviewed study. "
+        "The humor comes from the contrast between the absurd premise and the "
+        "serious statistical treatment."
+    ),
+    # What citation sources to prioritize
+    citation_source_guidance=(
+        "NOAA technical documentation, peer-reviewed ornithology and meteorology "
+        "journals, animal behavior meta-analyses, and classic statistics textbooks."
+    ),
+)
+```
+
+These fields are injected into the storyteller's system prompt. When empty
+(the default), the agent falls back to generic editorial rules.
 
 ### Output Format
 
@@ -858,17 +954,24 @@ replace the domain content:
    - Update `join_key` to your primary join column
    - List your data sources in `known_sources`
    - Add processing hints in `source_processing_hints`
+   - Add `grain_detection_guidance` — tell the agent how to detect data grain in your domain
+   - Add `column_naming_examples` — show domain-specific rename patterns
 
 3. **Edit `research_configs/`:**
    - Write your thesis
    - Define 5-10 analysis themes with research questions
    - Specify silver datasets for pre-joined analytical tables
    - Add research references
+   - Set `agent_role` to describe the agent's expertise
+   - Add `domain_context` with data quirks, validation ranges, and sense-check benchmarks
+   - Optionally add `analysis_method_guidance` for domain-specific methodology overrides
 
 4. **Edit `storyteller_config.py`:**
    - Define your narrative sections (one per major finding)
    - Set the style guide for your audience
    - Configure evidence thresholds
+   - Add `domain_writing_rules` with editorial guidance specific to your domain
+   - Add `citation_source_guidance` listing preferred citation sources
 
 5. **Run the notebooks in order:**
    - `run_engineer.py` — Ingests raw data
@@ -884,9 +987,9 @@ that changes.
 
 | Concept | What It Is | Where It Lives |
 |---------|-----------|---------------|
-| **ProjectConfig** | Data engineering instructions (catalog, schema, join keys, sources) | `engineer_config.py` |
-| **ResearchConfig** | Research methodology (thesis, themes, silver datasets) | `research_configs/*.py` |
-| **StorytellerConfig** | Narrative rules (sections, style, evidence thresholds) | `storyteller_config.py` |
+| **ProjectConfig** | Data engineering instructions (catalog, schema, join keys, sources, grain/naming guidance) | `engineer_config.py` |
+| **ResearchConfig** | Research methodology (thesis, themes, silver datasets, agent role, domain context) | `research_configs/*.py` |
+| **StorytellerConfig** | Narrative rules (sections, style, evidence thresholds, domain writing rules) | `storyteller_config.py` |
 | **AnalysisTheme** | One research question with steps, tables, and a signature chart | Inside ResearchConfig |
 | **SilverDatasetSpec** | A pre-joined analytical table to build | Inside ResearchConfig |
 | **NarrativeSection** | One section of the report with tone and evidence mapping | Inside StorytellerConfig |

@@ -52,7 +52,7 @@ class SilverDatasetSpec:
     name: str
     description: str
     source_tables: list[str] = field(default_factory=list)
-    join_key: str = "county_fips_code"
+    join_key: str = ""  # Falls back to project join key when empty
     time_column: str = "source_year"
     data_notes: str = ""  # Domain-specific hints about data quirks, how to combine tables, etc.
 
@@ -132,6 +132,20 @@ class ResearchConfig:
     # ── Research identity ────────────────────────────────────────
     name: str = ""
     thesis: str = ""
+
+    # ── Agent identity & domain framing ──────────────────────────
+    agent_role: str = "Data Scientist"  # e.g. "Data Scientist and Health Policy Researcher"
+
+    # ── Domain context (injected into system prompt) ──────────────
+    # Freeform markdown block covering: data quirks, validation ranges,
+    # temporal alignment rules, sense-check benchmarks, domain terminology.
+    # When empty, prompts use generic instructions without domain specifics.
+    domain_context: str = ""
+
+    # ── Per-analysis-type methodology overrides ───────────────────
+    # Keys: "descriptive", "comparative", "correlation", "trend", "simulation"
+    # When a key is present, its value REPLACES the generic guidance for that type.
+    analysis_method_guidance: dict[str, str] = field(default_factory=dict)
 
     # ── Visualization philosophy ─────────────────────────────────
     visualization_guidance: str = ""

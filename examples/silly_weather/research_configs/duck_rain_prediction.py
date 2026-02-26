@@ -293,8 +293,7 @@ _themes = [
         id="theme_5",
         title="Duck vs Doppler",
         question=(
-            "Who predicts rain better: ducks or professional meteorologists? "
-            "The ultimate showdown."
+            "Who predicts rain better: ducks or professional meteorologists? The ultimate showdown."
         ),
         analysis_type="comparative",
         sequence=5,
@@ -408,6 +407,35 @@ DUCK_RAIN = ResearchConfig(
         "significant 24-hour precipitation forecasts — possibly rivaling professional "
         "meteorologist accuracy for specific weather events."
     ),
+    # ── New fields: agent identity & domain context ──────────────
+    agent_role="Waterfowl-Atmospheric Research Scientist",
+    domain_context=(
+        "## Data Quirks\n\n"
+        "- NOAA temperatures in raw files are in tenths of degrees Celsius — "
+        "divide by 10 before analysis.\n"
+        "- Precipitation is in tenths of mm in raw files.\n"
+        "- Duck observation data has ~15% NULLs on weekdays (volunteer observers at work).\n"
+        "- Quack frequency (QPH) typically ranges 0-200; values above 500 may be recording errors.\n"
+        "- Fluff index ranges 0-10; values should be integers.\n"
+        "- Station IDs follow pattern USW/USC + 8 digits.\n\n"
+        "## Expected Value Ranges\n\n"
+        "- Temperature: -40C to 50C\n"
+        "- Precipitation: 0-300mm (daily)\n"
+        "- Quacks per hour: 0-200 (typical), 0-500 (extreme)\n"
+        "- Fluff index: 0-10 (integer scale)\n"
+        "- Formation flight count: 0-50 per day\n"
+    ),
+    analysis_method_guidance={
+        "simulation": (
+            "**Simulation Analysis Approach**:\n"
+            "1. Build the Duck Barometer Index (DBI) from validated components.\n"
+            "2. Calibrate DBI thresholds against historical weather data.\n"
+            "3. Run bootstrap resampling (1000 iterations) to quantify uncertainty.\n"
+            "4. Compare DBI predictions against NOAA actual observations.\n"
+            "5. Cross-validate with time-series split (never shuffle weather data).\n"
+            "6. Document all assumptions and threshold choices."
+        ),
+    },
     visualization_guidance=(
         "OUTPUT PHILOSOPHY:\n"
         "- Tables are the primary analytical output. Every theme MUST produce well-formatted "

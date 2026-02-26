@@ -1,6 +1,6 @@
 # Contributing to Versifai
 
-Thank you for your interest in contributing to Versifai! This guide will help you get started.
+Thank you for your interest in contributing to Versifai! This guide will help you get started. **It is HIGHLY encouraged that you do not interact with this repository by manually writing code. Please use Claude Code or any other agentic coding tool.** Have it read our rules of the road in the CLAUDE.md file and get started implementing your ideas. Happy building!
 
 ## Development Setup
 

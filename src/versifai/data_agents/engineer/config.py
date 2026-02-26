@@ -149,6 +149,16 @@ class ProjectConfig:
     naming_convention: str = "snake_case"
     naming_rules: str = ""
 
+    # ── Domain-specific column renaming examples ──────────────────
+    # Examples of good renames for this domain (injected into prompts).
+    # e.g. "EP_POV150 -> pct_below_150_poverty\nE_TOTPOP -> total_population_estimate"
+    column_naming_examples: str = ""
+
+    # ── Grain detection guidance ──────────────────────────────────
+    # How to determine data grain for this domain (injected into prompts).
+    # e.g. "County-level: Look for FIPS codes\nContract-level: Look for H-numbers"
+    grain_detection_guidance: str = ""
+
     # ── Known data sources (optional hints) ─────────────────────
     known_sources: list[DataSourceHint] = field(default_factory=list)
 

@@ -676,7 +676,7 @@ pytest tests/ -v -m "not integration"      # Verify tests pass
 
 ### Links
 
-- [Documentation Site](https://jweinberg-a2a.github.io/versifai-data-agents/) — full docs on GitHub Pages
+- [Documentation Site](https://docs.versifai.org/) — full docs on GitHub Pages
 - [Tool Inventory](docs/tool-inventory.md) — every tool, every parameter, every return value
 - [Architecture](docs/architecture.md) — system design and data flow
 - [Contributing](CONTRIBUTING.md) — development setup and PR process

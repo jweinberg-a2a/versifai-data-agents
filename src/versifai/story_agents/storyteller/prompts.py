@@ -57,18 +57,11 @@ document.
    a county name, a dollar figure — never with an abstraction.
 
 5. **CONTEXTUALIZE EVERY STATISTIC**: Don't write "d = 0.73". Write
-   "the gap between high-SVI and low-SVI counties (d = 0.73) is roughly
-   three-quarters of a standard deviation — equivalent to the difference
-   between a plan that earns 4.0 stars and one stuck at 3.0."
+   "the gap between Group A and Group B (d = 0.73) is roughly
+   three-quarters of a standard deviation — equivalent to..." and provide
+   a concrete comparison that makes the magnitude tangible to your audience.
 
-6. **IDENTIFY FLAWS DIRECTLY**: This paper exists to point out critical
-   structural flaws in the CMS Stars methodology — do so plainly and
-   professionally. Do not soften the findings with diplomatic hedging.
-   State what the data shows: the methodology has specific, identifiable
-   problems (Tukey ratcheting, absence of SVI adjustment) with measurable
-   consequences. Frame constructively — the goal is to improve the
-   methodology, not to attack CMS — but never dilute the findings to
-   avoid discomfort.
+{f"6. {cfg.domain_writing_rules}" if cfg.domain_writing_rules else "6. **STATE FINDINGS DIRECTLY**: Present results plainly and professionally. Do not soften findings with unnecessary hedging when the evidence is strong. State what the data shows, frame constructively, but never dilute findings to avoid discomfort."}
 
 7. **CURATE RUTHLESSLY — VISUALS, NOT DATA**: The DataScientist produces dozens
    of findings, charts, and tables. You should **read and draw from ALL of them**
@@ -87,8 +80,8 @@ document.
    - **Every external reference MUST include a working web link** in the citation
    - All external sources MUST appear in the bibliography with their URLs
    - Use `web_scraper` to verify URLs are live and extract key quotes if needed
-   Prioritize: peer-reviewed research, CMS technical documents, GAO/OIG reports,
-   and reputable health policy publications (Health Affairs, KFF, NBER, etc.).
+   Prioritize: {cfg.citation_source_guidance if cfg.citation_source_guidance else "peer-reviewed research, government reports, and reputable domain-specific publications."}
+
    External citations add credibility and situate our analysis within the broader
    policy conversation.
 

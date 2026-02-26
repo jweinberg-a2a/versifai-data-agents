@@ -351,9 +351,9 @@ flowchart LR
 
 | Config | Controls | Key Fields |
 |--------|----------|------------|
-| `ProjectConfig` | What data to ingest and how | `catalog`, `schema`, `volume_path`, `join_key`, `known_sources`, `source_processing_hints` |
-| `ResearchConfig` | What questions to investigate | `thesis`, `analysis_themes`, `silver_datasets`, `research_references` |
-| `StorytellerConfig` | How to write the report | `narrative_sections`, `style_guide`, `evidence_thresholds`, `output_format` |
+| `ProjectConfig` | What data to ingest and how | `catalog`, `schema`, `volume_path`, `join_key`, `known_sources`, `source_processing_hints`, `column_naming_examples`, `grain_detection_guidance` |
+| `ResearchConfig` | What questions to investigate | `thesis`, `analysis_themes`, `silver_datasets`, `research_references`, `agent_role`, `domain_context`, `analysis_method_guidance`, `visualization_guidance` |
+| `StorytellerConfig` | How to write the report | `narrative_sections`, `style_guide`, `evidence_thresholds`, `output_format`, `domain_writing_rules`, `citation_source_guidance` |
 
 To start a new project, copy an example config, change the domain-specific fields, and run the same agents. See the [Tutorial](tutorial-silly-weather.md) for a complete walkthrough, or browse the [`examples/`](https://github.com/jweinberg-a2a/versifai-data-agents/tree/main/examples){target="_blank"} directory on GitHub.
 

@@ -128,6 +128,18 @@ class StorytellerConfig:
     # ── Known external references ─────────────────────────────────
     citation_urls: list[str] = field(default_factory=list)
 
+    # ── Domain-specific editorial guidance ─────────────────────────
+    # Injected as a writing rule (e.g. "IDENTIFY FLAWS DIRECTLY: This paper
+    # exists to point out critical structural flaws in..."). When empty,
+    # a generic "state findings directly" rule is used.
+    domain_writing_rules: str = ""
+
+    # ── Preferred citation sources ─────────────────────────────────
+    # What kinds of sources to prioritize (e.g. "CMS technical documents,
+    # GAO/OIG reports, Health Affairs, KFF, NBER"). When empty, generic
+    # "peer-reviewed research, government reports" is used.
+    citation_source_guidance: str = ""
+
     # ── Turn budgets ──────────────────────────────────────────────
     max_turns_per_section: int = 60
     max_turns_per_phase: int = 80

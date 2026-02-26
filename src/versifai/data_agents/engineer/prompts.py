@@ -69,37 +69,41 @@ files from a colleague. Here's how you approach each folder:
    documentation you already read. Think about what each field represents.
 10. **Profile the reference file deeply** — Run column-level profiling: types,
     nulls, unique counts, min/max, distributions. Identify the primary key column(s).
-    Look for geographic identifiers (FIPS codes) or contract identifiers (H-numbers).
+    {
+        f"Look for: {cfg.grain_detection_guidance}"
+        if cfg.grain_detection_guidance
+        else "Look for geographic identifiers, entity keys, or other primary identifiers."
+    }
     Determine the grain of the data.
 
 ### Phase C: Schema Engineering ("How should this be structured?")
 11. **Determine the grain FIRST** — Based on documentation + profiling, decide:
-    - What does each row represent? (county? contract? plan? county-contract pair?)
-    - **County-level data**: Look for `{cfg.join_key.column_name}` or FIPS codes
-    - **Contract-level data**: Look for contract_id / H-numbers (e.g., H5216)
-    - **Plan-level data**: Look for plan_id (e.g., H5216-001)
-    - **Linkage data**: Has BOTH geographic + contract keys (e.g., service area files)
+    - What does each row represent?
+    - Look for `{cfg.join_key.column_name}` ({cfg.join_key.description}) as the primary key
+    {
+        f"- **Grain detection hints**: {cfg.grain_detection_guidance}"
+        if cfg.grain_detection_guidance
+        else "- Identify whether rows represent geographic units, entities, time periods, or combinations thereof"
+    }
     - Use the natural grain — do NOT aggregate or reshape to force a different grain
     Then reason about:
     - What are the meaningful measures vs. identifiers?
     - What should the clean, descriptive column names be?
 12. **MANDATORY: Documentation-Driven Column Naming** — This is a CRITICAL step that
-    you must NOT skip. Government and research datasets use cryptic abbreviations
-    (EP_POV150, E_TOTPOP, RPL_THEMES). Your job is to translate these into names
-    a human can understand WITHOUT reading a codebook.
+    you must NOT skip. Research and government datasets often use cryptic abbreviations.
+    Your job is to translate these into names a human can understand WITHOUT reading
+    a codebook.
     Before calling `design_schema`:
     - Go back to the documentation you read in Phase A
     - For every column, determine what it actually measures
     - Create a `name_overrides` dict mapping source names to descriptive target names
-    - Examples of GOOD renaming:
-      `EP_POV150` → `pct_below_150_poverty`
-      `E_TOTPOP` → `total_population_estimate`
-      `RPL_THEMES` → `overall_vulnerability_percentile`
-      `SPL_THEME1` → `socioeconomic_vulnerability_sum`
-      `MA_PENET_RATE` → `ma_penetration_rate`
+{
+        f"    - Domain-specific renaming examples:{chr(10)}      {cfg.column_naming_examples}"
+        if cfg.column_naming_examples
+        else "    - Examples of GOOD renaming: abbreviated codes → descriptive names (e.g., `TEMP_AVG` → `average_temperature`)"
+    }
     - Examples of BAD renaming (just converting to snake_case):
-      `EP_POV150` → `ep_pov150` (WRONG — still cryptic)
-      `E_TOTPOP` → `e_totpop` (WRONG — no one knows what "e" means)
+      Cryptic abbreviations should NOT just be lowercased — they must be made descriptive
     - When using `design_schema` with `column_names` mode, ALWAYS provide
       `name_overrides` for abbreviated columns. The tool will warn you if it
       detects cryptic names that weren't overridden.
@@ -215,7 +219,9 @@ your sample and batch process. Fix errors as edge cases.
 18. **MANDATORY POST-LOAD VALIDATION** — After EVERY write_to_catalog, you MUST verify:
     a. Run `SELECT COUNT(*) FROM <table>` — the table must NOT be empty (0 rows).
     b. Check the primary key for this table's grain:
-       - County-level: `SELECT COUNT(*), COUNT({cfg.join_key.column_name}), COUNT(DISTINCT {cfg.join_key.column_name}) FROM <table>`
+       - County-level: `SELECT COUNT(*), COUNT({cfg.join_key.column_name}), COUNT(DISTINCT {
+        cfg.join_key.column_name
+    }) FROM <table>`
        - Contract-level: `SELECT COUNT(*), COUNT(contract_id), COUNT(DISTINCT contract_id) FROM <table>`
        - Linkage tables: check both keys
     c. Spot-check a few key columns for all-null: `SELECT COUNT(*) AS total, SUM(CASE WHEN <col> IS NULL THEN 1 ELSE 0 END) AS nulls FROM <table>` for important columns.
@@ -237,29 +243,38 @@ Always use the source documentation to translate abbreviations into descriptive 
 ## Join Key & Grain — DO NOT INJECT COLUMNS
 
 **CRITICAL RULE: Only include columns that exist in the source data.** Do NOT add \
-`{cfg.join_key.column_name}`, `contract_id`, or any other column that isn't in the \
-source file. If the source has a FIPS code column, map it using `join_key_source_column` \
-in `design_schema`. If it doesn't have one, leave it alone — the table's grain is \
-whatever the source data naturally is.
+`{cfg.join_key.column_name}`, or any other column that isn't in the \
+source file. If the source has a column that maps to the join key, use \
+`join_key_source_column` in `design_schema`. If it doesn't have one, leave it \
+alone — the table's grain is whatever the source data naturally is.
 
-**County-level tables** (have FIPS codes in the source):
-- Map the source FIPS column to `{cfg.join_key.column_name}` via `join_key_source_column`.
+**Primary-grain tables** (have the join key in the source):
+- Map the source key column to `{cfg.join_key.column_name}` via `join_key_source_column`.
 {cfg.join_key_related_text}
 
-**Contract-level tables** (have contract H-numbers in the source):
-- Keep the contract column as-is from the source data.
-- Do NOT add `{cfg.join_key.column_name}` — these tables don't have county FIPS codes.
+{
+        f"**Alternative-grain tables**:{chr(10)}{cfg.alternative_keys_text}{chr(10)}- Keep alternative key columns as-is from the source data.{chr(10)}- Do NOT add `{cfg.join_key.column_name}` to tables that do not naturally have it."
+        if cfg.alternative_keys_text
+        else "**Other-grain tables**: Some tables may have a different primary key. Keep their natural keys — do NOT inject the primary join key."
+    }
 
-**Linkage tables** (have BOTH geographic + contract keys in the source):
-- Keep both keys as they appear in the source data.
+**Linkage tables** (have BOTH primary + alternative keys in the source):
+- Keep all keys as they appear in the source data.
 
 **How to determine the grain:**
-1. Read the documentation first — it will tell you what each row represents.
-2. Look at the primary identifier columns (FIPS codes = county, H-numbers = contract, \
-plan IDs = plan).
-3. If the data has both (e.g., service area files with contract + county), keep both \
-keys — this is a linkage table.
-4. Do NOT force a grain. Use whatever keys the source data has.
+{
+        cfg.grain_detection_guidance
+        if cfg.grain_detection_guidance
+        else (
+            "1. Read the documentation first — it will tell you what each row represents."
+            + chr(10)
+            + "2. Look at the primary identifier columns."
+            + chr(10)
+            + "3. If the data has multiple key types, keep all — this may be a linkage table."
+            + chr(10)
+            + "4. Do NOT force a grain. Use whatever keys the source data has."
+        )
+    }
 
 ## Metadata Columns (automatically added)
 {cfg.metadata_columns_text}
@@ -432,9 +447,8 @@ Follow your expert data engineer workflow:
 - Open it with read_file_header — study the columns and sample rows
 - Run profile_data to understand column distributions and identify primary key columns
 - Cross-reference columns with the documentation you read
-- **Determine the grain**: Does each row represent a county (FIPS codes)?
-  A contract (H-numbers)? A plan? A county-contract pair? The documentation
-  and column names will tell you.
+- **Determine the grain**: What does each row represent? The documentation
+  and column names will tell you. {f"Hints: {cfg.grain_detection_guidance}" if cfg.grain_detection_guidance else "Look for entity identifiers, geographic keys, or other primary keys."}
 - **If this is a multi-table source**: profile one representative file from
   EACH file type (not just the main one). Each file type has a different schema.
 
@@ -443,7 +457,7 @@ Follow your expert data engineer workflow:
 - **MANDATORY: Rename cryptic columns using documentation.** Go back to the
   data dictionary/codebook you read in Step 1. For every abbreviated column,
   determine what it actually measures and provide a `name_overrides` dict.
-  Example: {{'EP_POV150': 'pct_below_150_poverty', 'E_TOTPOP': 'total_population_estimate'}}
+  {f"Domain examples: {cfg.column_naming_examples}" if cfg.column_naming_examples else "Example: {{'ABBREV_COL': 'descriptive_column_name'}}"}
 - Apply naming conventions ({cfg.naming_convention}, descriptive names)
 - **CRITICAL: Only include columns that actually exist in the source data.**
   Do NOT add `{cfg.join_key.column_name}`, `contract_id`, or any other column
@@ -598,9 +612,8 @@ using the source documentation.
 - For each table, run `DESCRIBE TABLE {cfg.full_schema}.<table_name>` to see
   current column names and types.
 - Identify columns that are cryptic or abbreviated. Clear names like `state`,
-  `county_name`, `year`, `county_fips_code` do NOT need renaming.
-- Focus on the cryptic ones: `ep_pov150`, `e_totpop`, `rpl_themes`, `spl_theme1`,
-  `ma_penet_rate`, etc.
+  `county_name`, `year` do NOT need renaming.
+- Focus on the cryptic ones — abbreviated codes that are not self-explanatory.
 
 **STEP 2: Find documentation for this data source**
 - Use `scan_for_documentation` on the source directory for this table.
@@ -612,15 +625,10 @@ using the source documentation.
 
 **STEP 3: Build the rename mapping**
 - For each cryptic column, determine the descriptive name based on documentation.
-- Good renames translate abbreviations into full, self-documenting names:
-  - `ep_pov150` → `pct_below_150_poverty`
-  - `e_totpop` → `total_population_estimate`
-  - `rpl_themes` → `overall_vulnerability_percentile`
-  - `spl_theme1` → `socioeconomic_vulnerability_sum`
-  - `epl_pov150` → `poverty_150_percentile_rank`
-  - `f_pov150` → `flag_poverty_150_above_90th`
-- Bad renames just add underscores to abbreviations — DON'T do this:
-  - `ep_pov150` → `ep_pov_150` (WRONG — still cryptic)
+- Good renames translate abbreviations into full, self-documenting names.
+{f"  Domain examples: {cfg.column_naming_examples}" if cfg.column_naming_examples else "  Example: `TEMP_AVG` → `average_temperature`, `POP_EST` → `population_estimate`"}
+- Bad renames just add underscores to abbreviations — DON'T do this.
+  Cryptic codes must be made descriptive, not just reformatted.
 - Not every column needs renaming. Skip columns that are already clear.
 - Skip metadata columns: `source_file_name`, `source_year`, `source_period_start`,
   `load_timestamp`.
@@ -694,8 +702,7 @@ The catalog table MUST have exactly these columns:
 - `data_type` (STRING) — the column's data type (STRING, DOUBLE, INT, DATE, etc.)
 - `description` (STRING) — a human-readable description of what this column measures
   or represents, based on the source documentation
-- `source_dataset` (STRING) — the name of the data source (e.g., "CDC SVI",
-  "CMS Star Ratings", "Census ACS")
+- `source_dataset` (STRING) — the name of the data source{f" (e.g., {', '.join(repr(s.name) for s in cfg.known_sources[:3])})" if cfg.known_sources else ""}
 - `is_join_key` (BOOLEAN) — whether this column is a join key
   (`{cfg.join_key.column_name}`, `contract_id`, `plan_id`)
 - `is_metadata` (BOOLEAN) — whether this is a system metadata column
@@ -741,13 +748,11 @@ a. **Get the schema** — `DESCRIBE TABLE {cfg.full_schema}.<table>` for column
 b. **Find source documentation** — Use `explore_volume` on `{cfg.volume_path}`
    to find the source directory. Use `scan_for_documentation` and
    `read_documentation` to read data dictionaries, codebooks, READMEs.
-c. **Search the web** — Use `web_search` for official documentation:
-   - "CDC SVI data dictionary field definitions"
-   - "CMS Star Ratings technical notes measure definitions"
-   - "Census ACS DP02 DP03 DP05 subject definitions"
-   - "USDA Food Access Research Atlas documentation"
+c. **Search the web** — Use `web_search` for official documentation about the
+   data source. Search for data dictionaries, technical notes, and field definitions.
+{f"   Known documentation URLs: {chr(10).join(f'   - {k}: {v}' for k, v in cfg.documentation_urls.items())}" if cfg.documentation_urls else ""}
 d. **Cross-reference columns with documentation** — Match each column to its
-   definition. Government data fields use codes (EP_POV150, DP02_0001E) — the
+   definition. Research data fields often use codes or abbreviations — the
    documentation explains what each means.
 e. **Build catalog entries** for every column in this table.
 
@@ -763,23 +768,19 @@ b. **Trace lineage via the existing catalog** — Silver columns map back to
    WHERE column_name = '<silver_column_name>'
    AND source_table NOT LIKE '%silver_%'
    ```
-c. **For derived/computed columns** (e.g., `weighted_svi_overall`,
-   `svi_quartile`, `qbp_per_member_monthly`) — describe the computation
-   and which source columns feed into it. Example:
-   - `weighted_svi_overall` → "Enrollment-weighted SVI overall score per contract (SUM(enrollment × svi_overall) / SUM(enrollment), from silver_county_master.svi_overall)"
-   - `svi_quartile` → "SVI quartile (1-4, NTILE(4) OVER ORDER BY svi_overall, derived from cdc_svi.rpl_themes)"
-   - `contracts_remaining` → "Count of contracts still serving this county after exit (derived from service_areas)"
+c. **For derived/computed columns** — describe the computation and which
+   source columns feed into it. Example:
+   - `weighted_avg_score` → "Weighted average score per group (SUM(count × score) / SUM(count), from bronze_table.score_col)"
+   - `score_quartile` → "Score quartile (1-4, NTILE(4) OVER ORDER BY score, derived from bronze_table)"
 d. **Set `source_dataset`** to the silver table's source bronze tables
-   (e.g., "Derived from: cdc_svi, cdc_places, census_acs_demographic").
+   (e.g., "Derived from: bronze_table_a, bronze_table_b").
 e. **Do NOT search the web or explore volumes** for silver tables — all info
    comes from the existing catalog and the table schema itself.
 
 **For ALL tables (bronze and silver):**
 - **description** is the most critical field. Use documentation, not guesses.
-  Examples:
-  - `pct_below_150_poverty` → "Percentage of population below 150% of the federal poverty level (ACS estimate)"
-  - `overall_star_rating` → "CMS overall Star Rating for the contract (1.0 to 5.0 scale, weighted composite)"
-  - `county_fips_code` → "5-digit county FIPS code (state + county, zero-padded STRING)"
+  Each description should explain what the column measures, its units or scale,
+  and its source if relevant.
 - For metadata columns (`source_file_name`, `source_year`, etc.), use
   standard descriptions — no lookup needed.
 - If you cannot determine what a column means after checking docs (bronze)

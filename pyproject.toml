@@ -70,7 +70,7 @@ docs = [
 
 [project.urls]
 Homepage = "https://github.com/jweinberg-a2a/versifai-data-agents"
-Documentation = "https://jweinberg-a2a.github.io/versifai-data-agents/"
+Documentation = "https://docs.versifai.org/"
 Repository = "https://github.com/jweinberg-a2a/versifai-data-agents"
 Issues = "https://github.com/jweinberg-a2a/versifai-data-agents/issues"
 Changelog = "https://github.com/jweinberg-a2a/versifai-data-agents/blob/main/CHANGELOG.md"

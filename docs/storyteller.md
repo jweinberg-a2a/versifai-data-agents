@@ -51,6 +51,15 @@ cfg = StorytellerConfig(
     research_results_path="/tmp/results/churn",
     narrative_output_path="/tmp/narrative/churn",
     narrative_sections=[...],  # Define report sections
+    # Domain-specific editorial guidance (optional)
+    domain_writing_rules=(
+        "Frame churn as a business risk, not a statistical curiosity. "
+        "Always translate effect sizes into revenue impact."
+    ),
+    citation_source_guidance=(
+        "SaaS industry reports (Bessemer, OpenView), academic churn literature, "
+        "and company internal benchmarks."
+    ),
 )
 
 agent = StoryTellerAgent(cfg=cfg, dbutils=dbutils)
@@ -61,6 +70,17 @@ result = agent.run()
 # Re-run specific sections
 result = agent.run_sections(sections=[1, 2])
 ```
+
+### Domain Guidance Fields
+
+The storyteller prompts are **domain-agnostic**. Use these config fields to inject editorial rules:
+
+| Field | Purpose | Default |
+|-------|---------|---------|
+| `domain_writing_rules` | Domain-specific editorial guidance (injected into system prompt) | `""` (generic rules) |
+| `citation_source_guidance` | Preferred citation sources for the domain | `""` (generic academic sources) |
+
+When these fields are empty, the agent uses generic editorial rules about evidence-based writing.
 
 ## Editorial Review
 

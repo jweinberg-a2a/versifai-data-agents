@@ -250,6 +250,21 @@ SILLY_WEATHER = ProjectConfig(
         "temp_avg_c (Celsius, not tenths). Precipitation: precip_mm. "
         "Duck columns: quacks_per_hour, fluff_index, formation_direction."
     ),
+    # ── Domain-specific column renaming examples ──────────────────
+    column_naming_examples=(
+        "`TMAX` → `temp_max_c` (daily max temp in Celsius)\n"
+        "`PRCP` → `precip_mm` (daily precipitation in mm)\n"
+        "`AWND` → `avg_wind_speed_mps` (average wind speed in m/s)\n"
+        "`QPH` → `quacks_per_hour` (quack frequency per hour)\n"
+        "`FFI` → `fluff_index` (feather fluffing intensity 0-10)"
+    ),
+    # ── Grain detection guidance ──────────────────────────────────
+    grain_detection_guidance=(
+        "Station-level: Look for station_id or NOAA station identifiers (USW/USC prefix)\n"
+        "Pond-level: Look for pond_id identifiers\n"
+        "County-level: Look for county_fips or FIPS codes\n"
+        "If data has both station_id AND pond_id, it's a linkage/crosswalk table"
+    ),
     # ── Geographic grain ────────────────────────────────────────
     geographic_grain="station",
     grain_description="US weather station with nearby duck pond (within 5 miles)",

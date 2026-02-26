@@ -38,9 +38,9 @@ import os
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("silly_weather")
 
-assert os.environ.get("ANTHROPIC_API_KEY") or os.environ.get(
-    "OPENAI_API_KEY"
-), "Set ANTHROPIC_API_KEY or OPENAI_API_KEY in your cluster env vars"
+assert os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("OPENAI_API_KEY"), (
+    "Set ANTHROPIC_API_KEY or OPENAI_API_KEY in your cluster env vars"
+)
 
 # COMMAND ----------
 

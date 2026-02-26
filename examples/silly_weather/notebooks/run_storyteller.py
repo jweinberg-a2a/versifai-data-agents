@@ -40,9 +40,9 @@ import os
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("silly_weather")
 
-assert os.environ.get("ANTHROPIC_API_KEY") or os.environ.get(
-    "OPENAI_API_KEY"
-), "Set ANTHROPIC_API_KEY or OPENAI_API_KEY in your cluster env vars"
+assert os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("OPENAI_API_KEY"), (
+    "Set ANTHROPIC_API_KEY or OPENAI_API_KEY in your cluster env vars"
+)
 
 # COMMAND ----------
 
@@ -85,7 +85,9 @@ tables_dir = f"{cfg.research_results_path}/tables"
 for path in [findings_path, charts_dir, tables_dir]:
     try:
         info = dbutils.fs.ls(path)
-        print(f"  Found: {path} ({len(info)} items)" if isinstance(info, list) else f"  Found: {path}")
+        print(
+            f"  Found: {path} ({len(info)} items)" if isinstance(info, list) else f"  Found: {path}"
+        )
     except Exception:
         print(f"  MISSING: {path} — run run_scientist.py first!")
 

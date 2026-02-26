@@ -11,7 +11,7 @@
   <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json" alt="Ruff"></a>
   <a href="https://pypi.org/project/versifai/"><img src="https://img.shields.io/pypi/v/versifai.svg" alt="PyPI version"></a>
   <a href="https://github.com/python/mypy"><img src="https://img.shields.io/badge/types-Mypy-blue.svg" alt="types - Mypy"></a>
-  <a href="https://jweinberg-a2a.github.io/versifai-data-agents/"><img src="https://img.shields.io/badge/docs-Versifai-5a7fa3.svg" alt="Documentation"></a>
+  <a href="https://docs.versifai.org/"><img src="https://img.shields.io/badge/docs-Versifai-5a7fa3.svg" alt="Documentation"></a>
 </p>
 
 ---
@@ -41,7 +41,11 @@ Built on [LiteLLM](https://docs.litellm.ai/) for multi-provider LLM support (Ant
 - **Smart resume** — Agents persist state to disk and resume from where they left off after interruption
 - **Run isolation** — Each run gets its own directory with metadata, progress logs, and artifacts
 - **Human-in-the-loop** — Built-in `ask_human` tool lets agents pause and request guidance
-- **Databricks native** — First-class support for Unity Catalog, Delta tables, and Volumes
+- **Databricks native** — First-class support for Notebooks, Unity Catalog, Delta tables, and Volumes.
+
+<p align="center">
+  <img src="docs/assets/data_engineer_notebook.png" alt="Versifai" width="1200">
+</p>
 
 ## Agent Families
 

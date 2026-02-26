@@ -62,6 +62,16 @@ cfg = ResearchConfig(
     schema="churn",
     results_path="/tmp/results/churn",
     themes=[...],  # Define research themes
+    # Domain-specific guidance (optional, but recommended)
+    agent_role="Customer Analytics Researcher",
+    domain_context=(
+        "Churn rate is typically 5-15% monthly for SaaS.\n"
+        "Revenue values are in USD. MRR = Monthly Recurring Revenue.\n"
+        "Customer tenure is measured in months since first subscription."
+    ),
+    analysis_method_guidance={
+        "simulation": "Use survival analysis (Kaplan-Meier) for time-to-churn modeling.",
+    },
 )
 
 agent = DataScientistAgent(cfg=cfg, dbutils=dbutils)
@@ -72,6 +82,19 @@ result = agent.run()
 # Re-run only specific themes
 result = agent.run_themes(themes=[0, 3])
 ```
+
+### Domain Guidance Fields
+
+The agent prompts are **domain-agnostic**. Use these config fields to inject domain knowledge:
+
+| Field | Purpose | Default |
+|-------|---------|---------|
+| `agent_role` | Agent identity in system prompt (e.g., "Health Policy Researcher") | `"Data Scientist"` |
+| `domain_context` | Data quirks, validation ranges, sense-check benchmarks | `""` (no domain section) |
+| `analysis_method_guidance` | Per-analysis-type methodology overrides (keys: `"simulation"`, `"comparative"`, etc.) | `{}` (use built-in defaults) |
+| `visualization_guidance` | Chart and visualization priorities | `""` (generic chart guidance) |
+
+When these fields are empty, the agent uses rigorous but generic statistical methodology.
 
 ## Evidence Standards
 

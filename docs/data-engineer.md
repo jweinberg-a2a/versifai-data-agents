@@ -75,6 +75,15 @@ cfg = ProjectConfig(
     catalog="analytics",
     schema="sales",
     volume_path="/Volumes/analytics/sales/raw_data",
+    # Domain-specific guidance (optional, but recommended)
+    grain_detection_guidance=(
+        "Account-level: Look for account_id columns\n"
+        "Transaction-level: Look for transaction_id or order_id"
+    ),
+    column_naming_examples=(
+        "`AcctID` → `account_id`\n"
+        "`TxnAmt` → `transaction_amount_usd`"
+    ),
 )
 
 agent = DataEngineerAgent(cfg=cfg, dbutils=dbutils)
@@ -85,6 +94,17 @@ result = agent.run()
 # Force reprocess everything
 result = agent.run(force_full=True)
 ```
+
+### Domain Guidance Fields
+
+The agent prompts are **domain-agnostic**. Use these config fields to inject domain knowledge:
+
+| Field | Purpose | Default |
+|-------|---------|---------|
+| `grain_detection_guidance` | How to detect data grain (account? county? device?) | `""` (generic fallback) |
+| `column_naming_examples` | Domain-specific column rename patterns | `""` (generic fallback) |
+
+When these fields are empty, the agent uses generic grain detection and naming heuristics.
 
 ## Data Analyst (Acceptance Testing)
 

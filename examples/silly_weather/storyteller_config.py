@@ -182,7 +182,15 @@ _sections = [
         id="section_methodology",
         title="Methodology & Reproducibility",
         purpose="Technical appendix with all SQL, model specs, and data sources",
-        source_theme_ids=["theme_0", "theme_1", "theme_2", "theme_3", "theme_4", "theme_5", "theme_6"],
+        source_theme_ids=[
+            "theme_0",
+            "theme_1",
+            "theme_2",
+            "theme_3",
+            "theme_4",
+            "theme_5",
+            "theme_6",
+        ],
         tone="analytical",
         max_words=2000,
         key_evidence="All SQL queries, model hyperparameters, data source citations",
@@ -231,6 +239,20 @@ DUCK_STORY = StorytellerConfig(
         "Duck behavioral signals contain genuine meteorological information "
         "that, when properly modeled, provides statistically significant "
         "24-hour precipitation forecasts."
+    ),
+    # ── Domain-specific editorial guidance ────────────────────────
+    domain_writing_rules=(
+        "**MAINTAIN DEADPAN SCIENTIFIC TONE**: This paper treats duck-based weather "
+        "prediction with the same methodological rigor as any peer-reviewed study. "
+        "The humor comes from the contrast between the absurd premise and the serious "
+        "statistical treatment — never from jokes, puns, or winking at the reader. "
+        "State findings directly, use proper statistical language, and let the "
+        "absurdity speak for itself."
+    ),
+    citation_source_guidance=(
+        "NOAA technical documentation, peer-reviewed ornithology and meteorology "
+        "journals, animal behavior meta-analyses, and classic statistics textbooks "
+        "on spurious correlation and confounding."
     ),
     research_results_path="/Volumes/my_catalog/silly_weather/results",
     narrative_output_path="/Volumes/my_catalog/silly_weather/narrative",
