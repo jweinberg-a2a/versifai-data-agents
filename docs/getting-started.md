@@ -187,10 +187,6 @@ For a complete, runnable example using real World Bank data, see the
 [World Development Tutorial](tutorial-world-development.md) or browse the source in
 [`examples/world_development/`](https://github.com/jweinberg-a2a/versifai-data-agents/tree/main/examples/world_development){target="_blank"}.
 
-For a lighter example using synthetic data, see
-[`examples/silly_weather/`](https://github.com/jweinberg-a2a/versifai-data-agents/tree/main/examples/silly_weather){target="_blank"}
-or follow the [Silly Weather Tutorial](tutorial-silly-weather.md).
-
 ## Configuration
 
 ### CatalogConfig (shared)

@@ -51,20 +51,20 @@ def minimal_research_config(minimal_project):
 def domain_research_config(minimal_project):
     """ResearchConfig with domain-specific fields populated."""
     return ResearchConfig(
-        name="Duck Weather Research",
-        thesis="Ducks predict rain",
+        name="Global Development Research",
+        thesis="GDP correlates with life expectancy",
         project=minimal_project,
         results_volume_path="/tmp/results",
-        agent_role="Waterfowl Research Scientist",
+        agent_role="Development Economist",
         domain_context=(
-            "## Data Quirks\n\n- Quack frequency ranges 0-200 QPH\n- Fluff index ranges 0-10\n"
+            "## Data Quirks\n\n- GDP per capita ranges $200-$100,000\n- Life expectancy 50-85 years\n"
         ),
         analysis_method_guidance={
             "simulation": (
-                "**Custom Simulation**:\n1. Build Duck Barometer Index\n2. Calibrate thresholds\n"
+                "**Custom Simulation**:\n1. Build Development Index\n2. Calibrate thresholds\n"
             ),
         },
-        visualization_guidance="PRIORITIZE scatter plots of duck behavior vs weather.",
+        visualization_guidance="PRIORITIZE scatter plots of GDP vs life expectancy.",
     )
 
 
@@ -72,17 +72,17 @@ def domain_research_config(minimal_project):
 def domain_project_config():
     """ProjectConfig with domain-specific fields populated."""
     return ProjectConfig(
-        name="Duck Weather Engineering",
+        name="World Development Engineering",
         catalog="test_cat",
         schema="test_schema",
         join_key=JoinKeyConfig(
-            column_name="station_id",
-            description="NOAA station identifier",
-            validation_rule="Must match pattern USW/USC + 8 digits",
+            column_name="country_code",
+            description="ISO 3166-1 alpha-3 country code",
+            validation_rule="Must be exactly 3 uppercase letters matching [A-Z]{3}",
         ),
-        column_naming_examples=("`TMAX` → `temp_max_c`\n`PRCP` → `precip_mm`"),
+        column_naming_examples=("'Country Name' -> country_name\n'IncomeGroup' -> income_group"),
         grain_detection_guidance=(
-            "Station-level: Look for station_id\nPond-level: Look for pond_id"
+            "Country-level: Look for country_code\nRegion-level: Look for region"
         ),
     )
 
@@ -103,14 +103,16 @@ def minimal_storyteller_config(minimal_project):
 def domain_storyteller_config(minimal_project):
     """StorytellerConfig with domain-specific fields populated."""
     return StorytellerConfig(
-        name="Duck Weather Story",
-        thesis="Ducks predict rain",
+        name="World Development Story",
+        thesis="GDP correlates with life expectancy",
         project=minimal_project,
         research_results_path="/tmp/results",
         narrative_output_path="/tmp/narrative",
-        domain_writing_rules=("**MAINTAIN DEADPAN TONE**: Treat duck forecasting seriously."),
+        domain_writing_rules=(
+            "**EVIDENCE-FIRST TONE**: Ground every claim in statistical evidence."
+        ),
         citation_source_guidance=(
-            "NOAA documentation, ornithology journals, meteorology textbooks."
+            "World Bank documentation, development economics journals, OECD reports."
         ),
     )
 
@@ -128,7 +130,7 @@ class TestScientistPromptDomainAgnostic:
         from versifai.science_agents.scientist.prompts import build_scientist_system_prompt
 
         prompt = build_scientist_system_prompt(domain_research_config)
-        assert "Waterfowl Research Scientist" in prompt
+        assert "Development Economist" in prompt
         assert "Health Policy Researcher" not in prompt
 
     def test_system_prompt_default_agent_role(self, minimal_research_config):
@@ -144,8 +146,8 @@ class TestScientistPromptDomainAgnostic:
 
         prompt = build_scientist_system_prompt(domain_research_config)
         assert "Domain-Specific Guidance" in prompt
-        assert "Quack frequency ranges 0-200 QPH" in prompt
-        assert "Fluff index ranges 0-10" in prompt
+        assert "GDP per capita ranges $200-$100,000" in prompt
+        assert "Life expectancy 50-85 years" in prompt
 
     def test_no_domain_context_when_empty(self, minimal_research_config):
         """No domain context section when field is empty."""
@@ -162,7 +164,7 @@ class TestScientistPromptDomainAgnostic:
         from versifai.science_agents.scientist.prompts import build_scientist_system_prompt
 
         prompt = build_scientist_system_prompt(domain_research_config)
-        assert "PRIORITIZE scatter plots of duck behavior" in prompt
+        assert "PRIORITIZE scatter plots of GDP vs life expectancy" in prompt
 
     def test_no_hardcoded_cms_references(self, minimal_research_config):
         """System prompt with empty config has no CMS/healthcare references."""
@@ -193,7 +195,7 @@ class TestScientistPromptDomainAgnostic:
         )
         prompt = build_theme_analysis_prompt(domain_research_config, theme)
         assert "Custom Simulation" in prompt
-        assert "Build Duck Barometer Index" in prompt
+        assert "Build Development Index" in prompt
 
     def test_default_simulation_guidance(self, minimal_research_config):
         """Default simulation guidance when no override is provided."""
@@ -233,7 +235,7 @@ class TestScientistPromptDomainAgnostic:
 
         # Set validation rule on the project join key
         domain_research_config.project.join_key.validation_rule = (
-            "Must match pattern USW/USC + 8 digits"
+            "Must be exactly 3 uppercase letters matching [A-Z]{3}"
         )
         spec = SilverDatasetSpec(
             name="silver_test",
@@ -241,7 +243,7 @@ class TestScientistPromptDomainAgnostic:
             source_tables=["table_a", "table_b"],
         )
         prompt = build_silver_construction_prompt(domain_research_config, spec)
-        assert "Must match pattern USW/USC + 8 digits" in prompt
+        assert "Must be exactly 3 uppercase letters matching [A-Z]{3}" in prompt
         # Should not have hardcoded FIPS reference
         assert "FIPS codes must be 5-character" not in prompt
 
@@ -312,15 +314,15 @@ class TestEngineerPromptDomainAgnostic:
         from versifai.data_agents.engineer.prompts import build_system_prompt
 
         prompt = build_system_prompt(domain_project_config)
-        assert "Station-level: Look for station_id" in prompt
-        assert "Pond-level: Look for pond_id" in prompt
+        assert "Country-level: Look for country_code" in prompt
+        assert "Region-level: Look for region" in prompt
 
     def test_system_prompt_uses_column_naming_examples(self, domain_project_config):
         """column_naming_examples is injected into system prompt."""
         from versifai.data_agents.engineer.prompts import build_system_prompt
 
         prompt = build_system_prompt(domain_project_config)
-        assert "`TMAX` → `temp_max_c`" in prompt
+        assert "'Country Name' -> country_name" in prompt
 
     def test_system_prompt_no_hardcoded_examples_when_empty(self, minimal_project):
         """Default prompts don't have domain-specific column examples."""
@@ -350,7 +352,7 @@ class TestEngineerPromptDomainAgnostic:
             file_list="test.csv",
             suggested_table="test_table",
         )
-        assert "Station-level: Look for station_id" in prompt
+        assert "Country-level: Look for country_code" in prompt
 
     def test_rename_prompt_no_hardcoded_examples(self, minimal_project):
         """Rename prompt with empty config doesn't have SVI/CMS examples."""
@@ -367,7 +369,7 @@ class TestEngineerPromptDomainAgnostic:
         from versifai.data_agents.engineer.prompts import build_rename_prompt
 
         prompt = build_rename_prompt(domain_project_config)
-        assert "`TMAX` → `temp_max_c`" in prompt
+        assert "'Country Name' -> country_name" in prompt
 
     def test_catalog_prompt_no_hardcoded_sources(self, minimal_project):
         """Catalog prompt doesn't hardcode CDC SVI, CMS Star Ratings, etc."""
@@ -392,16 +394,16 @@ class TestStorytellerPromptDomainAgnostic:
         from versifai.story_agents.storyteller.prompts import build_storyteller_system_prompt
 
         prompt = build_storyteller_system_prompt(domain_storyteller_config)
-        assert "MAINTAIN DEADPAN TONE" in prompt
-        assert "duck forecasting seriously" in prompt
+        assert "EVIDENCE-FIRST TONE" in prompt
+        assert "statistical evidence" in prompt
 
     def test_system_prompt_uses_citation_guidance(self, domain_storyteller_config):
         """citation_source_guidance is injected into system prompt."""
         from versifai.story_agents.storyteller.prompts import build_storyteller_system_prompt
 
         prompt = build_storyteller_system_prompt(domain_storyteller_config)
-        assert "NOAA documentation" in prompt
-        assert "ornithology journals" in prompt
+        assert "World Bank documentation" in prompt
+        assert "development economics journals" in prompt
 
     def test_system_prompt_default_writing_rules(self, minimal_storyteller_config):
         """Default writing rules when domain_writing_rules is empty."""

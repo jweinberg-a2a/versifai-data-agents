@@ -15,4 +15,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `versifai.science_agents` — DataScientistAgent for autonomous research analysis
 - `versifai.story_agents` — StoryTellerAgent for transforming research into narrative reports
 - Shared tool library: visualization, web search, catalog writer, dynamic tool builder
-- Example configurations for weather analysis (Silly Weather example)
+- Example configurations for World Bank Development Indicators (World Development example)

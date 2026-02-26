@@ -31,7 +31,6 @@ nav:
   - Home: index.md
   - Getting Started: getting-started.md
   - "Tutorial: World Development": tutorial-world-development.md
-  - "Tutorial: Silly Weather": tutorial-silly-weather.md
   - Architecture: architecture.md
   - Run Management & Reproducibility: run-management.md
   - Agent Guides:

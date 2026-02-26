@@ -396,7 +396,7 @@ It's persisted to `run_metadata.json` and updated after every completed item.
 {
   "run_id": "20260223_143012_a1b2",
   "agent_type": "scientist",
-  "config_name": "duck_rain_prediction",
+  "config_name": "global_development",
   "started_at": "2026-02-23T14:00:00",
   "state": {
     "status": "running",
@@ -405,7 +405,7 @@ It's persisted to `run_metadata.json` and updated after every completed item.
     "current_item": "theme_4",
     "completed_phases": ["orientation", "silver"],
     "completed_items": {
-      "silver": ["silver_weather_duck_daily", "silver_duck_forecast_comparison", "silver_ice_cream_weather"],
+      "silver": ["silver_development_panel", "silver_development_recent", "silver_development_long_run"],
       "themes": ["theme_0", "theme_1", "theme_2", "theme_3"]
     },
     "updated_at": "2026-02-23T15:12:33"
@@ -494,7 +494,7 @@ from versifai.core.run_manager import AgentDependency
 # StoryTeller config declares where to find scientist outputs
 dependency = AgentDependency(
     agent_type="scientist",
-    config_name="duck_rain_prediction",
+    config_name="global_development",
     base_path="/Volumes/.../results",
     run_id=""  # Empty = use latest run
 )

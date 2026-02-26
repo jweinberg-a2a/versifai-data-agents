@@ -158,15 +158,16 @@ docs/
     └── story-agents.md
 
 examples/
-└── silly_weather/                     # Reference implementation: "Do Ducks Predict Rain?"
+└── world_development/                 # Reference implementation: World Bank Development Indicators
     ├── engineer_config.py             # ProjectConfig for Data Engineer
     ├── storyteller_config.py          # StorytellerConfig for StoryTeller
     ├── notebooks/                     # Runnable Databricks notebooks
-    │   ├── run_engineer.py            # Data ingestion pipeline
-    │   ├── run_scientist.py           # Research analysis pipeline
-    │   └── run_storyteller.py         # Narrative report pipeline
+    │   ├── 00_download_data.py        # Download 6 ZIPs from World Bank API
+    │   ├── 01_run_engineer.py         # Data ingestion pipeline
+    │   ├── 02_run_scientist.py        # Research analysis pipeline
+    │   └── 03_run_storyteller.py      # Narrative report pipeline
     └── research_configs/
-        └── duck_rain_prediction.py    # ResearchConfig for duck-weather analysis
+        └── global_development.py      # ResearchConfig for development economics analysis
 ```
 
 ---
@@ -672,7 +673,7 @@ pytest tests/ -v -m "not integration"      # Verify tests pass
 3. `src/versifai/core/llm.py` — LLMClient multi-provider interface
 4. `docs/tool-inventory.md` — Complete tool reference
 5. `docs/architecture.md` — System design and data flow
-6. `examples/silly_weather/` — Reference implementation
+6. `examples/world_development/` — Reference implementation
 
 ### Links
 
