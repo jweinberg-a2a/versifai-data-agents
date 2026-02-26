@@ -113,6 +113,8 @@ ignore = [
 "src/versifai/science_agents/scientist/tools/validate_statistics.py" = ["N806"]
 "src/versifai/science_agents/scientist/tools/log_model.py" = ["N806"]
 "src/versifai/core/tools/visualization.py" = ["N806"]
+# Databricks notebooks use globals (spark, dbutils, display) and interleaved imports
+"examples/**/notebooks/*.py" = ["F821", "E402"]
 # Tests import to verify importability, not to use
 "tests/**" = ["F401"]
 

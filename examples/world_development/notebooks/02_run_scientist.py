@@ -1,0 +1,148 @@
+# Databricks notebook source
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC # World Development — Research Analysis Pipeline
+# MAGIC
+# MAGIC This notebook runs the **DataScientistAgent** to investigate global
+# MAGIC development patterns using World Bank indicators: GDP, life expectancy,
+# MAGIC education, healthcare spending, CO2 emissions, and population.
+# MAGIC
+# MAGIC ## Prerequisites
+# MAGIC 1. Run `01_run_engineer.py` first — the silver tables must exist
+# MAGIC 2. Install versifai: `pip install versifai` (or from source)
+# MAGIC 3. Set your LLM API key in the cluster environment variables
+# MAGIC
+# MAGIC ## What This Notebook Does
+# MAGIC The agent executes 4 phases across 6 analysis themes:
+# MAGIC 1. **Orientation** — Inventory tables, assess data quality and coverage
+# MAGIC 2. **Silver Construction** — Build pre-joined analytical panels
+# MAGIC 3. **Theme Analysis** — Run each theme: hypothesize, test, record findings
+# MAGIC    - Theme 0: The Development Dashboard (descriptive)
+# MAGIC    - Theme 1: The Preston Curve (GDP vs life expectancy)
+# MAGIC    - Theme 2: Education and Economic Growth (comparative)
+# MAGIC    - Theme 3: Healthcare Spending Returns (regression)
+# MAGIC    - Theme 4: The Carbon Cost of Development (trend + confounding)
+# MAGIC    - Theme 5: Convergence or Divergence? (trend)
+# MAGIC 4. **Synthesis** — Cross-validate, compare to literature, summarize
+
+# COMMAND ----------
+
+# MAGIC %pip install versifai --quiet
+
+# COMMAND ----------
+
+dbutils.library.restartPython()
+
+# COMMAND ----------
+
+# ── Setup ────────────────────────────────────────────────────────────
+
+import logging
+import os
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("world_development")
+
+assert os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("OPENAI_API_KEY"), (
+    "Set ANTHROPIC_API_KEY or OPENAI_API_KEY in your cluster env vars"
+)
+
+# COMMAND ----------
+
+# ── Load Config ──────────────────────────────────────────────────────
+
+from examples.world_development.research_configs.global_development import (
+    GLOBAL_DEVELOPMENT,
+)
+
+cfg = GLOBAL_DEVELOPMENT
+
+# ── Optional: Override for your environment ──────────────────────────
+# cfg.project.catalog = "your_catalog"
+# cfg.project.schema = "your_schema"
+# cfg.results_volume_path = "/Volumes/your_catalog/your_schema/results"
+
+logger.info("Research: %s", cfg.name)
+logger.info("Thesis: %s", cfg.thesis[:100] + "...")
+logger.info("Themes: %d", len(cfg.analysis_themes))
+
+# COMMAND ----------
+
+# ── Create the Agent ─────────────────────────────────────────────────
+
+from versifai.science_agents.scientist.agent import DataScientistAgent
+
+agent = DataScientistAgent(cfg=cfg, dbutils=dbutils)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Option A: Run the Full Pipeline
+# MAGIC
+# MAGIC Runs ALL 6 themes end-to-end. The agent has **smart resume** —
+# MAGIC if it crashes midway, re-running will skip completed themes.
+
+# COMMAND ----------
+
+results = agent.run()
+logger.info("Full pipeline complete. Result: %s", results)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Option B: Run Specific Themes
+
+# COMMAND ----------
+
+# # Skip themes 0-2, run themes 3-5 only
+# results = agent.run_themes(start_theme=3)
+
+# # Or run specific themes by index
+# results = agent.run_themes(themes=[1, 4])  # Preston Curve + Carbon Cost
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Inspect Results
+# MAGIC
+# MAGIC The agent writes structured output to the results Volume:
+# MAGIC - `findings.json` — All statistical findings with evidence tiers
+# MAGIC - `charts/` — PNG visualizations with metadata
+# MAGIC - `tables/` — CSV summary tables
+# MAGIC - `notes/` — Per-theme markdown reasoning logs
+
+# COMMAND ----------
+
+import json
+
+results_path = cfg.results_volume_path
+
+# List output files
+for f in dbutils.fs.ls(results_path):
+    print(f"{f.name:40s} {f.size:>10,d} bytes")
+
+# COMMAND ----------
+
+# Preview findings
+findings_path = f"{results_path}/findings.json"
+try:
+    findings_text = dbutils.fs.head(findings_path, 5000)
+    findings = json.loads(findings_text)
+    print(f"Total findings: {len(findings)}")
+    for f in findings[:3]:
+        print(f"\n  Title: {f.get('title', 'N/A')}")
+        print(f"  P-value: {f.get('p_value', 'N/A')}")
+        print(f"  Significance: {f.get('significance', 'N/A')}")
+except Exception as e:
+    print(f"No findings yet (run the pipeline first): {e}")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Next Steps
+# MAGIC
+# MAGIC With findings produced, run the **StoryTellerAgent** using
+# MAGIC `03_run_storyteller.py` to write the narrative report:
+# MAGIC *"The Shape of Global Progress"*

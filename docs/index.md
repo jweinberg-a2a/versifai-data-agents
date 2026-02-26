@@ -102,7 +102,7 @@ Read a full research report produced end-to-end by Versifai's agent pipeline —
 <div style="text-align: center; margin-top: 32px;" markdown>
 
 [Get Started](getting-started.md){ .md-button .md-button--primary }
-[Tutorial](tutorial-silly-weather.md){ .md-button }
+[Tutorial: World Development](tutorial-world-development.md){ .md-button }
 [Architecture](architecture.md){ .md-button }
 [Examples](https://github.com/jweinberg-a2a/versifai-data-agents/tree/main/examples){ .md-button target="_blank" }
 [View on GitHub](https://github.com/jweinberg-a2a/versifai-data-agents){ .md-button target="_blank" }
