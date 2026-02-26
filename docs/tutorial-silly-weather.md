@@ -28,41 +28,21 @@ designs schemas and loads them into Unity Catalog.
 
 ```mermaid
 flowchart LR
-    subgraph volume["Raw Data Volume"]
-        F1["weather_2020.csv"]
-        F2["weather_2021.csv"]
-        F3["weather_2022.csv"]
-        F4["duck_obs.zip"]
-        F5["ice_cream.xlsx"]
-        F6["forecast.csv"]
-    end
+    RAW[/"6 raw files<br>CSV, ZIP, Excel"/] --> EV["explore_volume"]
+    EV --> RH["read_file_header"]
+    RH --> PD["profile_data"]
+    PD --> DS["design_schema"]
+    DS --> TL["transform_and_load"]
+    TL --> WC["write_to_catalog"]
+    WC --> AQ["Analyst validates"]
+    AQ --> DONE[("4 Delta tables")]
 
-    subgraph discover["Discover"]
-        EV[explore_volume]
-        RH[read_file_header]
-        PD[profile_data]
-        EV --> RH --> PD
-    end
-
-    subgraph load["Design & Load"]
-        DS[design_schema]
-        TL[transform_and_load]
-        WC[write_to_catalog]
-        DS --> TL --> WC
-    end
-
-    subgraph validate["Validate"]
-        AQ["Analyst reviews:<br>join keys, nulls,<br>ranges, joinability"]
-    end
-
-    F1 & F2 & F3 & F4 & F5 & F6 --> EV
-    PD --> DS
-    WC --> AQ
-
-    style volume fill:#fff8e1,stroke:#b38600
-    style discover fill:#e8f0fe,stroke:#4a6f93
-    style load fill:#e8f0fe,stroke:#4a6f93
-    style validate fill:#e8f4e8,stroke:#4a8a4a
+    style RAW fill:#fff8e1,stroke:#b38600
+    style EV fill:#e8f0fe,stroke:#4a6f93
+    style DS fill:#e8f0fe,stroke:#4a6f93
+    style WC fill:#e8f0fe,stroke:#4a6f93
+    style AQ fill:#fef3e0,stroke:#b38600
+    style DONE fill:#e8f4e8,stroke:#4a8a4a
 ```
 
 **Result:** 4 clean Delta tables in Unity Catalog — `silver_daily_weather`,
@@ -75,48 +55,21 @@ The scientist joins engineer tables into analytical datasets, then runs
 
 ```mermaid
 flowchart LR
-    subgraph tables["Unity Catalog Tables"]
-        T1[silver_daily_weather]
-        T2[silver_quack_frequency]
-        T3[silver_feather_fluffing]
-        T4[silver_ice_cream_sales]
-    end
+    DT[("4 Delta tables")] --> EX["execute_sql<br>JOIN into silver datasets"]
+    EX --> VS["validate_silver"]
+    VS --> SA["statistical_analysis"]
+    SA --> FM["fit_model"]
+    FM --> CC["check_confounders"]
+    SA --> CV["create_visualization"]
+    CC --> SF["save_finding"]
+    SF --> OUT[/"findings.json<br>+ charts + notes"/]
 
-    subgraph silver["Build Silver"]
-        EX[execute_sql]
-        VS[validate_silver]
-        EX --> VS
-    end
-
-    subgraph themes["Per Research Theme × 7"]
-        SA[statistical_analysis]
-        FM[fit_model]
-        CC[check_confounders]
-        CV[create_visualization]
-        SF[save_finding]
-        SA --> FM --> CC
-        SA --> CV
-        CC --> SF
-    end
-
-    subgraph artifacts["Outputs"]
-        FJ[/"findings.json"/]
-        CH[/"charts/"/]
-        TB[/"tables/"/]
-        NT[/"notes/"/]
-    end
-
-    T1 & T2 & T3 & T4 --> EX
-    VS --> SA
-    SF --> FJ
-    CV --> CH
-    SA --> TB
-    SA --> NT
-
-    style tables fill:#e8f4e8,stroke:#4a8a4a
-    style silver fill:#e8f0fe,stroke:#4a6f93
-    style themes fill:#e8f0fe,stroke:#4a6f93
-    style artifacts fill:#fff8e1,stroke:#b38600
+    style DT fill:#e8f4e8,stroke:#4a8a4a
+    style EX fill:#e8f0fe,stroke:#4a6f93
+    style SA fill:#e8f0fe,stroke:#4a6f93
+    style CC fill:#fef3e0,stroke:#b38600
+    style SF fill:#e8f4e8,stroke:#4a8a4a
+    style OUT fill:#fff8e1,stroke:#b38600
 ```
 
 **Result:** 14 structured findings, 9 charts, 6 CSV summaries, and per-theme
@@ -129,38 +82,18 @@ writes narrative sections, and assembles the final report.
 
 ```mermaid
 flowchart LR
-    subgraph inputs["Scientist Outputs"]
-        FJ2[/"findings.json"/]
-        CH2[/"charts/"/]
-        NT2[/"notes/"/]
-    end
+    IN[/"findings + charts<br>+ notes"/] --> RF["read_findings"]
+    RF --> EE["evaluate_evidence"]
+    EE --> WN["write_narrative"]
+    WN --> CS["cite_source"]
+    CS --> COH["coherence pass"]
+    COH --> RPT[/"duck_weather_report.md"/]
 
-    subgraph evaluate["Evaluate"]
-        RF[read_findings]
-        EE[evaluate_evidence]
-        RF --> EE
-    end
-
-    subgraph write["Write Sections"]
-        WN[write_narrative]
-        CS[cite_source]
-        WN --> CS
-    end
-
-    subgraph assemble["Finalize"]
-        CP["coherence pass"]
-        RPT[/"duck_weather_report.md"/]
-        CP --> RPT
-    end
-
-    FJ2 & CH2 & NT2 --> RF
-    EE --> WN
-    CS --> CP
-
-    style inputs fill:#fff8e1,stroke:#b38600
-    style evaluate fill:#e8f0fe,stroke:#4a6f93
-    style write fill:#e8f0fe,stroke:#4a6f93
-    style assemble fill:#e8f4e8,stroke:#4a8a4a
+    style IN fill:#fff8e1,stroke:#b38600
+    style RF fill:#e8f0fe,stroke:#4a6f93
+    style EE fill:#fef3e0,stroke:#b38600
+    style WN fill:#e8f0fe,stroke:#4a6f93
+    style RPT fill:#e8f4e8,stroke:#4a8a4a
 ```
 
 **Result:** A ~4,000-word narrative report with table of contents, inline
@@ -653,41 +586,24 @@ agent discovers them and turns each source into a clean Delta table.
 
 ```mermaid
 flowchart LR
-    subgraph volume["Databricks Volume: /Volumes/.../raw_data/"]
-        direction TB
-        F1["noaa_weather/<br>├── weather_2020.csv<br>├── weather_2021.csv<br>└── weather_2022.csv"]
-        F2["duck_observations/<br>└── duck_obs.zip<br>    ├── quack_frequency.csv<br>    └── feather_index.csv"]
-        F3["ice_cream/<br>└── ice_cream_sales.xlsx"]
-        F4["forecast_accuracy/<br>└── nws_forecasts.csv"]
-    end
+    F1[/"noaa_weather/<br>3 CSVs"/] --> ENG["Data Engineer<br>profile → design → load"]
+    F2[/"duck_observations/<br>ZIP archive"/] --> ENG
+    F3[/"ice_cream/<br>Excel"/] --> ENG
+    F4[/"forecast_accuracy/<br>CSV"/] --> ENG
+    ENG --> T1[("silver_daily_weather<br>1.1M rows")]
+    ENG --> T2[("silver_quack_frequency<br>890K rows")]
+    ENG --> T3[("silver_feather_fluffing<br>365K rows")]
+    ENG --> T4[("silver_ice_cream_sales<br>18K rows")]
 
-    subgraph engineer["Data Engineer Agent"]
-        direction TB
-        PROFILE["Profile & Design<br><br>Reads headers, detects types,<br>designs CREATE TABLE SQL<br>for each source"]
-        TRANSFORM["Transform & Load<br><br>Renames columns to snake_case,<br>casts types, adds metadata,<br>batch-processes multi-file sources"]
-    end
-
-    subgraph catalog["Unity Catalog: my_catalog.silly_weather"]
-        direction TB
-        T1["**silver_daily_weather**<br><br>station_id · observation_date<br>temp_max_c · temp_min_c<br>precip_mm · snow_depth_mm<br>wind_speed_ms<br>source_file_name · load_timestamp<br><br>*1.1M rows · 3 years*"]
-        T2["**silver_quack_frequency**<br><br>station_id · observation_date<br>hour_of_day · quack_count<br>ambient_noise_db<br>source_file_name · load_timestamp<br><br>*890K rows*"]
-        T3["**silver_feather_fluffing**<br><br>station_id · observation_date<br>fluff_intensity · humidity_pct<br>source_file_name · load_timestamp<br><br>*365K rows*"]
-        T4["**silver_ice_cream_sales**<br><br>station_id · month · year<br>units_sold · revenue_usd<br>avg_temp_c<br>source_file_name · load_timestamp<br><br>*18K rows*"]
-    end
-
-    F1 --> PROFILE
-    F2 --> PROFILE
-    F3 --> PROFILE
-    F4 --> PROFILE
-    PROFILE --> TRANSFORM
-    TRANSFORM --> T1
-    TRANSFORM --> T2
-    TRANSFORM --> T3
-    TRANSFORM --> T4
-
-    style volume fill:#fff8e1,stroke:#b38600
-    style engineer fill:#e8f0fe,stroke:#4a6f93
-    style catalog fill:#e8f4e8,stroke:#4a8a4a
+    style F1 fill:#fff8e1,stroke:#b38600
+    style F2 fill:#fff8e1,stroke:#b38600
+    style F3 fill:#fff8e1,stroke:#b38600
+    style F4 fill:#fff8e1,stroke:#b38600
+    style ENG fill:#e8f0fe,stroke:#4a6f93
+    style T1 fill:#e8f4e8,stroke:#4a8a4a
+    style T2 fill:#e8f4e8,stroke:#4a8a4a
+    style T3 fill:#e8f4e8,stroke:#4a8a4a
+    style T4 fill:#e8f4e8,stroke:#4a8a4a
 ```
 
 Every table gets:
@@ -704,42 +620,27 @@ each research theme against them.
 
 ```mermaid
 flowchart TD
-    subgraph source_tables["Source Tables (from Engineer)"]
-        T1["silver_daily_weather"]
-        T2["silver_quack_frequency"]
-        T3["silver_feather_fluffing"]
-        T4["silver_ice_cream_sales"]
-    end
+    T1[("silver_daily_weather")] --> J1["JOIN → silver_weather_duck_daily<br>365K rows"]
+    T2[("silver_quack_frequency")] --> J1
+    T3[("silver_feather_fluffing")] --> J1
+    T2 --> J2["JOIN → silver_duck_forecast_comparison<br>365K rows"]
+    T1 --> J3["JOIN → silver_ice_cream_weather<br>18K rows"]
+    T4[("silver_ice_cream_sales")] --> J3
 
-    subgraph silver_construction["Silver Dataset Construction (SQL JOINs)"]
-        J1["**silver_weather_duck_daily**<br><br>JOIN weather + quacks + fluffing<br>ON station_id + observation_date<br><br>→ 365K rows, 15 columns<br>→ Weather + duck behavior per day"]
-        J2["**silver_duck_forecast_comparison**<br><br>JOIN duck signals + NWS forecasts<br>with next-day actual weather<br><br>→ 365K rows<br>→ Who predicted better?"]
-        J3["**silver_ice_cream_weather**<br><br>JOIN ice cream sales + weather<br>+ duck activity (monthly agg)<br><br>→ 18K rows<br>→ Confounder analysis"]
-    end
+    J1 --> THEMES["7 research themes<br>stats, models, charts per theme"]
+    J2 --> THEMES
+    J3 --> THEMES
+    THEMES --> OUT[/"14 findings + 9 charts<br>+ 6 tables + notes"/]
 
-    subgraph analysis["Theme Analysis (7 themes)"]
-        direction TB
-        TH0["Theme 0: **Quack Census**<br>*describe* → summary stats<br>*distribution* → normality tests<br>→ 2 findings, 1 chart"]
-        TH1["Theme 1: **Quack Before the Storm**<br>*correlation* → r=0.42, p<0.001<br>*hypothesis_test* → Mann-Whitney<br>→ 3 findings, 2 charts"]
-        TH5["Theme 5: **Duck vs Doppler**<br>*fit_model* → logistic regression<br>*cross_validate* → F1 comparison<br>→ 2 findings, 2 charts"]
-        TH6["Theme 6: **Grand Unified Duck Theory**<br>*fit_model* → gradient boosting<br>*check_confounders* → Simpson's check<br>→ 2 findings, 1 chart"]
-    end
-
-    T1 --> J1
-    T2 --> J1
-    T3 --> J1
-    T2 --> J2
-    T1 --> J3
-    T4 --> J3
-    J1 --> TH0
-    J1 --> TH1
-    J2 --> TH5
-    J1 --> TH6
-    J3 --> TH6
-
-    style source_tables fill:#e8f4e8,stroke:#4a8a4a
-    style silver_construction fill:#dcefd8,stroke:#4a8a4a
-    style analysis fill:#d0ead0,stroke:#4a8a4a
+    style T1 fill:#e8f4e8,stroke:#4a8a4a
+    style T2 fill:#e8f4e8,stroke:#4a8a4a
+    style T3 fill:#e8f4e8,stroke:#4a8a4a
+    style T4 fill:#e8f4e8,stroke:#4a8a4a
+    style J1 fill:#e8f0fe,stroke:#4a6f93
+    style J2 fill:#e8f0fe,stroke:#4a6f93
+    style J3 fill:#e8f0fe,stroke:#4a6f93
+    style THEMES fill:#e8f0fe,stroke:#4a6f93
+    style OUT fill:#fff8e1,stroke:#b38600
 ```
 
 ### Stage 3: Findings → Narrative Report

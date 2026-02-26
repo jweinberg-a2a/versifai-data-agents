@@ -90,20 +90,21 @@ order. This makes "find the latest run" trivial.
 ### Directory Structure
 
 ```mermaid
-flowchart TD
-    subgraph volume["Databricks Volume"]
-        subgraph results["/Volumes/.../results/"]
-            subgraph runs["runs/"]
-                RUN1["20260223_100000_f4e1/<br>(first run — interrupted)"]
-                RUN2["20260223_143012_a1b2/<br>(second run — completed)"]
-                RUN3["20260225_091500_c7d3/<br>(latest run — in progress)"]
-            end
-        end
-    end
+flowchart LR
+    VOL["/Volumes/.../results/runs/"] --> RUN1["20260223_100000_f4e1/"]
+    VOL --> RUN2["20260223_143012_a1b2/"]
+    VOL --> RUN3["20260225_091500_c7d3/"]
+
+    RUN1 -.- S1(["interrupted"])
+    RUN2 -.- S2(["completed"])
+    RUN3 -.- S3(["in progress"])
 
     style RUN1 fill:#fee,stroke:#c33
     style RUN2 fill:#efe,stroke:#3a3
     style RUN3 fill:#ffe,stroke:#b80
+    style S1 fill:#fee,stroke:#c33
+    style S2 fill:#efe,stroke:#3a3
+    style S3 fill:#ffe,stroke:#b80
 ```
 
 Each run directory is self-contained:
@@ -139,34 +140,18 @@ disk. It creates clean, validated, joinable tables from raw data files.
 
 ```mermaid
 flowchart LR
-    subgraph input["Raw Files (Volume)"]
-        CSV["weather_2020.csv<br>weather_2021.csv<br>weather_2022.csv"]
-        ZIP["duck_obs.zip"]
-        XLS["ice_cream.xlsx"]
-    end
+    RAW[/"6 raw files<br>(CSV, ZIP, Excel)"/] --> ENG["Data Engineer<br>profile → design → load"]
+    ENG --> T1[("silver_daily_weather")]
+    ENG --> T2[("silver_quack_frequency")]
+    ENG --> T3[("silver_feather_fluffing")]
+    ENG --> T4[("silver_ice_cream_sales")]
 
-    subgraph agent["Data Engineer"]
-        WORK["Profile → Design → Transform → Load<br><br>All reasoning logged to<br>agent conversation history"]
-    end
-
-    subgraph output["Unity Catalog Tables"]
-        T1["**silver_daily_weather**<br>1.1M rows · 10 columns<br>station_id · observation_date<br>temp_max_c · precip_mm ..."]
-        T2["**silver_quack_frequency**<br>890K rows · 6 columns"]
-        T3["**silver_feather_fluffing**<br>365K rows · 5 columns"]
-        T4["**silver_ice_cream_sales**<br>18K rows · 7 columns"]
-    end
-
-    CSV --> WORK
-    ZIP --> WORK
-    XLS --> WORK
-    WORK --> T1
-    WORK --> T2
-    WORK --> T3
-    WORK --> T4
-
-    style input fill:#fff8e1,stroke:#b38600
-    style agent fill:#e8f0fe,stroke:#4a6f93
-    style output fill:#e8f4e8,stroke:#4a8a4a
+    style RAW fill:#fff8e1,stroke:#b38600
+    style ENG fill:#e8f0fe,stroke:#4a6f93
+    style T1 fill:#e8f4e8,stroke:#4a8a4a
+    style T2 fill:#e8f4e8,stroke:#4a8a4a
+    style T3 fill:#e8f4e8,stroke:#4a8a4a
+    style T4 fill:#e8f4e8,stroke:#4a8a4a
 ```
 
 Every table includes:
@@ -185,36 +170,19 @@ agent queries the table to see which files are already loaded and skips them.
 The Data Scientist produces the richest set of artifacts:
 
 ```mermaid
-flowchart TD
-    subgraph run["Run Directory: runs/20260223_143012_a1b2/"]
-        META["**run_metadata.json**<br>Run state, phases completed,<br>items done, timing"]
-        FIND["**findings.json**<br>14 structured findings<br>with evidence + p-values"]
+flowchart LR
+    SCI["Data Scientist<br>ReAct loop"] --> META["run_metadata.json<br>phases + progress"]
+    SCI --> FIND["findings.json<br>14 structured findings"]
+    SCI --> CHARTS[/"charts/<br>9 visualizations"/]
+    SCI --> TABLES[/"tables/<br>6 CSV summaries"/]
+    SCI --> NOTES[/"notes/<br>per-theme reasoning"/]
 
-        subgraph charts["charts/"]
-            C1["theme0_distribution.png"]
-            C2["theme1_lag_correlation.png"]
-            C3["theme5_precision_recall.png"]
-            C4["...9 charts total"]
-        end
-
-        subgraph tables["tables/"]
-            TB1["correlation_matrix.csv"]
-            TB2["model_comparison.csv"]
-            TB3["...6 tables total"]
-        end
-
-        subgraph notes["notes/"]
-            N1["theme_0_notes.txt"]
-            N2["theme_1_notes.txt"]
-            N3["...per-theme reasoning"]
-        end
-    end
-
-    style META fill:#e8f0fe,stroke:#4a6f93
+    style SCI fill:#e8f0fe,stroke:#4a6f93
     style FIND fill:#e8f4e8,stroke:#4a8a4a
-    style charts fill:#fef3e0,stroke:#b38600
-    style tables fill:#f0f0f0,stroke:#999
-    style notes fill:#f0f0f0,stroke:#999
+    style META fill:#f0f0f0,stroke:#999
+    style CHARTS fill:#fef3e0,stroke:#b38600
+    style TABLES fill:#f0f0f0,stroke:#999
+    style NOTES fill:#f0f0f0,stroke:#999
 ```
 
 #### findings.json — Structured Evidence
@@ -317,35 +285,16 @@ sample of the input data. A human can regenerate any chart from its metadata.
 The StoryTeller produces narrative sections and a final assembled report:
 
 ```mermaid
-flowchart TD
-    subgraph run["Run Directory"]
-        META2["**run_metadata.json**<br>Sections written, completion status"]
+flowchart LR
+    IN[/"findings.json<br>+ charts + notes"/] --> ST["StoryTeller<br>ReAct loop"]
+    ST -->|"per section"| SEC[/"section_*.md<br>(8 files, saved immediately)"/]
+    SEC --> ASM["Assemble + coherence pass"]
+    ASM --> RPT["narrative_report.md<br>~4,000 words with TOC<br>+ bibliography"]
 
-        subgraph sections["Individual Sections (written immediately)"]
-            S1["section_abstract.md"]
-            S2["section_quack_census.md"]
-            S3["section_quack_storm.md"]
-            S4["section_fluff_factor.md"]
-            S5["section_showdown.md"]
-            S6["section_unified.md"]
-            S7["section_limitations.md"]
-            S8["section_conclusions.md"]
-        end
-
-        REPORT["**narrative_report.md**<br><br>Final assembled document<br>with TOC and bibliography<br>(~4,000 words)"]
-    end
-
-    S1 --> REPORT
-    S2 --> REPORT
-    S3 --> REPORT
-    S4 --> REPORT
-    S5 --> REPORT
-    S6 --> REPORT
-    S7 --> REPORT
-    S8 --> REPORT
-
-    style sections fill:#fef3e0,stroke:#b38600
-    style REPORT fill:#e8f4e8,stroke:#4a8a4a
+    style IN fill:#fff8e1,stroke:#b38600
+    style ST fill:#e8f0fe,stroke:#4a6f93
+    style SEC fill:#fef3e0,stroke:#b38600
+    style RPT fill:#e8f4e8,stroke:#4a8a4a
 ```
 
 Each section is **persisted to disk immediately** after the agent writes it.
@@ -480,28 +429,17 @@ When an agent moves between phases, its conversation history is cleared to
 save tokens — but **key knowledge is preserved** via carryover context.
 
 ```mermaid
-flowchart TD
-    subgraph phase1["Phase 1: Orientation"]
-        WORK1["Agent explores tables,<br>assesses data quality,<br>makes observations"]
-        WORK1 --> CARRY1["Memory extracts<br>carryover context:<br>• Source summaries<br>• Key decisions<br>• Data quality notes"]
-    end
+flowchart LR
+    P1["Phase 1<br>Orientation"] -->|"extract summaries<br>+ key decisions"| CTX["Carryover<br>Context"]
+    CTX -->|"clear history,<br>inject context"| P2["Phase 2<br>Silver Construction"]
+    P2 -->|"extract summaries<br>+ key decisions"| CTX2["Carryover<br>Context"]
+    CTX2 -->|"clear history,<br>inject context"| P3["Phase 3<br>Theme Analysis"]
 
-    subgraph reset["Between Phases"]
-        CLEAR["Conversation history<br>CLEARED (save tokens)"]
-        INJECT["Carryover context<br>INJECTED into next prompt"]
-    end
-
-    subgraph phase2["Phase 2: Silver Construction"]
-        PROMPT["New prompt includes:<br><br>## Context From Orientation<br>- silver_daily_weather: 1.1M rows,<br>  3 years, station_id join key<br>- 15% null duck observations<br>  on weekdays<br><br>---<br><br>Now build the silver dataset..."]
-    end
-
-    CARRY1 --> CLEAR
-    CLEAR --> INJECT
-    INJECT --> PROMPT
-
-    style phase1 fill:#e8f0fe,stroke:#4a6f93
-    style reset fill:#fee,stroke:#c33
-    style phase2 fill:#e8f4e8,stroke:#4a8a4a
+    style P1 fill:#e8f0fe,stroke:#4a6f93
+    style CTX fill:#fee,stroke:#c33
+    style P2 fill:#e8f0fe,stroke:#4a6f93
+    style CTX2 fill:#fee,stroke:#c33
+    style P3 fill:#e8f0fe,stroke:#4a6f93
 ```
 
 The `AgentMemory` class manages this:
@@ -525,26 +463,19 @@ The three agents don't communicate directly. They communicate through
 
 ```mermaid
 flowchart LR
-    subgraph eng["Data Engineer"]
-        ENG_OUT["Output:<br>Delta tables in<br>Unity Catalog"]
-    end
+    ENG["Data Engineer"] -->|"implicit handoff<br>via Unity Catalog"| SCI["Data Scientist"]
+    SCI -->|"explicit handoff<br>via AgentDependency"| STORY["StoryTeller"]
 
-    subgraph sci["Data Scientist"]
-        SCI_IN["Input:<br>Reads tables via<br>execute_sql"]
-        SCI_OUT["Output:<br>findings.json<br>charts/<br>tables/<br>notes/"]
-    end
+    ENG -.->|"Delta tables"| CAT[("Unity Catalog")]
+    CAT -.->|"SQL queries"| SCI
+    SCI -.->|"findings + charts + notes"| DISK[/"Run directory"/]
+    DISK -.->|"resolve latest run"| STORY
 
-    subgraph story["StoryTeller"]
-        ST_IN["Input:<br>Reads findings,<br>charts, tables,<br>notes from disk"]
-        ST_OUT["Output:<br>narrative_report.md"]
-    end
-
-    ENG_OUT -->|"Unity Catalog<br>(SQL queries)"| SCI_IN
-    SCI_OUT -->|"AgentDependency<br>(resolves run path)"| ST_IN
-
-    style eng fill:#e8f0fe,stroke:#4a6f93
-    style sci fill:#e8f4e8,stroke:#4a8a4a
-    style story fill:#fef3e0,stroke:#b38600
+    style ENG fill:#e8f0fe,stroke:#4a6f93
+    style SCI fill:#e8f4e8,stroke:#4a8a4a
+    style STORY fill:#fef3e0,stroke:#b38600
+    style CAT fill:#f0f0f0,stroke:#999
+    style DISK fill:#f0f0f0,stroke:#999
 ```
 
 ### Engineer → Scientist
