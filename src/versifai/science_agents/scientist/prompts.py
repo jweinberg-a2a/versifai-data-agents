@@ -119,9 +119,11 @@ You follow a disciplined research cycle for EVERY analysis step:
    - Subset the data to see if the pattern holds in subgroups
    - Ask the human operator for domain guidance via `ask_human`
 
-7. **Record** — Only after sense-checking, save verified findings with
-   `save_finding`. Include the statistical evidence, effect sizes, and
-   how the finding connects to the thesis.
+7. **Record (MANDATORY)** — Only after sense-checking, save verified findings
+   with `save_finding`. You MUST call `save_finding` at least once per theme.
+   Include the statistical evidence, effect sizes, and how the finding
+   connects to the thesis. Notes and charts are NOT substitutes for findings.
+   The StoryTeller agent reads `save_finding` output to build the report.
 
 ## When to Use Bayesian Methods
 
@@ -872,9 +874,12 @@ def build_analysis_prompt(
 7. **Visualize**: Create charts that tell the story. Titles should state
    the finding. Include sample sizes and effect sizes on the charts.
 
-8. **Record Verified Findings**: Only after sense-checking, call `save_finding`
-   with the research question ID, quantitative result, statistical evidence,
-   effect sizes, and significance rating.
+8. **Record Verified Findings (MANDATORY)**: Only after sense-checking, call
+   `save_finding` with the research question ID, quantitative result,
+   statistical evidence, effect sizes, and significance rating. You MUST call
+   `save_finding` at least once per theme. Notes and charts are NOT
+   substitutes — `save_finding` creates the structured record that the
+   StoryTeller agent reads downstream.
 
 9. **Connect to Thesis**: State explicitly how this finding builds the
    argument. Does it support, refine, complicate, or challenge the thesis?
@@ -884,6 +889,7 @@ def build_analysis_prompt(
 - Never accept a surprising result without investigation
 - Never skip assumption checking
 - Always compare against baselines (internal or published)
+- EVERY theme MUST produce at least one `save_finding` call
 - If in doubt, ask the human
 """
 
@@ -1126,11 +1132,18 @@ Titles should state the finding, not just label axes.
 
 5. **Visualize**: Create the prescribed visualizations.
 
-6. **Record Findings**: Before saving any high-significance finding, call
-   `validate_statistics` with check_type='robustness' to confirm the
-   result survives outlier removal and alternative methods. Then call
-   `save_finding` with the theme ID ('{theme.id}'), evidence, and
-   connection to the thesis.
+6. **Record Findings (MANDATORY)**: You MUST call `save_finding` at least once
+   per theme. Every theme must produce at least one structured finding. Before
+   saving any high-significance finding, call `validate_statistics` with
+   check_type='robustness' to confirm the result survives outlier removal
+   and alternative methods. Then call `save_finding` with the theme ID
+   ('{theme.id}'), evidence, and connection to the thesis.
+
+   **CRITICAL**: Do NOT finish a theme without calling `save_finding`. Notes
+   and charts are not substitutes for findings. The `save_finding` tool
+   creates the structured record that the StoryTeller agent reads to build
+   the narrative report. If you skip it, downstream agents have nothing to
+   work with.
 
 7. **Save Notes**: Throughout your analysis, call `save_note` with the
    theme ID ('{theme.id}') to record observations that don't fit into a
@@ -1143,6 +1156,7 @@ Titles should state the finding, not just label axes.
 - Never report a finding without effect sizes
 - Never accept a surprising result without investigation
 - Always compare against baselines (internal or published)
+- EVERY theme MUST produce at least one `save_finding` call
 - If in doubt, ask the human
 """
 

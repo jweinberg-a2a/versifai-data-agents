@@ -20,6 +20,9 @@ logger = logging.getLogger("versifai.llm")
 
 # Suppress litellm's verbose logging by default
 litellm.suppress_debug_info = True
+logging.getLogger("LiteLLM").setLevel(logging.WARNING)
+logging.getLogger("LiteLLM Router").setLevel(logging.WARNING)
+logging.getLogger("LiteLLM Proxy").setLevel(logging.WARNING)
 
 
 @dataclass
@@ -83,6 +86,7 @@ class LLMClient:
         api_base: str | None = None,
         retry_attempts: int = 3,
         retry_base_delay: float = 2.0,
+        extended_context: bool = True,
     ) -> None:
         self._model = model
         self._max_tokens = max_tokens
@@ -90,6 +94,7 @@ class LLMClient:
         self._api_base = api_base
         self._retry_attempts = retry_attempts
         self._retry_base_delay = retry_base_delay
+        self._extended_context = extended_context
 
         # Usage tracking
         self._total_input_tokens = 0
@@ -243,6 +248,9 @@ class LLMClient:
                 last_tool = {**cached_tools[-1], "cache_control": {"type": "ephemeral"}}
                 cached_tools[-1] = last_tool
                 kwargs["tools"] = cached_tools
+            # Enable 1M context window (beta) — avoids 200K default rejection
+            if self._extended_context:
+                kwargs["extra_headers"] = {"anthropic-beta": "context-1m-2025-08-07"}
         else:
             # OpenAI and others: system goes in messages
             kwargs["messages"] = [{"role": "system", "content": system}] + converted_messages

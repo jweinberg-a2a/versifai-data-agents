@@ -21,16 +21,30 @@
 # MAGIC | SH.XPD.CHEX.PC.CD | Health expenditure per capita (US$) |
 # MAGIC | EN.ATM.CO2E.PC | CO2 emissions (metric tons per capita) |
 # MAGIC | SP.POP.TOTL | Population total |
+# MAGIC
+# MAGIC ## Before You Start
+# MAGIC
+# MAGIC 1. **Replace `my_catalog`** below with your Unity Catalog name
+# MAGIC 2. **Replace `world_development`** with your target schema name (or keep it)
+# MAGIC 3. **Create a `.env` file** in your project root with your LLM API key
+# MAGIC    (needed by notebooks 01-03, not this one):
+# MAGIC    ```
+# MAGIC    ANTHROPIC_API_KEY=sk-ant-...
+# MAGIC    ```
+# MAGIC
+# MAGIC These same variables (`CATALOG`, `SCHEMA`) must also be updated in:
+# MAGIC - `engineer_config.py`
+# MAGIC - `research_configs/global_development.py`
+# MAGIC - `storyteller_config.py`
 
 # COMMAND ----------
 
 # ── Configuration ──────────────────────────────────────────────────
 #
-# Update CATALOG and SCHEMA to match your Databricks workspace.
-# The Volume will be created automatically if it doesn't exist.
-
-CATALOG = "my_catalog"
-SCHEMA = "world_development"
+# !! UPDATE THESE to match your Databricks workspace !!
+#
+CATALOG = "my_catalog"  # <-- Replace with your Unity Catalog name
+SCHEMA = "world_development"  # <-- Replace with your target schema name
 VOLUMES = ["raw_data", "staging", "results"]
 RAW_DATA_PATH = f"/Volumes/{CATALOG}/{SCHEMA}/raw_data"
 

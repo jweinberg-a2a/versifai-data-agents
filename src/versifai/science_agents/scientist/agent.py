@@ -53,7 +53,7 @@ from versifai.science_agents.scientist.tools.validate_silver import ValidateSilv
 from versifai.science_agents.scientist.tools.validate_statistics import ValidateStatisticsTool
 
 if TYPE_CHECKING:
-    from versifai.science_agents.scientist.config import ResearchConfig
+    from versifai.science_agents.scientist.config import AnalysisTheme, ResearchConfig
 
 logger = logging.getLogger("agent.scientist")
 
@@ -507,10 +507,23 @@ class DataScientistAgent(BaseAgent):
                 if carryover:
                     prompt = f"## Context From Prior Work\n{carryover}\n\n---\n\n{prompt}"
 
+                # Track findings count before this theme
+                findings_before = len(self._finding_tool.findings)
+
                 self._run_phase(
                     prompt=self._inject_instructions(prompt),
                     max_turns=cfg.max_turns_per_theme,
                 )
+
+                # Nudge agent if it forgot to call save_finding
+                theme_findings = len(self._finding_tool.findings) - findings_before
+                if theme_findings == 0:
+                    self._display.warning(
+                        f"Theme {theme.sequence} produced 0 findings — "
+                        f"prompting agent to record findings"
+                    )
+                    self._nudge_save_finding(theme)
+
                 self._memory.log_source_summary(
                     f"analysis_{theme.id}",
                     f"Analyzed Theme {theme.sequence}: {theme.title}",
@@ -523,6 +536,11 @@ class DataScientistAgent(BaseAgent):
             if self._run_state:
                 self._run_state.mark_phase_complete("themes")
                 self._save_state()
+
+            # ── Phase 3b: Retrospective Findings ────────────────────
+            # If themes produced sparse findings, review charts/notes
+            # and create structured findings from existing output.
+            self._retrospective_findings(all_themes, available_tables, table_schemas)
 
             # ── Phase 4: Synthesis ──────────────────────────────────
             # Skip synthesis only if ALL themes were skipped (nothing new)
@@ -578,6 +596,14 @@ class DataScientistAgent(BaseAgent):
                 self._run_state.mark_failed(str(e))
                 self._save_state()
             self._dump_progress_on_crash()
+
+        # Always export findings (even after crash/interrupt) so nothing is lost
+        if self._finding_tool.findings:
+            try:
+                findings_path = self._finding_tool.export_findings_json()
+                self._display.success(f"Findings exported to {findings_path}")
+            except Exception as export_err:
+                self._display.warning(f"Could not export findings: {export_err}")
 
         # Update run metadata on completion
         if cfg.run_id:
@@ -1000,10 +1026,23 @@ rebuild silver tables, do NOT save findings. Just create the charts and tables.
                 if carryover:
                     prompt = f"## Context From Prior Work\n{carryover}\n\n---\n\n{prompt}"
 
+                # Track findings count before this theme
+                findings_before = len(self._finding_tool.findings)
+
                 self._run_phase(
                     prompt=self._inject_instructions(prompt),
                     max_turns=cfg.max_turns_per_theme,
                 )
+
+                # Nudge agent if it forgot to call save_finding
+                theme_findings = len(self._finding_tool.findings) - findings_before
+                if theme_findings == 0:
+                    self._display.warning(
+                        f"Theme {theme.sequence} produced 0 findings — "
+                        f"prompting agent to record findings"
+                    )
+                    self._nudge_save_finding(theme)
+
                 self._memory.log_source_summary(
                     f"analysis_{theme.id}",
                     f"Analyzed Theme {theme.sequence}: {theme.title}",
@@ -1016,6 +1055,9 @@ rebuild silver tables, do NOT save findings. Just create the charts and tables.
             if self._run_state:
                 self._run_state.mark_phase_complete("themes")
                 self._save_state()
+
+            # ── Retrospective Findings ─────────────────────────────────
+            self._retrospective_findings(themes_to_run, available_tables, table_schemas)
 
             # ── Synthesis (optional) ──────────────────────────────────
             if synthesize:
@@ -1057,6 +1099,14 @@ rebuild silver tables, do NOT save findings. Just create the charts and tables.
                 self._run_state.mark_failed(str(e))
                 self._save_state()
             self._dump_progress_on_crash()
+
+        # Always export findings (even after crash/interrupt) so nothing is lost
+        if self._finding_tool.findings:
+            try:
+                findings_path = self._finding_tool.export_findings_json()
+                self._display.success(f"Findings exported to {findings_path}")
+            except Exception as export_err:
+                self._display.warning(f"Could not export findings: {export_err}")
 
         summary = self._build_summary()
         self._display.phase("THEME ANALYSIS COMPLETE")
@@ -1237,6 +1287,14 @@ rebuild silver tables, do NOT save findings. Just create the charts and tables.
                 self._save_state()
             self._dump_progress_on_crash()
 
+        # Always export findings (even after crash/interrupt) so nothing is lost
+        if self._finding_tool.findings:
+            try:
+                findings_path = self._finding_tool.export_findings_json()
+                self._display.success(f"Findings exported to {findings_path}")
+            except Exception as export_err:
+                self._display.warning(f"Could not export findings: {export_err}")
+
         summary = self._build_summary()
         self._display.phase("VALIDATION COMPLETE")
         self._display.step(f"Total findings: {len(self._finding_tool.findings)}")
@@ -1252,6 +1310,169 @@ rebuild silver tables, do NOT save findings. Just create the charts and tables.
         """Run a phase, automatically providing the scientist progress path."""
         progress_path = os.path.join(self._run_path, "notes", "progress.txt")
         return super()._run_phase(prompt, max_turns, progress_path=progress_path)
+
+    # ------------------------------------------------------------------
+    # Finding enforcement
+    # ------------------------------------------------------------------
+
+    def _nudge_save_finding(self, theme: AnalysisTheme) -> None:
+        """Run a short follow-up phase to get the agent to call save_finding."""
+        findings_before = len(self._finding_tool.findings)
+        nudge = (
+            f"You just completed analysis for Theme {theme.sequence}: "
+            f"{theme.title}, but you did NOT call `save_finding`. "
+            f"Every theme MUST produce at least one structured finding. "
+            f"Review the analysis you just performed and call `save_finding` "
+            f"now with the theme ID '{theme.id}', a title, the key "
+            f"quantitative result, the supporting evidence (SQL or stats), "
+            f"and a significance rating. Do this for each major insight "
+            f"from the theme."
+        )
+        self._run_phase(
+            prompt=self._inject_instructions(nudge),
+            max_turns=10,
+        )
+        nudge_findings = len(self._finding_tool.findings) - findings_before
+        if nudge_findings > 0:
+            self._display.success(f"Recorded {nudge_findings} finding(s) after nudge")
+        else:
+            self._display.warning(f"Theme {theme.sequence} still has 0 findings")
+
+    def _retrospective_findings(
+        self,
+        themes: list[AnalysisTheme],
+        available_tables: set[str],
+        table_schemas: dict[str, list[tuple[str, str]]],
+    ) -> None:
+        """Review existing output and create findings for themes that have none.
+
+        After theme analysis completes, some themes may have no findings —
+        either because the agent forgot to call save_finding, the context
+        window overflowed and the phase was cut short, or the nudge failed.
+
+        This method scans the results volume for existing charts, notes, and
+        tables, identifies themes with zero findings, and runs a focused
+        recovery phase where the agent reviews existing artifacts and creates
+        structured findings retroactively.
+        """
+        cfg = self._cfg
+
+        # Find themes with zero findings
+        themes_with_findings: set[str] = set()
+        for f in self._finding_tool.findings:
+            rq_id = f.get("research_question_id", "")
+            if rq_id:
+                themes_with_findings.add(rq_id)
+
+        sparse_themes = [t for t in themes if t.id not in themes_with_findings]
+
+        if not sparse_themes:
+            self._display.step(
+                f"All {len(themes)} themes have findings — retrospective review not needed."
+            )
+            return
+
+        self._display.phase(
+            f"Phase 3b: Retrospective Findings ({len(sparse_themes)} themes need findings)"
+        )
+
+        # Gather available artifacts
+        existing_outputs = self._scan_existing_outputs()
+        all_notes = self._note_tool.load_notes_from_disk()
+        chart_files = existing_outputs.get("charts", [])
+        table_files = existing_outputs.get("tables", [])
+
+        for theme in sparse_themes:
+            # Collect artifacts for this theme
+            theme_notes = all_notes.get(theme.id, "")
+            theme_charts = [c for c in chart_files if theme.id in c.lower()]
+            theme_tables = [t for t in table_files if theme.id in t.lower()]
+
+            if not theme_notes and not theme_charts and not theme_tables:
+                self._display.warning(
+                    f"Theme {theme.sequence} ({theme.title}): "
+                    f"no artifacts found — cannot create retrospective findings"
+                )
+                continue
+
+            self._display.step(
+                f"Theme {theme.sequence} ({theme.title}): "
+                f"reviewing {len(theme_notes.splitlines())} note lines, "
+                f"{len(theme_charts)} charts, {len(theme_tables)} tables"
+            )
+
+            # Build the retrospective prompt
+            artifact_sections = []
+            if theme_notes:
+                # Cap notes to keep prompt size reasonable
+                notes_text = theme_notes[:5000]
+                if len(theme_notes) > 5000:
+                    notes_text += "\n[... truncated ...]"
+                artifact_sections.append(f"## Theme Notes\n```\n{notes_text}\n```")
+            if theme_charts:
+                artifact_sections.append(
+                    "## Available Charts\n" + "\n".join(f"- `{c}`" for c in theme_charts)
+                )
+            if theme_tables:
+                artifact_sections.append(
+                    "## Available Tables\n" + "\n".join(f"- `{t}`" for t in theme_tables)
+                )
+
+            # Provide data access for verification
+            proj = cfg.project
+            tables_list = ", ".join(f"`{proj.full_schema}.{t}`" for t in sorted(available_tables))
+
+            prompt = (
+                f"# Retrospective Finding Recovery — Theme {theme.sequence}: "
+                f"{theme.title}\n\n"
+                f"## Context\n"
+                f"This theme was analyzed previously but NO structured findings "
+                f"were recorded via `save_finding`. Your job is to review the "
+                f"existing artifacts below and create findings retroactively.\n\n"
+                f"**Theme question:** {theme.question}\n"
+                f"**Expected punchline:** {theme.punchline}\n\n"
+                f"{''.join(artifact_sections)}\n\n"
+                f"## Available Tables\n{tables_list}\n\n"
+                f"## Instructions\n"
+                f"1. Read the notes and chart metadata above\n"
+                f"2. If needed, run quick SQL queries via `execute_sql` to "
+                f"verify key numbers (p-values, effect sizes, etc.)\n"
+                f"3. Call `save_finding` for EACH significant insight. Include:\n"
+                f"   - `research_question_id`: '{theme.id}'\n"
+                f"   - Specific quantitative evidence\n"
+                f"   - Appropriate significance rating\n"
+                f"4. You MUST call `save_finding` at least once.\n"
+            )
+
+            # Reset memory and run the recovery phase
+            findings_before = len(self._finding_tool.findings)
+            self._memory.reset_for_new_source()
+            self._consecutive_errors = 0
+            self._missing_param_tracker.clear()
+
+            self._run_phase(
+                prompt=self._inject_instructions(prompt),
+                max_turns=15,
+            )
+
+            recovered = len(self._finding_tool.findings) - findings_before
+            if recovered > 0:
+                self._display.success(
+                    f"Recovered {recovered} finding(s) for Theme {theme.sequence}: {theme.title}"
+                )
+            else:
+                self._display.warning(
+                    f"Theme {theme.sequence} ({theme.title}): "
+                    f"retrospective recovery produced 0 findings"
+                )
+
+        # Export after retrospective recovery so nothing is lost
+        if self._finding_tool.findings:
+            try:
+                findings_path = self._finding_tool.export_findings_json()
+                self._display.step(f"Findings checkpoint after retrospective: {findings_path}")
+            except Exception as e:
+                self._display.warning(f"Could not checkpoint findings: {e}")
 
     # ------------------------------------------------------------------
     # State persistence helpers

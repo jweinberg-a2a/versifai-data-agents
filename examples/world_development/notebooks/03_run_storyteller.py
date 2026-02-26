@@ -9,10 +9,14 @@
 # MAGIC into a narrative report: *"The Shape of Global Progress"*
 # MAGIC
 # MAGIC ## Prerequisites
-# MAGIC 1. Run `01_run_engineer.py` first — silver tables must exist
+# MAGIC 1. Run `01_run_engineer.py` first — Delta tables must exist
 # MAGIC 2. Run `02_run_scientist.py` first — findings, charts, and tables must exist
 # MAGIC 3. Install versifai: `pip install versifai` (or from source)
-# MAGIC 4. Set your LLM API key in the cluster environment variables
+# MAGIC 4. Create a `.env` file with your LLM API key (see Setup cell below)
+# MAGIC
+# MAGIC ## Before You Start
+# MAGIC 1. **Update `CATALOG` and `SCHEMA`** in `storyteller_config.py`
+# MAGIC 2. **Update the `load_dotenv()` path** in the Setup cell to point to your `.env` file
 # MAGIC
 # MAGIC ## What This Notebook Does
 # MAGIC The agent executes 5 phases:
@@ -24,7 +28,7 @@
 
 # COMMAND ----------
 
-# MAGIC %pip install versifai --quiet
+# MAGIC %pip install versifai python-dotenv --quiet
 
 # COMMAND ----------
 
@@ -37,11 +41,17 @@ dbutils.library.restartPython()
 import logging
 import os
 
+from dotenv import load_dotenv
+
+# Load your .env file — update this path to match your workspace location
+# Example: /Workspace/Users/you@company.com/versifai-data-agents/.env
+load_dotenv("/Workspace/path/to/your/.env")
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("world_development")
 
 assert os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("OPENAI_API_KEY"), (
-    "Set ANTHROPIC_API_KEY or OPENAI_API_KEY in your cluster env vars"
+    "Set ANTHROPIC_API_KEY or OPENAI_API_KEY in your .env file"
 )
 
 # COMMAND ----------
@@ -51,12 +61,6 @@ assert os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("OPENAI_API_KEY"), 
 from examples.world_development.storyteller_config import WORLD_DEVELOPMENT_STORY
 
 cfg = WORLD_DEVELOPMENT_STORY
-
-# ── Optional: Override for your environment ──────────────────────────
-# cfg.project.catalog = "your_catalog"
-# cfg.project.schema = "your_schema"
-# cfg.research_results_path = "/Volumes/your_catalog/your_schema/results"
-# cfg.narrative_output_path = "/Volumes/your_catalog/your_schema/narrative"
 
 logger.info("Narrative: %s", cfg.name)
 logger.info("Sections: %d", len(cfg.narrative_sections))

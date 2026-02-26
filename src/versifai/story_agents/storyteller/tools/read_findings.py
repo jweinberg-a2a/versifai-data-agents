@@ -14,6 +14,35 @@ from typing import Any
 from versifai.core.tools.base import BaseTool, ToolResult
 
 
+def _compact_finding(finding: dict) -> dict:
+    """Return a compacted copy of a finding dict for bulk operations.
+
+    Preserves the fields the StoryTeller needs (title, stats, evidence summary)
+    while truncating verbose fields (full SQL, long evidence strings) that
+    consume tokens without adding narrative value.
+    """
+    compact = dict(finding)  # shallow copy
+
+    # Truncate long evidence strings to first 3, each max 200 chars
+    if "evidence_strings" in compact and isinstance(compact["evidence_strings"], list):
+        compact["evidence_strings"] = [
+            s[:200] + "..." if len(s) > 200 else s for s in compact["evidence_strings"][:3]
+        ]
+
+    # Truncate description
+    desc = compact.get("description", "")
+    if isinstance(desc, str) and len(desc) > 500:
+        compact["description"] = desc[:500] + "..."
+
+    # Truncate SQL / data queries
+    for key in ("sql_query", "data_query", "query"):
+        val = compact.get(key, "")
+        if isinstance(val, str) and len(val) > 300:
+            compact[key] = val[:300] + "..."
+
+    return compact
+
+
 class ReadFindingsTool(BaseTool):
     """Load and query structured findings from the DataScientist."""
 
@@ -114,7 +143,11 @@ class ReadFindingsTool(BaseTool):
 
         elif operation == "by_theme":
             theme_id = kwargs.get("theme_id", "")
-            matches = [f for f in findings if f.get("research_question_id", "") == theme_id]
+            matches = [
+                _compact_finding(f)
+                for f in findings
+                if f.get("research_question_id", "") == theme_id
+            ]
             return ToolResult(
                 success=True,
                 data={"theme": theme_id, "count": len(matches), "findings": matches},
@@ -123,7 +156,9 @@ class ReadFindingsTool(BaseTool):
 
         elif operation == "high_significance":
             high = [
-                f for f in findings if f.get("significance", "").lower() in ("high", "critical")
+                _compact_finding(f)
+                for f in findings
+                if f.get("significance", "").lower() in ("high", "critical")
             ]
             return ToolResult(
                 success=True,
@@ -139,7 +174,7 @@ class ReadFindingsTool(BaseTool):
             for f in findings:
                 text = json.dumps(f).lower()
                 if query in text:
-                    matches.append(f)
+                    matches.append(_compact_finding(f))
             return ToolResult(
                 success=True,
                 data={"query": query, "count": len(matches), "findings": matches},

@@ -131,6 +131,7 @@ class BaseAgent:
 
         while turns < max_turns:
             turns += 1
+            context_recovered = False
             self._display.step(f"Turn {turns}/{max_turns}")
 
             # Periodic progress dump so operators can tail the file
@@ -144,6 +145,17 @@ class BaseAgent:
                     tools=self._get_tool_definitions(),
                 )
             except Exception as e:
+                err_str = str(e).lower()
+                is_context_overflow = any(
+                    kw in err_str for kw in ("context window", "prompt is too long", "tokens >")
+                )
+                if is_context_overflow and not context_recovered:
+                    self._display.warning(
+                        "Context window exceeded — recalibrating inputs and retrying..."
+                    )
+                    self._memory.recalibrate()
+                    context_recovered = True
+                    continue  # retry this turn
                 self._display.error(f"LLM call failed: {e}")
                 break
 
@@ -328,7 +340,7 @@ class BaseAgent:
     # ------------------------------------------------------------------
 
     @staticmethod
-    def _read_chart_image(image_path: str, max_width: int = 800) -> str:
+    def _read_chart_image(image_path: str, max_width: int = 400) -> str:
         """Read a chart PNG and return a resized base64 string for Claude vision.
 
         Resizes to max_width to keep token costs reasonable. Returns empty

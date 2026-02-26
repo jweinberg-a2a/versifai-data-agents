@@ -149,6 +149,11 @@ class StorytellerConfig:
     editor_max_turns_per_section: int = 40
     editor_max_turns_overview: int = 30
 
+    # ── Chart settings ───────────────────────────────────────────
+    chart_style: str = "seaborn-v0_8-whitegrid"
+    chart_dpi: int = 150
+    color_palette: str = "viridis"
+
     # ── Run isolation ─────────────────────────────────────────────
     run_id: str = ""  # Empty = write directly to narrative_output_path (backward compat)
 

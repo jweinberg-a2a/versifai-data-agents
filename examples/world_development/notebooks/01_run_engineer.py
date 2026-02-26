@@ -12,7 +12,11 @@
 # MAGIC ## Prerequisites
 # MAGIC 1. Run `00_download_data.py` first — 6 ZIP files must be in the Volume
 # MAGIC 2. Install versifai: `pip install versifai` (or from source)
-# MAGIC 3. Set your LLM API key in the cluster environment variables
+# MAGIC 3. Create a `.env` file with your LLM API key (see Setup cell below)
+# MAGIC
+# MAGIC ## Before You Start
+# MAGIC 1. **Update `CATALOG` and `SCHEMA`** in `engineer_config.py` to match your environment
+# MAGIC 2. **Update the `load_dotenv()` path** in the Setup cell to point to your `.env` file
 # MAGIC
 # MAGIC ## What This Notebook Does
 # MAGIC 1. **Discovery** — Scans the Volume for ZIP archives
@@ -24,7 +28,7 @@
 
 # COMMAND ----------
 
-# MAGIC %pip install versifai --quiet
+# MAGIC %pip install versifai python-dotenv --quiet
 
 # COMMAND ----------
 
@@ -37,11 +41,17 @@ dbutils.library.restartPython()
 import logging
 import os
 
+from dotenv import load_dotenv
+
+# Load your .env file — update this path to match your workspace location
+# Example: /Workspace/Users/you@company.com/versifai-data-agents/.env
+load_dotenv("/Workspace/path/to/your/.env")
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("world_development")
 
 assert os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("OPENAI_API_KEY"), (
-    "Set ANTHROPIC_API_KEY or OPENAI_API_KEY in your cluster env vars"
+    "Set ANTHROPIC_API_KEY or OPENAI_API_KEY in your .env file"
 )
 
 # COMMAND ----------
@@ -58,11 +68,6 @@ assert os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("OPENAI_API_KEY"), 
 from examples.world_development.engineer_config import WORLD_DEVELOPMENT
 
 cfg = WORLD_DEVELOPMENT
-
-# ── Optional: Override config fields for your environment ────────────
-# cfg.catalog = "your_catalog"
-# cfg.schema = "your_schema"
-# cfg.volume_path = "/Volumes/your_catalog/your_schema/your_volume"
 
 logger.info("Project: %s", cfg.name)
 logger.info("Target: %s.%s", cfg.catalog, cfg.schema)

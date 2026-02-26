@@ -10,9 +10,13 @@
 # MAGIC education, healthcare spending, CO2 emissions, and population.
 # MAGIC
 # MAGIC ## Prerequisites
-# MAGIC 1. Run `01_run_engineer.py` first — the silver tables must exist
+# MAGIC 1. Run `01_run_engineer.py` first — the Delta tables must exist
 # MAGIC 2. Install versifai: `pip install versifai` (or from source)
-# MAGIC 3. Set your LLM API key in the cluster environment variables
+# MAGIC 3. Create a `.env` file with your LLM API key (see Setup cell below)
+# MAGIC
+# MAGIC ## Before You Start
+# MAGIC 1. **Update `CATALOG` and `SCHEMA`** in `research_configs/global_development.py`
+# MAGIC 2. **Update the `load_dotenv()` path** in the Setup cell to point to your `.env` file
 # MAGIC
 # MAGIC ## What This Notebook Does
 # MAGIC The agent executes 4 phases across 6 analysis themes:
@@ -29,7 +33,7 @@
 
 # COMMAND ----------
 
-# MAGIC %pip install versifai --quiet
+# MAGIC %pip install versifai python-dotenv --quiet
 
 # COMMAND ----------
 
@@ -42,11 +46,17 @@ dbutils.library.restartPython()
 import logging
 import os
 
+from dotenv import load_dotenv
+
+# Load your .env file — update this path to match your workspace location
+# Example: /Workspace/Users/you@company.com/versifai-data-agents/.env
+load_dotenv("/Workspace/path/to/your/.env")
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("world_development")
 
 assert os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("OPENAI_API_KEY"), (
-    "Set ANTHROPIC_API_KEY or OPENAI_API_KEY in your cluster env vars"
+    "Set ANTHROPIC_API_KEY or OPENAI_API_KEY in your .env file"
 )
 
 # COMMAND ----------
@@ -58,11 +68,6 @@ from examples.world_development.research_configs.global_development import (
 )
 
 cfg = GLOBAL_DEVELOPMENT
-
-# ── Optional: Override for your environment ──────────────────────────
-# cfg.project.catalog = "your_catalog"
-# cfg.project.schema = "your_schema"
-# cfg.results_volume_path = "/Volumes/your_catalog/your_schema/results"
 
 logger.info("Research: %s", cfg.name)
 logger.info("Thesis: %s", cfg.thesis[:100] + "...")

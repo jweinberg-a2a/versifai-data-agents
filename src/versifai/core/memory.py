@@ -15,6 +15,18 @@ from datetime import datetime
 
 logger = logging.getLogger("agent.memory")
 
+
+def _strip_images_from_blocks(blocks: list) -> list:
+    """Replace image content blocks with a lightweight text placeholder."""
+    result = []
+    for b in blocks:
+        if isinstance(b, dict) and b.get("type") == "image":
+            result.append({"type": "text", "text": "[image removed to save context]"})
+        else:
+            result.append(b)
+    return result
+
+
 # Approximate token budget — leave room for system prompt + tool definitions
 SUMMARY_TRIGGER = 30  # Summarize old messages when we exceed this count
 KEEP_RECENT = 12  # Messages to keep after summarization
@@ -173,13 +185,25 @@ class AgentMemory:
         the detailed JSON is no longer needed — a short summary suffices.
         This replaces old tool_result content with a truncated version,
         keeping tokens under control without losing critical context.
+
+        Also strips base64 images from old tool results — images are the
+        single biggest token sink (15K-60K+ tokens each) and the agent has
+        already seen and reasoned about them.
         """
         if len(self._messages) <= TOOL_RESULT_COMPRESS_AGE:
             return
 
         cutoff = len(self._messages) - TOOL_RESULT_COMPRESS_AGE
+        self._compress_tool_results_in_range(0, cutoff)
 
-        for i in range(cutoff):
+    def _compress_tool_results_in_range(
+        self, start: int, end: int, char_threshold: int = 500
+    ) -> None:
+        """Compress tool results in the given message index range.
+
+        Handles both string content (truncation) and list content (image stripping).
+        """
+        for i in range(start, min(end, len(self._messages))):
             msg = self._messages[i]
             if msg.get("role") != "user":
                 continue
@@ -193,22 +217,145 @@ class AgentMemory:
                 if block.get("type") != "tool_result":
                     continue
 
-                result_str = block.get("content", "")
-                if not isinstance(result_str, str):
+                result_content = block.get("content", "")
+
+                # String content — truncate large results
+                if isinstance(result_content, str):
+                    if len(result_content) <= char_threshold:
+                        continue
+                    summary_idx = result_content.find("SUMMARY (complete):")
+                    if summary_idx >= 0:
+                        compressed = result_content[:300] + "\n...\n" + result_content[summary_idx:]
+                    else:
+                        compressed = result_content[:300] + "\n[... compressed — old result ...]"
+                    block["content"] = compressed
+
+                # List content (text + image blocks) — strip images
+                elif isinstance(result_content, list):
+                    block["content"] = _strip_images_from_blocks(result_content)
+
+    # ------------------------------------------------------------------
+    # Emergency context reduction — called on ContextWindowExceeded
+    # ------------------------------------------------------------------
+
+    def strip_images(self) -> int:
+        """Remove ALL base64 images from conversation history.
+
+        Returns the number of images stripped. Images are replaced with a
+        text placeholder so the agent knows a chart was viewed.
+        """
+        count = 0
+        for msg in self._messages:
+            if msg.get("role") != "user":
+                continue
+            content = msg.get("content")
+            if not isinstance(content, list):
+                continue
+            for block in content:
+                if not isinstance(block, dict) or block.get("type") != "tool_result":
                     continue
+                result_content = block.get("content")
+                if isinstance(result_content, list):
+                    new_blocks = _strip_images_from_blocks(result_content)
+                    if len(new_blocks) != len(result_content):
+                        count += len(result_content) - len(new_blocks)
+                    block["content"] = new_blocks
+        return count
 
-                # Only compress large results (>500 chars)
-                if len(result_str) <= 500:
-                    continue
+    def compress_all_tool_results(self) -> None:
+        """Force-compress ALL tool results regardless of age.
 
-                # Keep the first 300 chars + any SUMMARY section
-                summary_idx = result_str.find("SUMMARY (complete):")
-                if summary_idx >= 0:
-                    compressed = result_str[:300] + "\n...\n" + result_str[summary_idx:]
-                else:
-                    compressed = result_str[:300] + "\n[... compressed — old result ...]"
+        Uses a lower threshold (300 chars) than the normal compression.
+        Called during emergency recalibration after context window overflow.
+        """
+        self._compress_tool_results_in_range(0, len(self._messages), char_threshold=300)
 
-                block["content"] = compressed
+    def force_summarize(self) -> None:
+        """Summarize the conversation regardless of message count.
+
+        Used during emergency recalibration to reduce context size.
+        """
+        if len(self._messages) <= 3:
+            return
+        # Temporarily lower the trigger and run summarization
+        original_trigger = SUMMARY_TRIGGER
+        try:
+            self._force_summarize_impl()
+        finally:
+            # SUMMARY_TRIGGER is a module constant, not mutated — we just
+            # call the summarization logic directly instead
+            _ = original_trigger
+
+    def _force_summarize_impl(self) -> None:
+        """Internal: run summarization unconditionally."""
+        target_split = max(1, len(self._messages) - KEEP_RECENT)
+        split_idx = self._find_safe_split_index(target_split)
+        if split_idx <= 1:
+            return
+
+        old_messages = self._messages[1:split_idx]
+        recent_msgs = self._messages[split_idx:]
+        if not old_messages:
+            return
+
+        summary_parts = ["[CONVERSATION HISTORY SUMMARY — compressed to reduce context]"]
+        for msg in old_messages:
+            role = msg["role"]
+            content = msg.get("content", "")
+            if isinstance(content, str):
+                summary_parts.append(f"{role}: {content[:150]}")
+            elif isinstance(content, list):
+                for block in content:
+                    if isinstance(block, dict):
+                        if block.get("type") == "text":
+                            summary_parts.append(f"{role}: {block['text'][:150]}")
+                        elif block.get("type") == "tool_use":
+                            summary_parts.append(f"{role}: called '{block['name']}'")
+                        elif block.get("type") == "tool_result":
+                            content_str = str(block.get("content", ""))[:80]
+                            summary_parts.append(f"tool_result: {content_str}")
+
+        summary_text = "\n".join(summary_parts[:40])
+
+        first_msg = self._messages[0]
+        self._messages = [
+            first_msg,
+            {"role": "user", "content": summary_text},
+            {
+                "role": "assistant",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": "Understood. Context compressed. Continuing.",
+                    }
+                ],
+            },
+        ] + recent_msgs
+
+        logger.info(
+            f"Force-summarized: compressed {len(old_messages)} messages, "
+            f"history now has {len(self._messages)} messages."
+        )
+
+    def recalibrate(self) -> None:
+        """Emergency context reduction pipeline.
+
+        Called when the LLM rejects a request due to context window overflow.
+        Applies three progressive reduction steps:
+          1. Strip all base64 images (biggest per-item savings)
+          2. Compress all tool results aggressively (300 char threshold)
+          3. Force-summarize old conversation turns
+        """
+        images_stripped = self.strip_images()
+        logger.info(f"Recalibrate step 1: stripped {images_stripped} images from memory.")
+
+        self.compress_all_tool_results()
+        logger.info("Recalibrate step 2: compressed all tool results.")
+
+        self.force_summarize()
+        logger.info(
+            f"Recalibrate step 3: force-summarized. History now has {len(self._messages)} messages."
+        )
 
     # ------------------------------------------------------------------
     # Summarization

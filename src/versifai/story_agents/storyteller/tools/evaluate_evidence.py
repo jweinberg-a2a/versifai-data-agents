@@ -134,7 +134,7 @@ class EvaluateEvidenceTool(BaseTool):
             "p_value": p_value,
             "usable_as_lead": tier in ("DEFINITIVE", "STRONG"),
             "usable_as_support": tier in ("DEFINITIVE", "STRONG", "SUGGESTIVE"),
-            "finding": finding,
+            "finding_title": title,
         }
 
     def _execute(self, **kwargs: Any) -> ToolResult:
