@@ -1,9 +1,8 @@
 /* Open the GitHub repo link (top-right header icon) in a new tab */
-document.addEventListener("click", function (e) {
-  var source = e.target.closest(".md-source");
+document.addEventListener("DOMContentLoaded", function () {
+  var source = document.querySelector(".md-header .md-source");
   if (source) {
-    e.preventDefault();
-    e.stopPropagation();
-    window.open(source.href, "_blank", "noopener,noreferrer");
+    source.setAttribute("target", "_blank");
+    source.setAttribute("rel", "noopener noreferrer");
   }
 });
