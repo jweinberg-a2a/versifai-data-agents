@@ -26,32 +26,32 @@ the last one left off.
 flowchart TD
     subgraph stage1["Stage 1 — Data Engineer"]
         direction TB
-        RAW[/"**Raw Data Volume**\n\nnoaa_weather/ → 3 CSVs\nduck_observations/ → ZIP archive\nice_cream/ → Excel\nforecast_accuracy/ → CSV"/]
-        RAW --> DISCOVER["**Discover & Profile**\n\nexplore_volume → map files\nread_file_header → peek at columns\nprofile_data → stats, nulls, types"]
-        DISCOVER --> DESIGN["**Design & Load**\n\ndesign_schema → CREATE TABLE SQL\ntransform_and_load → map columns, cast types\nwrite_to_catalog → Delta tables"]
-        DESIGN --> VALIDATE["**Validate**\n\nAnalyst agent runs SQL checks\n→ join key integrity\n→ null rates, ranges\n→ cross-table joinability"]
+        RAW[/"**Raw Data Volume**<br><br>noaa_weather/ → 3 CSVs<br>duck_observations/ → ZIP archive<br>ice_cream/ → Excel<br>forecast_accuracy/ → CSV"/]
+        RAW --> DISCOVER["**Discover & Profile**<br><br>explore_volume → map files<br>read_file_header → peek at columns<br>profile_data → stats, nulls, types"]
+        DISCOVER --> DESIGN["**Design & Load**<br><br>design_schema → CREATE TABLE SQL<br>transform_and_load → map columns, cast types<br>write_to_catalog → Delta tables"]
+        DESIGN --> VALIDATE["**Validate**<br><br>Analyst agent runs SQL checks<br>→ join key integrity<br>→ null rates, ranges<br>→ cross-table joinability"]
     end
 
     subgraph tables["Unity Catalog"]
-        DT[("**4 Delta Tables**\n\nsilver_daily_weather\nsilver_quack_frequency\nsilver_feather_fluffing\nsilver_ice_cream_sales")]
+        DT[("**4 Delta Tables**<br><br>silver_daily_weather<br>silver_quack_frequency<br>silver_feather_fluffing<br>silver_ice_cream_sales")]
     end
 
     subgraph stage2["Stage 2 — Data Scientist"]
         direction TB
-        JOIN["**Build Silver Datasets**\n\nexecute_sql → JOIN weather +\nduck + ice cream tables\nvalidate_silver → quality checks"]
-        JOIN --> ANALYZE["**7 Research Themes**\n\n0. The Quack Census\n1. Quack Before the Storm\n2. The Fluff Factor\n3. The Ice Cream Confounder\n4. V-Formation Tornado Warning\n5. Duck vs Doppler\n6. Grand Unified Duck Theory"]
-        ANALYZE --> TOOLS["**Per Theme**\n\nstatistical_analysis → correlations, tests\nfit_model → regression, classification\ncheck_confounders → Simpson's Paradox\ncreate_visualization → charts\nsave_finding → structured evidence"]
+        JOIN["**Build Silver Datasets**<br><br>execute_sql → JOIN weather +<br>duck + ice cream tables<br>validate_silver → quality checks"]
+        JOIN --> ANALYZE["**7 Research Themes**<br><br>0. The Quack Census<br>1. Quack Before the Storm<br>2. The Fluff Factor<br>3. The Ice Cream Confounder<br>4. V-Formation Tornado Warning<br>5. Duck vs Doppler<br>6. Grand Unified Duck Theory"]
+        ANALYZE --> TOOLS["**Per Theme**<br><br>statistical_analysis → correlations, tests<br>fit_model → regression, classification<br>check_confounders → Simpson's Paradox<br>create_visualization → charts<br>save_finding → structured evidence"]
     end
 
     subgraph outputs["Research Outputs"]
-        FO[/"**findings.json** — 14 findings\n**charts/** — 9 visualizations\n**tables/** — 6 CSV summaries\n**notes/** — per-theme reasoning"/]
+        FO[/"**findings.json** — 14 findings<br>**charts/** — 9 visualizations<br>**tables/** — 6 CSV summaries<br>**notes/** — per-theme reasoning"/]
     end
 
     subgraph stage3["Stage 3 — StoryTeller"]
         direction TB
-        READ["**Inventory & Evaluate**\n\nread_findings → load all findings\nevaluate_evidence → score strength\ncurate → rank for each section"]
-        READ --> WRITE["**Write 8 Sections**\n\n1. Abstract\n2. The Quack Census\n3. Quack Before the Storm\n4. The Fluff Factor\n5. Duck vs Doppler Showdown\n6. Grand Unified Duck Theory\n7. Limitations\n8. Conclusions"]
-        WRITE --> FINISH["**Finalize**\n\nCoherence pass → fix transitions\ncite_source → bibliography\nassemble → table of contents\n→ duck_weather_report.md"]
+        READ["**Inventory & Evaluate**<br><br>read_findings → load all findings<br>evaluate_evidence → score strength<br>curate → rank for each section"]
+        READ --> WRITE["**Write 8 Sections**<br><br>1. Abstract<br>2. The Quack Census<br>3. Quack Before the Storm<br>4. The Fluff Factor<br>5. Duck vs Doppler Showdown<br>6. Grand Unified Duck Theory<br>7. Limitations<br>8. Conclusions"]
+        WRITE --> FINISH["**Finalize**<br><br>Coherence pass → fix transitions<br>cite_source → bibliography<br>assemble → table of contents<br>→ duck_weather_report.md"]
     end
 
     VALIDATE --> DT
@@ -371,9 +371,9 @@ style = StyleGuide(
         "that happens to be about ducks."
     ),
     anti_patterns=(
-        "- NO: Exclamation marks in scientific claims\n"
-        "- NO: 'Interestingly' or 'Surprisingly'\n"
-        "- NO: Hedging on clearly significant results\n"
+        "- NO: Exclamation marks in scientific claims<br>"
+        "- NO: 'Interestingly' or 'Surprisingly'<br>"
+        "- NO: Hedging on clearly significant results<br>"
     ),
 )
 ```
@@ -553,24 +553,24 @@ agent discovers them and turns each source into a clean Delta table.
 flowchart LR
     subgraph volume["Databricks Volume: /Volumes/.../raw_data/"]
         direction TB
-        F1["noaa_weather/\n├── weather_2020.csv\n├── weather_2021.csv\n└── weather_2022.csv"]
-        F2["duck_observations/\n└── duck_obs.zip\n    ├── quack_frequency.csv\n    └── feather_index.csv"]
-        F3["ice_cream/\n└── ice_cream_sales.xlsx"]
-        F4["forecast_accuracy/\n└── nws_forecasts.csv"]
+        F1["noaa_weather/<br>├── weather_2020.csv<br>├── weather_2021.csv<br>└── weather_2022.csv"]
+        F2["duck_observations/<br>└── duck_obs.zip<br>    ├── quack_frequency.csv<br>    └── feather_index.csv"]
+        F3["ice_cream/<br>└── ice_cream_sales.xlsx"]
+        F4["forecast_accuracy/<br>└── nws_forecasts.csv"]
     end
 
     subgraph engineer["Data Engineer Agent"]
         direction TB
-        PROFILE["Profile & Design\n\nReads headers, detects types,\ndesigns CREATE TABLE SQL\nfor each source"]
-        TRANSFORM["Transform & Load\n\nRenames columns to snake_case,\ncasts types, adds metadata,\nbatch-processes multi-file sources"]
+        PROFILE["Profile & Design<br><br>Reads headers, detects types,<br>designs CREATE TABLE SQL<br>for each source"]
+        TRANSFORM["Transform & Load<br><br>Renames columns to snake_case,<br>casts types, adds metadata,<br>batch-processes multi-file sources"]
     end
 
     subgraph catalog["Unity Catalog: my_catalog.silly_weather"]
         direction TB
-        T1["**silver_daily_weather**\n\nstation_id · observation_date\ntemp_max_c · temp_min_c\nprecip_mm · snow_depth_mm\nwind_speed_ms\nsource_file_name · load_timestamp\n\n*1.1M rows · 3 years*"]
-        T2["**silver_quack_frequency**\n\nstation_id · observation_date\nhour_of_day · quack_count\nambient_noise_db\nsource_file_name · load_timestamp\n\n*890K rows*"]
-        T3["**silver_feather_fluffing**\n\nstation_id · observation_date\nfluff_intensity · humidity_pct\nsource_file_name · load_timestamp\n\n*365K rows*"]
-        T4["**silver_ice_cream_sales**\n\nstation_id · month · year\nunits_sold · revenue_usd\navg_temp_c\nsource_file_name · load_timestamp\n\n*18K rows*"]
+        T1["**silver_daily_weather**<br><br>station_id · observation_date<br>temp_max_c · temp_min_c<br>precip_mm · snow_depth_mm<br>wind_speed_ms<br>source_file_name · load_timestamp<br><br>*1.1M rows · 3 years*"]
+        T2["**silver_quack_frequency**<br><br>station_id · observation_date<br>hour_of_day · quack_count<br>ambient_noise_db<br>source_file_name · load_timestamp<br><br>*890K rows*"]
+        T3["**silver_feather_fluffing**<br><br>station_id · observation_date<br>fluff_intensity · humidity_pct<br>source_file_name · load_timestamp<br><br>*365K rows*"]
+        T4["**silver_ice_cream_sales**<br><br>station_id · month · year<br>units_sold · revenue_usd<br>avg_temp_c<br>source_file_name · load_timestamp<br><br>*18K rows*"]
     end
 
     F1 --> PROFILE
@@ -610,17 +610,17 @@ flowchart TD
     end
 
     subgraph silver_construction["Silver Dataset Construction (SQL JOINs)"]
-        J1["**silver_weather_duck_daily**\n\nJOIN weather + quacks + fluffing\nON station_id + observation_date\n\n→ 365K rows, 15 columns\n→ Weather + duck behavior per day"]
-        J2["**silver_duck_forecast_comparison**\n\nJOIN duck signals + NWS forecasts\nwith next-day actual weather\n\n→ 365K rows\n→ Who predicted better?"]
-        J3["**silver_ice_cream_weather**\n\nJOIN ice cream sales + weather\n+ duck activity (monthly agg)\n\n→ 18K rows\n→ Confounder analysis"]
+        J1["**silver_weather_duck_daily**<br><br>JOIN weather + quacks + fluffing<br>ON station_id + observation_date<br><br>→ 365K rows, 15 columns<br>→ Weather + duck behavior per day"]
+        J2["**silver_duck_forecast_comparison**<br><br>JOIN duck signals + NWS forecasts<br>with next-day actual weather<br><br>→ 365K rows<br>→ Who predicted better?"]
+        J3["**silver_ice_cream_weather**<br><br>JOIN ice cream sales + weather<br>+ duck activity (monthly agg)<br><br>→ 18K rows<br>→ Confounder analysis"]
     end
 
     subgraph analysis["Theme Analysis (7 themes)"]
         direction TB
-        TH0["Theme 0: **Quack Census**\n*describe* → summary stats\n*distribution* → normality tests\n→ 2 findings, 1 chart"]
-        TH1["Theme 1: **Quack Before the Storm**\n*correlation* → r=0.42, p<0.001\n*hypothesis_test* → Mann-Whitney\n→ 3 findings, 2 charts"]
-        TH5["Theme 5: **Duck vs Doppler**\n*fit_model* → logistic regression\n*cross_validate* → F1 comparison\n→ 2 findings, 2 charts"]
-        TH6["Theme 6: **Grand Unified Duck Theory**\n*fit_model* → gradient boosting\n*check_confounders* → Simpson's check\n→ 2 findings, 1 chart"]
+        TH0["Theme 0: **Quack Census**<br>*describe* → summary stats<br>*distribution* → normality tests<br>→ 2 findings, 1 chart"]
+        TH1["Theme 1: **Quack Before the Storm**<br>*correlation* → r=0.42, p<0.001<br>*hypothesis_test* → Mann-Whitney<br>→ 3 findings, 2 charts"]
+        TH5["Theme 5: **Duck vs Doppler**<br>*fit_model* → logistic regression<br>*cross_validate* → F1 comparison<br>→ 2 findings, 2 charts"]
+        TH6["Theme 6: **Grand Unified Duck Theory**<br>*fit_model* → gradient boosting<br>*check_confounders* → Simpson's check<br>→ 2 findings, 1 chart"]
     end
 
     T1 --> J1

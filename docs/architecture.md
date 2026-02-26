@@ -13,31 +13,31 @@ Three agents run in sequence. Each one reads from what the previous agent produc
 ```mermaid
 flowchart LR
     subgraph inputs["Your Data"]
-        RAW[/"CSVs, Excel, ZIP,\nParquet, SAS"/]
+        RAW[/"CSVs, Excel, ZIP,<br>Parquet, SAS"/]
     end
 
     subgraph engineer["Stage 1"]
-        DE["**Data Engineer**\n\nDiscovers files,\nprofiles columns,\ndesigns schemas,\ntransforms & loads"]
+        DE["**Data Engineer**<br><br>Discovers files,<br>profiles columns,<br>designs schemas,<br>transforms & loads"]
     end
 
     subgraph catalog["Unity Catalog"]
-        DT[("Delta Tables\n\nsilver_weather\nsilver_quacks\nsilver_ice_cream")]
+        DT[("Delta Tables<br><br>silver_weather<br>silver_quacks<br>silver_ice_cream")]
     end
 
     subgraph scientist["Stage 2"]
-        DS["**Data Scientist**\n\nBuilds silver datasets,\nruns statistics,\nfits models,\nsaves findings"]
+        DS["**Data Scientist**<br><br>Builds silver datasets,<br>runs statistics,<br>fits models,<br>saves findings"]
     end
 
     subgraph outputs["Research Outputs"]
-        FO[/"findings.json\ncharts/ (PNG)\ntables/ (CSV)\nnotes/ (MD)"/]
+        FO[/"findings.json<br>charts/ (PNG)<br>tables/ (CSV)<br>notes/ (MD)"/]
     end
 
     subgraph storyteller["Stage 3"]
-        ST["**StoryTeller**\n\nReads findings,\nevaluates evidence,\nwrites narrative,\ncites sources"]
+        ST["**StoryTeller**<br><br>Reads findings,<br>evaluates evidence,<br>writes narrative,<br>cites sources"]
     end
 
     subgraph report["Final Report"]
-        RPT[/"report.md\n\nMarkdown with TOC,\ncitations, chart refs,\nmethodology appendix"/]
+        RPT[/"report.md<br><br>Markdown with TOC,<br>citations, chart refs,<br>methodology appendix"/]
     end
 
     RAW --> DE
@@ -70,10 +70,10 @@ Every agent runs using the same execution pattern: **Reason → Act → Observe 
 
 ```mermaid
 flowchart TD
-    START([Agent receives prompt]) --> REASON["**Reason**\nLLM reads context and\ndecides what to do next"]
+    START([Agent receives prompt]) --> REASON["**Reason**<br>LLM reads context and<br>decides what to do next"]
     REASON --> TOOL{"Tool call?"}
-    TOOL -->|"Yes"| ACT["**Act**\nToolRegistry executes\nthe requested tool"]
-    ACT --> OBSERVE["**Observe**\nTool returns ToolResult\nstored in AgentMemory"]
+    TOOL -->|"Yes"| ACT["**Act**<br>ToolRegistry executes<br>the requested tool"]
+    ACT --> OBSERVE["**Observe**<br>Tool returns ToolResult<br>stored in AgentMemory"]
     OBSERVE --> REASON
 
     TOOL -->|"No — done"| END([Agent returns final answer])
@@ -91,10 +91,10 @@ Tools are how agents interact with the world. Every tool follows the same contra
 
 ```mermaid
 flowchart LR
-    LLM["LLM Agent\n\n*I need to profile\nthis CSV file*"] -->|"tool_use block\nname + parameters"| REG["ToolRegistry\n\nLooks up tool by name,\nvalidates params,\ncalls _execute()"]
-    REG -->|"calls"| TOOL["BaseTool\n\nprofile_data._execute(\n  file_path='weather.csv',\n  sample_size=500\n)"]
-    TOOL -->|"returns"| TR["ToolResult\n\nsuccess: true\ndata: {columns, stats}\nsummary: '12 cols profiled'"]
-    TR -->|"stored in"| MEM["AgentMemory\n\nConversation history\nfor next reasoning step"]
+    LLM["LLM Agent<br><br>*I need to profile<br>this CSV file*"] -->|"tool_use block<br>name + parameters"| REG["ToolRegistry<br><br>Looks up tool by name,<br>validates params,<br>calls _execute()"]
+    REG -->|"calls"| TOOL["BaseTool<br><br>profile_data._execute(<br>  file_path='weather.csv',<br>  sample_size=500<br>)"]
+    TOOL -->|"returns"| TR["ToolResult<br><br>success: true<br>data: {columns, stats}<br>summary: '12 cols profiled'"]
+    TR -->|"stored in"| MEM["AgentMemory<br><br>Conversation history<br>for next reasoning step"]
 ```
 
 Every tool:
@@ -206,12 +206,12 @@ flowchart TD
         CS["cite_source"]
     end
 
-    ENG["**Data Engineer**\n14 tools"] --- eng_tools
+    ENG["**Data Engineer**<br>14 tools"] --- eng_tools
     ENG --- shared
-    SCI["**Data Scientist**\n15 tools"] --- sci_tools
+    SCI["**Data Scientist**<br>15 tools"] --- sci_tools
     SCI --- shared
     SCI --- shared2
-    STORY["**StoryTeller**\n14 tools"] --- story_tools
+    STORY["**StoryTeller**<br>14 tools"] --- story_tools
     STORY --- shared
     STORY --- shared2
 
@@ -237,9 +237,9 @@ The Data Engineer is the first agent in the pipeline. It takes a directory of ra
 
 ```mermaid
 flowchart LR
-    P1["**Phase 1**\nDiscovery\n\nExplore volume,\nmap directories,\nfind documentation"]
-    P2["**Phase 2**\nProcessing\n\nPer source: profile,\ndesign schema,\ntransform, load"]
-    P3["**Phase 3**\nAcceptance\n\nAnalyst validates\nvia SQL queries,\nengineer fixes issues"]
+    P1["**Phase 1**<br>Discovery<br><br>Explore volume,<br>map directories,<br>find documentation"]
+    P2["**Phase 2**<br>Processing<br><br>Per source: profile,<br>design schema,<br>transform, load"]
+    P3["**Phase 3**<br>Acceptance<br><br>Analyst validates<br>via SQL queries,<br>engineer fixes issues"]
 
     P1 --> P2
     P2 --> P3
@@ -256,42 +256,42 @@ Imagine a Volume containing weather CSVs, a zipped duck observation archive, and
 ```mermaid
 flowchart TD
     subgraph phase1["Phase 1: Discovery"]
-        EV["**explore_volume**\n\nScans /Volumes/.../raw_data/\nFinds 4 subdirectories,\n12 files across formats"]
-        EV --> SFD["**scan_for_documentation**\n\nFinds README.md,\ndata_dictionary.csv\nin noaa_weather/"]
-        SFD --> RD["**read_documentation**\n\nExtracts field definitions:\nTMAX = max temp (tenths °C)\nPRCP = precipitation (tenths mm)"]
+        EV["**explore_volume**<br><br>Scans /Volumes/.../raw_data/<br>Finds 4 subdirectories,<br>12 files across formats"]
+        EV --> SFD["**scan_for_documentation**<br><br>Finds README.md,<br>data_dictionary.csv<br>in noaa_weather/"]
+        SFD --> RD["**read_documentation**<br><br>Extracts field definitions:<br>TMAX = max temp (tenths °C)<br>PRCP = precipitation (tenths mm)"]
     end
 
     subgraph phase2_src1["Phase 2: Source 1 — NOAA Weather (3 CSVs)"]
-        RFH1["**read_file_header**\n\nReads weather_2020.csv\n→ 14 columns, 365K rows\n→ STATION, DATE, TMAX, PRCP..."]
-        RFH1 --> PD1["**profile_data**\n\nNull rates, value ranges,\ndetects STATION as join key,\nDATE as date column"]
-        PD1 --> DS1["**design_schema**\n\nGenerates CREATE TABLE SQL:\nsilver_daily_weather\n→ station_id STRING,\n→ observation_date DATE,\n→ temp_max_c DOUBLE..."]
-        DS1 --> TL1["**transform_and_load**\n\nBatch mode: processes all 3 CSVs\nRenames columns, casts types,\nconverts tenths→degrees,\nadds metadata columns"]
-        TL1 --> WTC1["**write_to_catalog**\n\n→ catalog.schema.silver_daily_weather\n→ 1.1M rows written\n→ Verified via COUNT(*)"]
+        RFH1["**read_file_header**<br><br>Reads weather_2020.csv<br>→ 14 columns, 365K rows<br>→ STATION, DATE, TMAX, PRCP..."]
+        RFH1 --> PD1["**profile_data**<br><br>Null rates, value ranges,<br>detects STATION as join key,<br>DATE as date column"]
+        PD1 --> DS1["**design_schema**<br><br>Generates CREATE TABLE SQL:<br>silver_daily_weather<br>→ station_id STRING,<br>→ observation_date DATE,<br>→ temp_max_c DOUBLE..."]
+        DS1 --> TL1["**transform_and_load**<br><br>Batch mode: processes all 3 CSVs<br>Renames columns, casts types,<br>converts tenths→degrees,<br>adds metadata columns"]
+        TL1 --> WTC1["**write_to_catalog**<br><br>→ catalog.schema.silver_daily_weather<br>→ 1.1M rows written<br>→ Verified via COUNT(*)"]
     end
 
     subgraph phase2_src2["Phase 2: Source 2 — Duck Observations (ZIP)"]
-        EA["**extract_archive**\n\nUnpacks duck_obs.zip\n→ quack_frequency.csv\n→ feather_index.csv"]
-        EA --> RFH2["**read_file_header**\n\nPeeks at each extracted CSV"]
-        RFH2 --> PD2["**profile_data**\n\nProfiles both files independently"]
-        PD2 --> DS2["**design_schema** (×2)\n\nDesigns separate schemas:\nsilver_quack_frequency\nsilver_feather_fluffing"]
+        EA["**extract_archive**<br><br>Unpacks duck_obs.zip<br>→ quack_frequency.csv<br>→ feather_index.csv"]
+        EA --> RFH2["**read_file_header**<br><br>Peeks at each extracted CSV"]
+        RFH2 --> PD2["**profile_data**<br><br>Profiles both files independently"]
+        PD2 --> DS2["**design_schema** (×2)<br><br>Designs separate schemas:<br>silver_quack_frequency<br>silver_feather_fluffing"]
         DS2 --> TL2["**transform_and_load** (×2)"]
-        TL2 --> WTC2["**write_to_catalog** (×2)\n\n→ 2 Delta tables created"]
+        TL2 --> WTC2["**write_to_catalog** (×2)<br><br>→ 2 Delta tables created"]
     end
 
     subgraph phase2_src3["Phase 2: Source 3 — Ice Cream (Excel)"]
-        RFH3["**read_file_header**\n\nReads ice_cream_sales.xlsx\nsheet_name='Monthly Sales'"]
+        RFH3["**read_file_header**<br><br>Reads ice_cream_sales.xlsx<br>sheet_name='Monthly Sales'"]
         RFH3 --> PD3["**profile_data**"]
-        PD3 --> DS3["**design_schema**\n\n→ silver_ice_cream_sales"]
+        PD3 --> DS3["**design_schema**<br><br>→ silver_ice_cream_sales"]
         DS3 --> TL3["**transform_and_load**"]
         TL3 --> WTC3["**write_to_catalog**"]
     end
 
     subgraph phase3["Phase 3: Acceptance Loop"]
-        ANALYST["**Data Analyst Agent**\n\nexecute_sql: checks each table\n→ Schema quality\n→ Join key integrity\n→ Null rates & ranges\n→ Cross-table joinability"]
+        ANALYST["**Data Analyst Agent**<br><br>execute_sql: checks each table<br>→ Schema quality<br>→ Join key integrity<br>→ Null rates & ranges<br>→ Cross-table joinability"]
         ANALYST --> V{All accepted?}
         V -->|"Yes"| DONE["All 4 tables validated"]
-        V -->|"NEEDS_FIX"| FIX["Engineer receives fix list\ne.g. 'station_id has nulls\nin silver_quack_frequency'"]
-        FIX --> FIXACT["Engineer calls\nexecute_sql or\ntransform_and_load\nto fix issues"]
+        V -->|"NEEDS_FIX"| FIX["Engineer receives fix list<br>e.g. 'station_id has nulls<br>in silver_quack_frequency'"]
+        FIX --> FIXACT["Engineer calls<br>execute_sql or<br>transform_and_load<br>to fix issues"]
         FIXACT --> ANALYST
     end
 
@@ -335,10 +335,10 @@ The Data Scientist reads from the Delta tables the engineer created, builds anal
 
 ```mermaid
 flowchart LR
-    P1["**Phase 1**\nOrientation\n\nInventory tables,\nassess data quality,\nplan analysis"]
-    P2["**Phase 2**\nSilver Construction\n\nJoin source tables\ninto analytical\ndatasets"]
-    P3["**Phase 3**\nTheme Analysis\n\nRun each research\ntheme: stats, models,\ncharts, findings"]
-    P4["**Phase 4**\nSynthesis\n\nCross-validate,\ncompile summary,\nflag gaps"]
+    P1["**Phase 1**<br>Orientation<br><br>Inventory tables,<br>assess data quality,<br>plan analysis"]
+    P2["**Phase 2**<br>Silver Construction<br><br>Join source tables<br>into analytical<br>datasets"]
+    P3["**Phase 3**<br>Theme Analysis<br><br>Run each research<br>theme: stats, models,<br>charts, findings"]
+    P4["**Phase 4**<br>Synthesis<br><br>Cross-validate,<br>compile summary,<br>flag gaps"]
 
     P1 --> P2
     P2 --> P3
@@ -357,24 +357,24 @@ Here's what the agent does for a single research theme — "Does quack frequency
 ```mermaid
 flowchart TD
     subgraph orient["Phase 1: Orientation"]
-        LIST["**list_catalog_tables**\n\nFinds 4 tables:\nsilver_daily_weather\nsilver_quack_frequency\nsilver_feather_fluffing\nsilver_ice_cream_sales"]
-        LIST --> SQL1["**execute_sql**\n\nSELECT COUNT(*), MIN(date),\nMAX(date) FROM each table\n→ Assess completeness"]
+        LIST["**list_catalog_tables**<br><br>Finds 4 tables:<br>silver_daily_weather<br>silver_quack_frequency<br>silver_feather_fluffing<br>silver_ice_cream_sales"]
+        LIST --> SQL1["**execute_sql**<br><br>SELECT COUNT(*), MIN(date),<br>MAX(date) FROM each table<br>→ Assess completeness"]
     end
 
     subgraph silver["Phase 2: Silver Construction"]
-        SQL2["**execute_sql**\n\nCREATE TABLE silver_weather_duck_daily AS\nSELECT w.*, q.quack_count,\n  f.fluff_intensity\nFROM silver_daily_weather w\nJOIN silver_quack_frequency q\n  ON w.station_id = q.station_id\n  AND w.observation_date = q.obs_date\nJOIN silver_feather_fluffing f ..."]
-        SQL2 --> VS["**validate_silver**\n\nGrain check: is station_id +\nobservation_date unique?\nJoin completeness: 85% match rate\nNull check: 15% null duck obs"]
+        SQL2["**execute_sql**<br><br>CREATE TABLE silver_weather_duck_daily AS<br>SELECT w.*, q.quack_count,<br>  f.fluff_intensity<br>FROM silver_daily_weather w<br>JOIN silver_quack_frequency q<br>  ON w.station_id = q.station_id<br>  AND w.observation_date = q.obs_date<br>JOIN silver_feather_fluffing f ..."]
+        SQL2 --> VS["**validate_silver**<br><br>Grain check: is station_id +<br>observation_date unique?<br>Join completeness: 85% match rate<br>Null check: 15% null duck obs"]
     end
 
     subgraph theme["Phase 3: Theme Analysis — 'Quack Before the Storm'"]
-        SQL3["**execute_sql**\n\nSELECT quack_count,\n  LEAD(precip_mm, 1) OVER\n    (PARTITION BY station_id\n     ORDER BY observation_date)\n    AS next_day_precip\nFROM silver_weather_duck_daily"]
-        SQL3 --> STAT["**statistical_analysis**\n\ntype: correlation\nmethod: spearman\n→ r = 0.42, p < 0.001"]
-        STAT --> STAT2["**statistical_analysis**\n\ntype: hypothesis_test\nmethod: mannwhitney\n→ Quacks higher before rain\n→ p = 0.003"]
-        STAT2 --> CONF["**check_confounders**\n\npredictor: quack_count\noutcome: next_day_precip\ngrouping: [season, temp_bin]\n→ No Simpson's Paradox"]
-        CONF --> VSTAT["**validate_statistics**\n\ntype: multiple_comparisons\np_values: [0.001, 0.003, ...]\n→ Bonferroni-corrected results"]
-        VSTAT --> VIZ["**create_visualization**\n\nchart_type: scatter\nx: quack_count\ny: next_day_precip\ncolor: season\n→ Saves quack_rain_scatter.png"]
-        VIZ --> NOTE["**save_note**\n\nLogs methodology, SQL queries,\nstatistical reasoning to\nnotes/theme_1.md"]
-        NOTE --> SF["**save_finding**\n\ntitle: 'Quack-Rain Correlation'\nfinding: 'r=0.42, p<0.001'\nevidence: 'Spearman rho...'\nsignificance: high\n→ Appended to findings.json"]
+        SQL3["**execute_sql**<br><br>SELECT quack_count,<br>  LEAD(precip_mm, 1) OVER<br>    (PARTITION BY station_id<br>     ORDER BY observation_date)<br>    AS next_day_precip<br>FROM silver_weather_duck_daily"]
+        SQL3 --> STAT["**statistical_analysis**<br><br>type: correlation<br>method: spearman<br>→ r = 0.42, p < 0.001"]
+        STAT --> STAT2["**statistical_analysis**<br><br>type: hypothesis_test<br>method: mannwhitney<br>→ Quacks higher before rain<br>→ p = 0.003"]
+        STAT2 --> CONF["**check_confounders**<br><br>predictor: quack_count<br>outcome: next_day_precip<br>grouping: [season, temp_bin]<br>→ No Simpson's Paradox"]
+        CONF --> VSTAT["**validate_statistics**<br><br>type: multiple_comparisons<br>p_values: [0.001, 0.003, ...]<br>→ Bonferroni-corrected results"]
+        VSTAT --> VIZ["**create_visualization**<br><br>chart_type: scatter<br>x: quack_count<br>y: next_day_precip<br>color: season<br>→ Saves quack_rain_scatter.png"]
+        VIZ --> NOTE["**save_note**<br><br>Logs methodology, SQL queries,<br>statistical reasoning to<br>notes/theme_1.md"]
+        NOTE --> SF["**save_finding**<br><br>title: 'Quack-Rain Correlation'<br>finding: 'r=0.42, p<0.001'<br>evidence: 'Spearman rho...'<br>significance: high<br>→ Appended to findings.json"]
     end
 
     orient --> silver
@@ -413,11 +413,11 @@ The StoryTeller reads the scientist's outputs (findings, charts, tables, notes) 
 
 ```mermaid
 flowchart LR
-    P1["**Phase 1**\nInventory\n\nScan findings,\ncharts, tables,\nnotes files"]
-    P2["**Phase 2**\nEvidence Eval\n\nScore finding strength,\nbuild bill of\nmaterials per section"]
-    P3["**Phase 3**\nSection Writing\n\nWrite each narrative\nsection using\ncurated evidence"]
-    P4["**Phase 4**\nCoherence\n\nFix transitions,\nconsistency across\nall sections"]
-    P5["**Phase 5**\nFinalize\n\nAssemble document,\nTOC, bibliography,\nappendices"]
+    P1["**Phase 1**<br>Inventory<br><br>Scan findings,<br>charts, tables,<br>notes files"]
+    P2["**Phase 2**<br>Evidence Eval<br><br>Score finding strength,<br>build bill of<br>materials per section"]
+    P3["**Phase 3**<br>Section Writing<br><br>Write each narrative<br>section using<br>curated evidence"]
+    P4["**Phase 4**<br>Coherence<br><br>Fix transitions,<br>consistency across<br>all sections"]
+    P5["**Phase 5**<br>Finalize<br><br>Assemble document,<br>TOC, bibliography,<br>appendices"]
 
     P1 --> P2
     P2 --> P3
@@ -438,30 +438,30 @@ Here's how the StoryTeller writes one section of the report — the "Duck vs. Do
 ```mermaid
 flowchart TD
     subgraph inventory["Phase 1: Inventory"]
-        RF["**read_findings**\n\noperation: list\n→ 14 findings across 7 themes\n→ 5 high, 6 medium, 3 low"]
-        RF --> RC["**read_chart**\n\noperation: list\n→ 9 charts available"]
-        RC --> RT["**read_table**\n\noperation: list\n→ 6 CSV result tables"]
+        RF["**read_findings**<br><br>operation: list<br>→ 14 findings across 7 themes<br>→ 5 high, 6 medium, 3 low"]
+        RF --> RC["**read_chart**<br><br>operation: list<br>→ 9 charts available"]
+        RC --> RT["**read_table**<br><br>operation: list<br>→ 6 CSV result tables"]
     end
 
     subgraph evidence["Phase 2: Evidence Evaluation"]
-        RF2["**read_findings**\n\noperation: by_theme\ntheme_id: theme_5\n→ 3 findings about\n  duck vs meteorologist"]
-        RF2 --> EE["**evaluate_evidence**\n\noperation: curate\npurpose: 'head-to-head comparison'\n→ Lead: Duck F1=0.71 vs NWS F1=0.83\n→ Support: McNemar p=0.02"]
+        RF2["**read_findings**<br><br>operation: by_theme<br>theme_id: theme_5<br>→ 3 findings about<br>  duck vs meteorologist"]
+        RF2 --> EE["**evaluate_evidence**<br><br>operation: curate<br>purpose: 'head-to-head comparison'<br>→ Lead: Duck F1=0.71 vs NWS F1=0.83<br>→ Support: McNemar p=0.02"]
     end
 
     subgraph writing["Phase 3: Write Section"]
-        RC2["**read_chart**\n\noperation: metadata\nchart: precision_recall_comparison.png\n→ Gets interpretation,\n  axis labels, data source"]
-        RC2 --> WN["**write_narrative**\n\noperation: write_section\nsection_id: section_showdown\ntitle: 'Duck vs. Doppler'\ncontent: 'The precision-recall\ncurves tell a humbling story...\n[Fig 5: precision_recall_comparison.png]'"]
-        WN --> CS["**cite_source**\n\noperation: add\ntitle: 'NWS Forecast Verification'\nurl: weather.gov/verification\n→ cite_key: nws_verification_2024"]
+        RC2["**read_chart**<br><br>operation: metadata<br>chart: precision_recall_comparison.png<br>→ Gets interpretation,<br>  axis labels, data source"]
+        RC2 --> WN["**write_narrative**<br><br>operation: write_section<br>section_id: section_showdown<br>title: 'Duck vs. Doppler'<br>content: 'The precision-recall<br>curves tell a humbling story...<br>[Fig 5: precision_recall_comparison.png]'"]
+        WN --> CS["**cite_source**<br><br>operation: add<br>title: 'NWS Forecast Verification'<br>url: weather.gov/verification<br>→ cite_key: nws_verification_2024"]
     end
 
     subgraph coherence["Phase 4: Coherence Pass"]
-        LIST_SEC["**write_narrative**\n\noperation: list_sections\n→ 8 sections in order"]
-        LIST_SEC --> READ_SEC["**write_narrative**\n\noperation: read_section\n→ Reads adjacent sections\n→ Checks transitions flow"]
-        READ_SEC --> UPDATE["**write_narrative**\n\noperation: update_section\n→ Smooths transition:\n'The duck signal is real.\nBut can it compete?'"]
+        LIST_SEC["**write_narrative**<br><br>operation: list_sections<br>→ 8 sections in order"]
+        LIST_SEC --> READ_SEC["**write_narrative**<br><br>operation: read_section<br>→ Reads adjacent sections<br>→ Checks transitions flow"]
+        READ_SEC --> UPDATE["**write_narrative**<br><br>operation: update_section<br>→ Smooths transition:<br>'The duck signal is real.<br>But can it compete?'"]
     end
 
     subgraph finalize["Phase 5: Finalize"]
-        ASSEMBLE["**write_narrative**\n\noperation: assemble\n→ Concatenates all sections\n→ Generates table of contents\n→ Adds bibliography from cite_source\n→ Writes duck_weather_report.md"]
+        ASSEMBLE["**write_narrative**<br><br>operation: assemble<br>→ Concatenates all sections<br>→ Generates table of contents<br>→ Adds bibliography from cite_source<br>→ Writes duck_weather_report.md"]
     end
 
     inventory --> evidence
@@ -495,9 +495,9 @@ The agents are generic — the intelligence about *your* data lives in config da
 ```mermaid
 flowchart TD
     subgraph configs["Your Configs"]
-        PC["**ProjectConfig**\n\ncatalog, schema, volume_path,\njoin_key, known_sources,\nprocessing_hints, metadata_columns"]
-        RC["**ResearchConfig**\n\nthesis, analysis_themes,\nsilver_datasets,\nresearch_references"]
-        SC["**StorytellerConfig**\n\nnarrative_sections,\nstyle_guide,\nevidence_thresholds,\noutput_format"]
+        PC["**ProjectConfig**<br><br>catalog, schema, volume_path,<br>join_key, known_sources,<br>processing_hints, metadata_columns"]
+        RC["**ResearchConfig**<br><br>thesis, analysis_themes,<br>silver_datasets,<br>research_references"]
+        SC["**StorytellerConfig**<br><br>narrative_sections,<br>style_guide,<br>evidence_thresholds,<br>output_format"]
     end
 
     subgraph agents["Generic Agents (unchanged)"]

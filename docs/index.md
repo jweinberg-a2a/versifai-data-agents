@@ -1,8 +1,3 @@
----
-hide:
-  - navigation
----
-
 <p align="center">
   <img src="assets/FullLogo_Transparent_NoBuffer.png" alt="Versifai" width="400">
 </p>
@@ -64,11 +59,11 @@ Agents persist state to disk and resume from where they left off. If a notebook 
 
 ```mermaid
 flowchart LR
-    RAW[/"Raw Files"/] --> DE["**Data Engineer**\n\nDiscovers, profiles,\ndesigns schemas,\ntransforms & loads"]
+    RAW[/"Raw Files"/] --> DE["**Data Engineer**<br><br>Discovers, profiles,<br>designs schemas,<br>transforms & loads"]
     DE --> CAT[("Delta Tables")]
-    CAT --> DS["**Data Scientist**\n\nBuilds silver datasets,\nruns statistics,\nsaves findings"]
-    DS --> OUT[/"Findings +\nCharts"/]
-    OUT --> ST["**StoryTeller**\n\nEvaluates evidence,\nwrites narrative,\ncites sources"]
+    CAT --> DS["**Data Scientist**<br><br>Builds silver datasets,<br>runs statistics,<br>saves findings"]
+    DS --> OUT[/"Findings +<br>Charts"/]
+    OUT --> ST["**StoryTeller**<br><br>Evaluates evidence,<br>writes narrative,<br>cites sources"]
     ST --> RPT[/"Report"/]
 
     style DE fill:#e8f0fe,stroke:#4a6f93
@@ -96,7 +91,7 @@ Each agent is **config-driven** — all domain knowledge lives in a Python datac
 
 ---
 
-<div style="text-align: center; margin-top: 32px;">
+<div style="text-align: center; margin-top: 32px;" markdown>
 
 [Get Started](getting-started.md){ .md-button .md-button--primary }
 [Tutorial](tutorial-silly-weather.md){ .md-button }

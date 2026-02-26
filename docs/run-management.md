@@ -12,34 +12,48 @@ and **how knowledge flows between agents**.
 
 ## The Core Idea
 
-Most AI systems work like this:
+Most AI systems work like this: **Input → LLM → Answer.** The answer is the
+only output. If something goes wrong, you start over.
 
-```
-Input → LLM → Answer
-```
-
-Versifai works like this:
+Versifai agents run in a **ReAct loop** — a cycle of reasoning and tool calls.
+At each step in the loop, the agent produces durable artifacts on disk. The
+answer is one output among many:
 
 ```mermaid
-flowchart LR
-    INPUT[Input] --> LLM["LLM Agent\n(ReAct loop)"]
-    LLM --> ANSWER["Answer"]
-    LLM --> NOTES["Notes\n(reasoning log)"]
-    LLM --> FINDINGS["Findings\n(structured evidence)"]
-    LLM --> CHARTS["Charts\n(with SQL + render code)"]
-    LLM --> STATE["Run State\n(progress checkpoint)"]
-    LLM --> SECTIONS["Sections\n(narrative drafts)"]
+flowchart TD
+    PROMPT["Prompt + config<br>injected into agent"] --> REASON["LLM reasons<br>about next step"]
+    REASON --> TOOL{"Agent calls<br>a tool"}
 
-    style ANSWER fill:#e8f4e8,stroke:#4a8a4a
-    style NOTES fill:#f0f0f0,stroke:#999
-    style FINDINGS fill:#f0f0f0,stroke:#999
-    style CHARTS fill:#f0f0f0,stroke:#999
-    style STATE fill:#f0f0f0,stroke:#999
-    style SECTIONS fill:#f0f0f0,stroke:#999
+    TOOL -->|execute_sql| SQL["SQL runs on Spark<br>→ results returned"]
+    TOOL -->|save_note| NOTE["Reasoning + SQL<br>→ written to notes/ file"]
+    TOOL -->|create_visualization| CHART["Chart rendered<br>→ saved to charts/"]
+    TOOL -->|save_finding| FINDING["Structured evidence<br>→ appended to findings.json"]
+    TOOL -->|write_narrative| SECTION["Section draft<br>→ saved to section_*.md"]
+
+    SQL --> BACK["Tool result returned<br>to LLM"]
+    NOTE --> BACK
+    CHART --> BACK
+    FINDING --> BACK
+    SECTION --> BACK
+
+    BACK --> STATE["RunState updated<br>→ run_metadata.json"]
+    STATE --> DONE{Done?}
+    DONE -->|No| REASON
+    DONE -->|Yes| FINAL["Final output +<br>all artifacts on disk"]
+
+    style PROMPT fill:#e8f0fe,stroke:#4a6f93
+    style REASON fill:#fff8e1,stroke:#b38600
+    style NOTE fill:#f0f0f0,stroke:#999
+    style CHART fill:#f0f0f0,stroke:#999
+    style FINDING fill:#e8f4e8,stroke:#4a8a4a
+    style SECTION fill:#f0f0f0,stroke:#999
+    style STATE fill:#e8f0fe,stroke:#4a6f93
+    style FINAL fill:#e8f4e8,stroke:#4a8a4a
 ```
 
-The answer is one output among many. The artifacts alongside it are what make
-the system trustworthy, resumable, and reproducible.
+Every cycle through the loop leaves something on disk. If the agent crashes
+at any point, the artifacts from completed cycles are already persisted —
+and the agent can resume from where it left off.
 
 **Why this matters:**
 
@@ -80,9 +94,9 @@ flowchart TD
     subgraph volume["Databricks Volume"]
         subgraph results["/Volumes/.../results/"]
             subgraph runs["runs/"]
-                RUN1["20260223_100000_f4e1/\n(first run — interrupted)"]
-                RUN2["20260223_143012_a1b2/\n(second run — completed)"]
-                RUN3["20260225_091500_c7d3/\n(latest run — in progress)"]
+                RUN1["20260223_100000_f4e1/<br>(first run — interrupted)"]
+                RUN2["20260223_143012_a1b2/<br>(second run — completed)"]
+                RUN3["20260225_091500_c7d3/<br>(latest run — in progress)"]
             end
         end
     end
@@ -126,20 +140,20 @@ disk. It creates clean, validated, joinable tables from raw data files.
 ```mermaid
 flowchart LR
     subgraph input["Raw Files (Volume)"]
-        CSV["weather_2020.csv\nweather_2021.csv\nweather_2022.csv"]
+        CSV["weather_2020.csv<br>weather_2021.csv<br>weather_2022.csv"]
         ZIP["duck_obs.zip"]
         XLS["ice_cream.xlsx"]
     end
 
     subgraph agent["Data Engineer"]
-        WORK["Profile → Design → Transform → Load\n\nAll reasoning logged to\nagent conversation history"]
+        WORK["Profile → Design → Transform → Load<br><br>All reasoning logged to<br>agent conversation history"]
     end
 
     subgraph output["Unity Catalog Tables"]
-        T1["**silver_daily_weather**\n1.1M rows · 10 columns\nstation_id · observation_date\ntemp_max_c · precip_mm ..."]
-        T2["**silver_quack_frequency**\n890K rows · 6 columns"]
-        T3["**silver_feather_fluffing**\n365K rows · 5 columns"]
-        T4["**silver_ice_cream_sales**\n18K rows · 7 columns"]
+        T1["**silver_daily_weather**<br>1.1M rows · 10 columns<br>station_id · observation_date<br>temp_max_c · precip_mm ..."]
+        T2["**silver_quack_frequency**<br>890K rows · 6 columns"]
+        T3["**silver_feather_fluffing**<br>365K rows · 5 columns"]
+        T4["**silver_ice_cream_sales**<br>18K rows · 7 columns"]
     end
 
     CSV --> WORK
@@ -173,8 +187,8 @@ The Data Scientist produces the richest set of artifacts:
 ```mermaid
 flowchart TD
     subgraph run["Run Directory: runs/20260223_143012_a1b2/"]
-        META["**run_metadata.json**\nRun state, phases completed,\nitems done, timing"]
-        FIND["**findings.json**\n14 structured findings\nwith evidence + p-values"]
+        META["**run_metadata.json**<br>Run state, phases completed,<br>items done, timing"]
+        FIND["**findings.json**<br>14 structured findings<br>with evidence + p-values"]
 
         subgraph charts["charts/"]
             C1["theme0_distribution.png"]
@@ -305,7 +319,7 @@ The StoryTeller produces narrative sections and a final assembled report:
 ```mermaid
 flowchart TD
     subgraph run["Run Directory"]
-        META2["**run_metadata.json**\nSections written, completion status"]
+        META2["**run_metadata.json**<br>Sections written, completion status"]
 
         subgraph sections["Individual Sections (written immediately)"]
             S1["section_abstract.md"]
@@ -318,7 +332,7 @@ flowchart TD
             S8["section_conclusions.md"]
         end
 
-        REPORT["**narrative_report.md**\n\nFinal assembled document\nwith TOC and bibliography\n(~4,000 words)"]
+        REPORT["**narrative_report.md**<br><br>Final assembled document<br>with TOC and bibliography<br>(~4,000 words)"]
     end
 
     S1 --> REPORT
@@ -349,10 +363,10 @@ already been done and skip it.**
 
 ```mermaid
 flowchart TD
-    START([Agent starts]) --> CHECK["Load run_metadata.json\nfrom latest run"]
-    CHECK --> SCAN["Scan for completed work:\n• Tables in Unity Catalog\n• Findings in findings.json\n• Sections on disk\n• RunState completed_items"]
-    SCAN --> UNION["Union rule:\nIf ANY source says done → skip"]
-    UNION --> RESUME["Resume from first\nincomplete item"]
+    START([Agent starts]) --> CHECK["Load run_metadata.json<br>from latest run"]
+    CHECK --> SCAN["Scan for completed work:<br>• Tables in Unity Catalog<br>• Findings in findings.json<br>• Sections on disk<br>• RunState completed_items"]
+    SCAN --> UNION["Union rule:<br>If ANY source says done → skip"]
+    UNION --> RESUME["Resume from first<br>incomplete item"]
 
     style START fill:#e8f0fe,stroke:#4a6f93
     style SCAN fill:#fef3e0,stroke:#b38600
@@ -468,17 +482,17 @@ save tokens — but **key knowledge is preserved** via carryover context.
 ```mermaid
 flowchart TD
     subgraph phase1["Phase 1: Orientation"]
-        WORK1["Agent explores tables,\nassesses data quality,\nmakes observations"]
-        WORK1 --> CARRY1["Memory extracts\ncarryover context:\n• Source summaries\n• Key decisions\n• Data quality notes"]
+        WORK1["Agent explores tables,<br>assesses data quality,<br>makes observations"]
+        WORK1 --> CARRY1["Memory extracts<br>carryover context:<br>• Source summaries<br>• Key decisions<br>• Data quality notes"]
     end
 
     subgraph reset["Between Phases"]
-        CLEAR["Conversation history\nCLEARED (save tokens)"]
-        INJECT["Carryover context\nINJECTED into next prompt"]
+        CLEAR["Conversation history<br>CLEARED (save tokens)"]
+        INJECT["Carryover context<br>INJECTED into next prompt"]
     end
 
     subgraph phase2["Phase 2: Silver Construction"]
-        PROMPT["New prompt includes:\n\n## Context From Orientation\n- silver_daily_weather: 1.1M rows,\n  3 years, station_id join key\n- 15% null duck observations\n  on weekdays\n\n---\n\nNow build the silver dataset..."]
+        PROMPT["New prompt includes:<br><br>## Context From Orientation<br>- silver_daily_weather: 1.1M rows,<br>  3 years, station_id join key<br>- 15% null duck observations<br>  on weekdays<br><br>---<br><br>Now build the silver dataset..."]
     end
 
     CARRY1 --> CLEAR
@@ -512,21 +526,21 @@ The three agents don't communicate directly. They communicate through
 ```mermaid
 flowchart LR
     subgraph eng["Data Engineer"]
-        ENG_OUT["Output:\nDelta tables in\nUnity Catalog"]
+        ENG_OUT["Output:<br>Delta tables in<br>Unity Catalog"]
     end
 
     subgraph sci["Data Scientist"]
-        SCI_IN["Input:\nReads tables via\nexecute_sql"]
-        SCI_OUT["Output:\nfindings.json\ncharts/\ntables/\nnotes/"]
+        SCI_IN["Input:<br>Reads tables via<br>execute_sql"]
+        SCI_OUT["Output:<br>findings.json<br>charts/<br>tables/<br>notes/"]
     end
 
     subgraph story["StoryTeller"]
-        ST_IN["Input:\nReads findings,\ncharts, tables,\nnotes from disk"]
-        ST_OUT["Output:\nnarrative_report.md"]
+        ST_IN["Input:<br>Reads findings,<br>charts, tables,<br>notes from disk"]
+        ST_OUT["Output:<br>narrative_report.md"]
     end
 
-    ENG_OUT -->|"Unity Catalog\n(SQL queries)"| SCI_IN
-    SCI_OUT -->|"AgentDependency\n(resolves run path)"| ST_IN
+    ENG_OUT -->|"Unity Catalog<br>(SQL queries)"| SCI_IN
+    SCI_OUT -->|"AgentDependency<br>(resolves run path)"| ST_IN
 
     style eng fill:#e8f0fe,stroke:#4a6f93
     style sci fill:#e8f4e8,stroke:#4a8a4a
@@ -579,11 +593,11 @@ Every link in that chain is recorded as an artifact on disk.
 
 ```mermaid
 flowchart RL
-    CLAIM["Narrative claim:\n'Ducks quack more\nbefore rain'"]
-    FINDING["Finding:\nSpearman rho=0.42\np < 0.001"]
-    EVIDENCE["Evidence:\nNotes file with full\nSQL + methodology"]
-    SQL["SQL query:\nSELECT quack_count,\nLEAD(precip_mm, 1)..."]
-    DATA["Raw data:\nsilver_weather_duck_daily\n312,847 rows"]
+    CLAIM["Narrative claim:<br>'Ducks quack more<br>before rain'"]
+    FINDING["Finding:<br>Spearman rho=0.42<br>p < 0.001"]
+    EVIDENCE["Evidence:<br>Notes file with full<br>SQL + methodology"]
+    SQL["SQL query:<br>SELECT quack_count,<br>LEAD(precip_mm, 1)..."]
+    DATA["Raw data:<br>silver_weather_duck_daily<br>312,847 rows"]
 
     CLAIM --> FINDING
     FINDING --> EVIDENCE
