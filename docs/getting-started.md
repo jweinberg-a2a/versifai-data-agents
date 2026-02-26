@@ -36,6 +36,8 @@ export OPENAI_API_KEY="sk-..."
 
 ### 1. Run a Data Engineering Agent
 
+Agents run inside **Databricks notebooks**. You write a config, create the agent, and call `.run()` — the agent handles the rest through its ReAct loop:
+
 ```python
 from versifai.data_agents import DataEngineerAgent, ProjectConfig
 
@@ -50,6 +52,10 @@ agent = DataEngineerAgent(cfg=cfg, dbutils=dbutils)
 result = agent.run()
 print(f"Processed {result['sources_completed']} sources")
 ```
+
+Here's what this looks like running in a Databricks notebook — the agent autonomously profiles files, reasons about schema drift, and calls tools to load data into Unity Catalog:
+
+![Data Engineer agent running in a Databricks notebook](assets/data_engineer_notebook.png)
 
 ### 2. Run a Data Science Agent
 
@@ -176,6 +182,10 @@ scientist.run()
 storyteller = StoryTellerAgent(cfg=story_cfg, dbutils=dbutils)
 storyteller.run()
 ```
+
+For a complete, runnable example with real configs and Databricks notebooks, see
+[`examples/silly_weather/`](https://github.com/jweinberg-a2a/versifai-data-agents/tree/main/examples/silly_weather){target="_blank"}
+or follow the [Tutorial](tutorial-silly-weather.md).
 
 ## Configuration
 

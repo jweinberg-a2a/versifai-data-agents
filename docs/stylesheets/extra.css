@@ -39,9 +39,10 @@
 /* ── Mermaid diagram expand-on-click ─────────────────────────────────── */
 
 /* Make diagrams look clickable */
-.mermaid {
+.mermaid,
+pre.mermaid,
+[class*="mermaid"] {
   cursor: zoom-in;
-  position: relative;
 }
 
 /* Fullscreen overlay */
@@ -57,13 +58,15 @@
   align-items: center;
   justify-content: center;
   cursor: zoom-out;
-  padding: 40px;
+  padding: 48px;
   box-sizing: border-box;
 }
 
-.mermaid-overlay svg {
-  max-width: 95vw;
-  max-height: 90vh;
+.mermaid-overlay > svg {
+  max-width: 90vw;
+  max-height: 85vh;
+  width: auto !important;
+  height: auto !important;
   filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.1));
 }
 

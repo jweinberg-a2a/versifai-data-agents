@@ -13,7 +13,7 @@ you'd use for a real analysis. By the end, you'll understand how to:
 4. Wire everything together in **Databricks notebook entrypoints**
 
 All example files live in
-[`examples/silly_weather/`](https://github.com/jweinberg-a2a/versifai-data-agents/tree/main/examples/silly_weather).
+[`examples/silly_weather/`](https://github.com/jweinberg-a2a/versifai-data-agents/tree/main/examples/silly_weather){target="_blank"}.
 
 ---
 
@@ -251,7 +251,7 @@ metadata_columns = [
 ### Putting It All Together
 
 See the complete config in
-[`engineer_config.py`](https://github.com/jweinberg-a2a/versifai-data-agents/blob/main/examples/silly_weather/engineer_config.py).
+[`engineer_config.py`](https://github.com/jweinberg-a2a/versifai-data-agents/blob/main/examples/silly_weather/engineer_config.py){target="_blank"}.
 
 ---
 
@@ -511,6 +511,10 @@ quality_results = agent.run_quality_check()
 
 Each stage is a separate method call. If the notebook crashes, re-run it —
 the agent has **smart resume** and will skip completed work.
+
+Here's the Data Engineer agent in action — profiling raw files, checking for schema drift, and loading data into Unity Catalog, all from a Databricks notebook:
+
+![Data Engineer agent running in a Databricks notebook](assets/data_engineer_notebook.png)
 
 ### Running the Scientist
 

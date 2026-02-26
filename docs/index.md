@@ -96,6 +96,7 @@ Each agent is **config-driven** — all domain knowledge lives in a Python datac
 [Get Started](getting-started.md){ .md-button .md-button--primary }
 [Tutorial](tutorial-silly-weather.md){ .md-button }
 [Architecture](architecture.md){ .md-button }
-[View on GitHub](https://github.com/jweinberg-a2a/versifai-data-agents){ .md-button }
+[Examples](https://github.com/jweinberg-a2a/versifai-data-agents/tree/main/examples){ .md-button target="_blank" }
+[View on GitHub](https://github.com/jweinberg-a2a/versifai-data-agents){ .md-button target="_blank" }
 
 </div>

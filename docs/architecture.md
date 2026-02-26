@@ -355,7 +355,7 @@ flowchart LR
 | `ResearchConfig` | What questions to investigate | `thesis`, `analysis_themes`, `silver_datasets`, `research_references` |
 | `StorytellerConfig` | How to write the report | `narrative_sections`, `style_guide`, `evidence_thresholds`, `output_format` |
 
-To start a new project, copy an example config, change the domain-specific fields, and run the same agents. See the [Tutorial](tutorial-silly-weather.md) for a complete walkthrough.
+To start a new project, copy an example config, change the domain-specific fields, and run the same agents. See the [Tutorial](tutorial-silly-weather.md) for a complete walkthrough, or browse the [`examples/`](https://github.com/jweinberg-a2a/versifai-data-agents/tree/main/examples){target="_blank"} directory on GitHub.
 
 ---
 

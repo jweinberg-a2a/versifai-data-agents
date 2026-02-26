@@ -9,10 +9,28 @@ document.addEventListener("DOMContentLoaded", function () {
 
 /* Expand Mermaid diagrams on click — fullscreen overlay */
 document.addEventListener("click", function (e) {
-  var mermaid = e.target.closest(".mermaid");
-  if (!mermaid) return;
+  /* Already in overlay — ignore */
+  if (e.target.closest(".mermaid-overlay")) return;
 
-  var svg = mermaid.querySelector("svg");
+  /* Find the SVG: could be inside .mermaid, pre.mermaid, or have a mermaid ID */
+  var svg = null;
+  var container =
+    e.target.closest(".mermaid") ||
+    e.target.closest("pre.mermaid") ||
+    e.target.closest('[class*="mermaid"]');
+
+  if (container) {
+    svg = container.querySelector("svg");
+  }
+
+  /* Fallback: clicked directly on an SVG with a mermaid ID */
+  if (!svg) {
+    var el = e.target.closest("svg");
+    if (el && el.id && el.id.indexOf("mermaid") !== -1) {
+      svg = el;
+    }
+  }
+
   if (!svg) return;
 
   var overlay = document.createElement("div");
@@ -25,15 +43,18 @@ document.addEventListener("click", function (e) {
   var clone = svg.cloneNode(true);
   clone.removeAttribute("width");
   clone.removeAttribute("height");
-  clone.style.width = "auto";
-  clone.style.height = "auto";
+  clone.removeAttribute("style");
+  clone.setAttribute("width", "100%");
+  clone.setAttribute("height", "100%");
 
   overlay.appendChild(closeBtn);
   overlay.appendChild(clone);
   document.body.appendChild(overlay);
+  document.body.style.overflow = "hidden";
 
   function close() {
     overlay.remove();
+    document.body.style.overflow = "";
   }
 
   overlay.addEventListener("click", close);
