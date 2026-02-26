@@ -47,6 +47,12 @@ Built on [LiteLLM](https://docs.litellm.ai/) for multi-provider LLM support (Ant
   <img src="docs/assets/data_engineer_notebook.png" alt="Versifai" width="1200">
 </p>
 
+### See It In Action
+
+Read a full research report produced end-to-end by Versifai's agent pipeline — from raw CMS data ingestion through statistical analysis to narrative output:
+
+**[CMS Stars Adjustment: An Autonomous Policy Research Report](https://www.versifai.org/blog/stars-adjustment-policy-research)**
+
 ## Agent Families
 
 | Family | Agents | What It Does |
