@@ -81,6 +81,14 @@ Each agent is **config-driven** — all domain knowledge lives in a Python datac
 
 ---
 
+## See It In Action
+
+Read a full research report produced end-to-end by Versifai's agent pipeline — from raw CMS data ingestion through statistical analysis to narrative output:
+
+[CMS Stars Adjustment: An Autonomous Policy Research Report](https://www.versifai.org/blog/stars-adjustment-policy-research){ .md-button .md-button--primary target="_blank" }
+
+---
+
 ## Key Features
 
 - **Multi-provider LLM** — Swap between Claude, GPT-4, Azure, Gemini, or any [LiteLLM](https://docs.litellm.ai/)-supported provider with a single parameter
