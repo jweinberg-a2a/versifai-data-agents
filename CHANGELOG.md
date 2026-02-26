@@ -10,9 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Initial open-source release
-- `versifai.core` — Reusable agentic framework with BaseAgent, LLMClient, AgentMemory, ToolRegistry
-- `versifai.data_agents` — DataEngineerAgent and DataAnalystAgent for autonomous data pipeline construction
-- `versifai.science_agents` — DataScientistAgent for autonomous research analysis
-- `versifai.story_agents` — StoryTellerAgent for transforming research into narrative reports
+- `versifai.core` -Reusable agentic framework with BaseAgent, LLMClient, AgentMemory, ToolRegistry
+- `versifai.data_agents` -DataEngineerAgent and DataAnalystAgent for autonomous data pipeline construction
+- `versifai.science_agents` -DataScientistAgent for autonomous research analysis
+- `versifai.story_agents` -StoryTellerAgent for transforming research into narrative reports
 - Shared tool library: visualization, web search, catalog writer, dynamic tool builder
 - Example configurations for World Bank Development Indicators (World Development example)

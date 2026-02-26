@@ -28,8 +28,8 @@ class FetchWeatherTool(BaseTool):
 
 Every tool returns a `ToolResult`:
 
-- `success=True` with `data` — the tool worked, data is returned to the agent
-- `success=False` with `error` — the tool failed, error message is returned to the agent
+- `success=True` with `data` -the tool worked, data is returned to the agent
+- `success=False` with `error` -the tool failed, error message is returned to the agent
 
 ## Create a Custom Agent
 
@@ -74,7 +74,7 @@ answer = agent.ask("What's the weather in San Francisco?")
 
 ## Key Design Patterns
 
-- **BaseAgent** — All agents subclass `BaseAgent`, which provides the ReAct loop, error recovery, and tool dispatch
-- **ToolRegistry** — Tools are registered at construction time; the agent's loop automatically matches LLM tool calls to registered tools
-- **BaseTool** — Every tool implements `name`, `description`, `parameters_schema`, and `execute()`. Drop-in replaceable.
-- **AgentMemory** — Manages conversation history with automatic summarization for long-running tasks
+- **BaseAgent** -All agents subclass `BaseAgent`, which provides the ReAct loop, error recovery, and tool dispatch
+- **ToolRegistry** -Tools are registered at construction time; the agent's loop automatically matches LLM tool calls to registered tools
+- **BaseTool** -Every tool implements `name`, `description`, `parameters_schema`, and `execute()`. Drop-in replaceable.
+- **AgentMemory** -Manages conversation history with automatic summarization for long-running tasks

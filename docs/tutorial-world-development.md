@@ -6,7 +6,7 @@ three AI agents will have ingested raw ZIP archives, run statistical analysis on
 classic development economics questions, and produced a narrative research report.
 
 The dataset is real. The analysis is real. The output is a genuine research
-artifact — not a toy example.
+artifact -not a toy example.
 
 ## What You're About to Build
 
@@ -26,7 +26,7 @@ All example files live in
 
 ## The Dataset
 
-**Source:** [World Bank Open Data API](https://data.worldbank.org/) — free,
+**Source:** [World Bank Open Data API](https://data.worldbank.org/) -free,
 authoritative, no authentication required.
 
 | Code | Indicator | Table |
@@ -38,7 +38,7 @@ authoritative, no authentication required.
 | `EN.ATM.CO2E.PC` | CO2 emissions (metric tons per capita) | `silver_co2_emissions` |
 | `SP.POP.TOTL` | Population total | `silver_population` |
 
-Plus `silver_country_metadata` — region and income group classifications for
+Plus `silver_country_metadata` -region and income group classifications for
 every country.
 
 Each indicator is downloaded as a ZIP archive (~3MB each, ~20MB total) containing
@@ -72,7 +72,7 @@ for code, name in INDICATORS.items():
     urllib.request.urlretrieve(url, f"/Volumes/my_catalog/world_development/raw_data/{name}.zip")
 ```
 
-The download is idempotent — it skips files that already exist. After running,
+The download is idempotent -it skips files that already exist. After running,
 your Volume will contain 6 ZIP files:
 
 ```
@@ -94,7 +94,7 @@ your Volume will contain 6 ZIP files:
 The `ProjectConfig` tells the Data Engineer Agent everything about ingesting
 these World Bank ZIP files.
 
-### Join Key — Country Code
+### Join Key -Country Code
 
 Every table must include a `country_code` column (ISO 3166-1 alpha-3) so they
 can be joined:
@@ -111,7 +111,7 @@ join_key = JoinKeyConfig(
 )
 ```
 
-### Alternative Keys — Region and Income Group
+### Alternative Keys -Region and Income Group
 
 World Bank assigns every country to a region and income group. These enable
 stratified analysis:
@@ -135,13 +135,13 @@ alternative_keys = [
 ]
 ```
 
-### Source Processing Hints — Wide-Format Pivot
+### Source Processing Hints -Wide-Format Pivot
 
 This is where the real engineering guidance lives. World Bank CSVs have a
 non-standard format:
 
 - **4 metadata rows** at the top (must be skipped)
-- **Wide format** — years as columns: `1960, 1961, ..., 2023`
+- **Wide format** -years as columns: `1960, 1961, ..., 2023`
 - Each ZIP contains 3 files: data CSV, country metadata CSV, indicator metadata CSV
 
 The hints tell the agent exactly how to handle this:
@@ -151,7 +151,7 @@ from versifai.data_agents.engineer.config import SourceProcessingHint, SourceFil
 
 SourceProcessingHint(
     source_pattern="gdp_per_capita",
-    description="GDP per capita (current US$) — World Bank indicator NY.GDP.PCAP.CD",
+    description="GDP per capita (current US$) -World Bank indicator NY.GDP.PCAP.CD",
     multi_table=True,  # This ZIP produces TWO tables
     files=[
         SourceFileHint(
@@ -166,8 +166,8 @@ SourceProcessingHint(
         ),
     ],
     notes=(
-        "The main data CSV has 4 metadata rows at the top — skip them. "
-        "This is WIDE FORMAT — pivot to LONG FORMAT with columns: "
+        "The main data CSV has 4 metadata rows at the top -skip them. "
+        "This is WIDE FORMAT -pivot to LONG FORMAT with columns: "
         "country_name, country_code, year, and the indicator value column."
     ),
 )
@@ -225,7 +225,7 @@ agent.run_catalog()
 agent.run_quality_check()
 ```
 
-**Result:** 7 Delta tables in Unity Catalog — 6 indicator tables (one per
+**Result:** 7 Delta tables in Unity Catalog -6 indicator tables (one per
 indicator, long format) plus `silver_country_metadata`.
 
 ---
@@ -313,7 +313,7 @@ SilverDatasetSpec(
     join_key="country_code",
     time_column="year",
     data_notes=(
-        "Filter WHERE year >= 2000. Exclude aggregate entities — keep only "
+        "Filter WHERE year >= 2000. Exclude aggregate entities -keep only "
         "individual countries (those with a non-NULL region)."
     ),
 )
@@ -329,7 +329,7 @@ GLOBAL_DEVELOPMENT = ResearchConfig(
     domain_context=(
         "## Data Quirks\n\n"
         "- World Bank aggregates (e.g., 'WLD', 'EAS') must be excluded\n"
-        "- GDP per capita is in current US$ — use log transforms\n"
+        "- GDP per capita is in current US$ -use log transforms\n"
         "- Health expenditure starts ~2000; earlier years are missing\n"
         "- School enrollment can exceed 100% (UNESCO methodology)\n\n"
         "## Expected Value Ranges\n\n"
@@ -391,7 +391,7 @@ each theme, CSV summary tables, and per-theme markdown reasoning notes.
 **File:** `examples/world_development/storyteller_config.py`
 
 The `StorytellerConfig` defines how to turn the scientist's findings into
-*"The Shape of Global Progress"* — an 8-section narrative report.
+*"The Shape of Global Progress"* -an 8-section narrative report.
 
 ### Style Guide
 
@@ -403,7 +403,7 @@ style = StyleGuide(
     audience="Policy analysts, development economists, and informed general readers",
     document_type="Analytical white paper",
     tone_guidance=(
-        "Authoritative but accessible. Write like The Economist or Our World in Data — "
+        "Authoritative but accessible. Write like The Economist or Our World in Data -"
         "precise, evidence-first, globally aware. Let the data speak."
     ),
     anti_patterns=(
@@ -440,7 +440,7 @@ NarrativeSection(
     max_words=1200,
     key_evidence="Preston Curve regression, R-squared, outlier analysis, decade shifts",
     narrative_guidance=(
-        "Lead with the Preston Curve scatter plot. Explain the log-linear shape — "
+        "Lead with the Preston Curve scatter plot. Explain the log-linear shape -"
         "why doubling GDP from $2K to $4K buys more years than $40K to $80K."
     ),
     transition_from="With data in hand, we begin with the most iconic relationship.",
@@ -472,7 +472,7 @@ WORLD_DEVELOPMENT_STORY = StorytellerConfig(
     domain_writing_rules=(
         "EVIDENCE-FIRST ANALYTICAL TONE: Every claim must cite a specific statistic. "
         "Acknowledge when data limitations affect conclusions. Let readers draw their "
-        "own policy conclusions — the report's job is to present evidence, not advocate."
+        "own policy conclusions -the report's job is to present evidence, not advocate."
     ),
     citation_source_guidance=(
         "World Bank technical documentation, peer-reviewed development economics literature, "
@@ -512,7 +512,7 @@ agent.run_editor(
 )
 ```
 
-**Result:** `world_development_report.md` — a narrative report with table of
+**Result:** `world_development_report.md` -a narrative report with table of
 contents, inline citations, and bibliography.
 
 ---
@@ -551,26 +551,26 @@ flowchart LR
 
 ### What Each Agent Produces
 
-**Data Engineer** — 7 Delta tables:
+**Data Engineer** -7 Delta tables:
 
-- `silver_gdp_per_capita` — GDP per capita by country and year (long format)
-- `silver_life_expectancy` — Life expectancy by country and year
-- `silver_school_enrollment` — Primary enrollment rate by country and year
-- `silver_health_expenditure` — Health spending per capita by country and year
-- `silver_co2_emissions` — CO2 per capita by country and year
-- `silver_population` — Total population by country and year
-- `silver_country_metadata` — Region, income group, special notes per country
+- `silver_gdp_per_capita` -GDP per capita by country and year (long format)
+- `silver_life_expectancy` -Life expectancy by country and year
+- `silver_school_enrollment` -Primary enrollment rate by country and year
+- `silver_health_expenditure` -Health spending per capita by country and year
+- `silver_co2_emissions` -CO2 per capita by country and year
+- `silver_population` -Total population by country and year
+- `silver_country_metadata` -Region, income group, special notes per country
 
-**Data Scientist** — research artifacts:
+**Data Scientist** -research artifacts:
 
-- `findings.json` — Structured findings with p-values, effect sizes, evidence tiers
-- `charts/` — PNG visualizations (Preston Curve, Kuznets Curve, convergence, etc.)
-- `tables/` — CSV summary tables (regression coefficients, ANOVA results, etc.)
-- `notes/` — Per-theme markdown reasoning logs
+- `findings.json` -Structured findings with p-values, effect sizes, evidence tiers
+- `charts/` -PNG visualizations (Preston Curve, Kuznets Curve, convergence, etc.)
+- `tables/` -CSV summary tables (regression coefficients, ANOVA results, etc.)
+- `notes/` -Per-theme markdown reasoning logs
 
-**StoryTeller** — narrative report:
+**StoryTeller** -narrative report:
 
-- `world_development_report.md` — ~10,000-word analytical report with TOC, citations, bibliography
+- `world_development_report.md` -~10,000-word analytical report with TOC, citations, bibliography
 
 ### Output File Structure
 
@@ -618,8 +618,8 @@ flowchart LR
 
 | Part | What It Is | What Changes Between Projects |
 |------|-----------|-------------------------------|
-| **Config** | A Python dataclass holding all domain knowledge | Everything — this is where your project lives |
-| **Agent** | A generic Python class that reads the config and does work | Nothing — agents are reusable across projects |
+| **Config** | A Python dataclass holding all domain knowledge | Everything -this is where your project lives |
+| **Agent** | A generic Python class that reads the config and does work | Nothing -agents are reusable across projects |
 | **Notebook** | A Databricks notebook that creates the agent and runs it | Just the import path to your config |
 
 The agents are generic. All domain-specific knowledge lives in the configs.
@@ -659,10 +659,10 @@ Copy the World Development example and replace the domain content:
 5. **Write a download notebook** (if using public data) or upload files manually
 
 6. **Run the notebooks in order:**
-    - `00_download_data.py` — Get the data
-    - `01_run_engineer.py` — Ingest into Delta tables
-    - `02_run_scientist.py` — Analyze
-    - `03_run_storyteller.py` — Write the report
+    - `00_download_data.py` -Get the data
+    - `01_run_engineer.py` -Ingest into Delta tables
+    - `02_run_scientist.py` -Analyze
+    - `03_run_storyteller.py` -Write the report
 
 The agent code is the same for every project. Your configs are the only thing
 that changes.

@@ -16,7 +16,7 @@
 
 ---
 
-Versifai provides specialized AI agents that automate the complete data lifecycle — from raw file discovery and schema design, through statistical analysis and modeling, to compelling narrative reports. Each agent operates autonomously using a **ReAct (Reason-Act-Observe) loop**, with human-in-the-loop oversight at every stage.
+Versifai provides specialized AI agents that automate the complete data lifecycle -from raw file discovery and schema design, through statistical analysis and modeling, to compelling narrative reports. Each agent operates autonomously using a **ReAct (Reason-Act-Observe) loop**, with human-in-the-loop oversight at every stage.
 
 Built on [LiteLLM](https://docs.litellm.ai/) for multi-provider LLM support (Anthropic, OpenAI, Azure, and 100+ more).
 
@@ -35,13 +35,13 @@ Built on [LiteLLM](https://docs.litellm.ai/) for multi-provider LLM support (Ant
 
 ## Features
 
-- **Autonomous agent loop** — ReAct-based agents that reason, act, and observe iteratively until a task is complete
-- **Multi-provider LLM** — Swap between Claude, GPT-4, Azure, Gemini, or any LiteLLM-supported provider with a single parameter
-- **Modular tool system** — Plug-and-play tools with a shared registry; add your own in minutes
-- **Smart resume** — Agents persist state to disk and resume from where they left off after interruption
-- **Run isolation** — Each run gets its own directory with metadata, progress logs, and artifacts
-- **Human-in-the-loop** — Built-in `ask_human` tool lets agents pause and request guidance
-- **Databricks native** — First-class support for Notebooks, Unity Catalog, Delta tables, and Volumes.
+- **Autonomous agent loop** -ReAct-based agents that reason, act, and observe iteratively until a task is complete
+- **Multi-provider LLM** -Swap between Claude, GPT-4, Azure, Gemini, or any LiteLLM-supported provider with a single parameter
+- **Modular tool system** -Plug-and-play tools with a shared registry; add your own in minutes
+- **Smart resume** -Agents persist state to disk and resume from where they left off after interruption
+- **Run isolation** -Each run gets its own directory with metadata, progress logs, and artifacts
+- **Human-in-the-loop** -Built-in `ask_human` tool lets agents pause and request guidance
+- **Databricks native** -First-class support for Notebooks, Unity Catalog, Delta tables, and Volumes.
 
 <p align="center">
   <img src="docs/assets/data_engineer_notebook.png" alt="Versifai" width="1200">
@@ -49,7 +49,7 @@ Built on [LiteLLM](https://docs.litellm.ai/) for multi-provider LLM support (Ant
 
 ### See It In Action
 
-Read a full research report produced end-to-end by Versifai's agent pipeline — from raw CMS data ingestion through statistical analysis to narrative output:
+Read a full research report produced end-to-end by Versifai's agent pipeline -from raw CMS data ingestion through statistical analysis to narrative output:
 
 **[CMS Stars Adjustment: An Autonomous Policy Research Report](https://www.versifai.org/blog/stars-adjustment-policy-research)**
 
@@ -58,7 +58,7 @@ Read a full research report produced end-to-end by Versifai's agent pipeline —
 | Family | Agents | What It Does |
 |--------|--------|--------------|
 | **`versifai.data_agents`** | `DataEngineerAgent`, `DataAnalystAgent` | Discover raw files, profile data, design schemas, transform and load into structured tables. The analyst validates quality. |
-| **`versifai.science_agents`** | `DataScientistAgent` | Autonomous research — builds analytical datasets, runs hypothesis tests, fits models, produces charts and findings. |
+| **`versifai.science_agents`** | `DataScientistAgent` | Autonomous research -builds analytical datasets, runs hypothesis tests, fits models, produces charts and findings. |
 | **`versifai.story_agents`** | `StoryTellerAgent` | Transforms research findings into evidence-grounded narrative reports with citations, visual references, and editorial review. |
 
 ## Installation
@@ -181,11 +181,11 @@ agent._llm = llm  # Override the default
 All agents support resuming from interruption:
 
 ```python
-# First run — gets interrupted at source 3 of 10
+# First run -gets interrupted at source 3 of 10
 agent = DataEngineerAgent(cfg=cfg, dbutils=dbutils)
 agent.run()  # Ctrl+C after source 3
 
-# Re-run — automatically picks up from source 4
+# Re-run -automatically picks up from source 4
 agent = DataEngineerAgent(cfg=cfg, dbutils=dbutils)
 agent.run()  # Skips sources 1-3, continues from 4
 ```
@@ -247,10 +247,10 @@ storyteller.run()
 ```
 src/versifai/
 ├── core/                  # Shared agentic framework
-│   ├── agent.py           # BaseAgent — ReAct loop engine
-│   ├── llm.py             # LLMClient — multi-provider via LiteLLM
-│   ├── memory.py          # AgentMemory — conversation + carryover context
-│   ├── display.py         # AgentDisplay — rich progress output
+│   ├── agent.py           # BaseAgent -ReAct loop engine
+│   ├── llm.py             # LLMClient -multi-provider via LiteLLM
+│   ├── memory.py          # AgentMemory -conversation + carryover context
+│   ├── display.py         # AgentDisplay -rich progress output
 │   ├── config.py          # CatalogConfig, AgentSettings
 │   ├── run_manager.py     # Run isolation + state persistence
 │   └── tools/             # Shared tools (BaseTool, ToolRegistry, etc.)
@@ -271,10 +271,10 @@ src/versifai/
 
 ### Key Design Patterns
 
-- **BaseAgent** — All agents subclass `BaseAgent`, which provides the ReAct loop, error recovery, and tool dispatch
-- **ToolRegistry** — Tools are registered at construction time; the agent's loop automatically matches LLM tool calls to registered tools
-- **BaseTool** — Every tool implements `name`, `description`, `parameters_schema`, and `execute()`. Drop-in replaceable.
-- **AgentMemory** — Manages conversation history with automatic summarization for long-running tasks
+- **BaseAgent** -All agents subclass `BaseAgent`, which provides the ReAct loop, error recovery, and tool dispatch
+- **ToolRegistry** -Tools are registered at construction time; the agent's loop automatically matches LLM tool calls to registered tools
+- **BaseTool** -Every tool implements `name`, `description`, `parameters_schema`, and `execute()`. Drop-in replaceable.
+- **AgentMemory** -Manages conversation history with automatic summarization for long-running tasks
 
 ## Building Custom Agents
 
@@ -398,11 +398,11 @@ make format        # auto-format code
 
 ### Where to Contribute
 
-- **New tools** — The easiest way to contribute. Subclass `BaseTool`, implement `execute()`, and submit a PR. See [Building Custom Agents](#building-custom-agents) for the pattern.
-- **New agents** — Add a new agent type to an existing family or propose a new family.
-- **LLM provider support** — We use LiteLLM, so most providers work out of the box. If you find one that doesn't, help us fix it.
-- **Documentation and examples** — Add example configs in `examples/` for your domain.
-- **Bug fixes and tests** — Always appreciated.
+- **New tools** -The easiest way to contribute. Subclass `BaseTool`, implement `execute()`, and submit a PR. See [Building Custom Agents](#building-custom-agents) for the pattern.
+- **New agents** -Add a new agent type to an existing family or propose a new family.
+- **LLM provider support** -We use LiteLLM, so most providers work out of the box. If you find one that doesn't, help us fix it.
+- **Documentation and examples** -Add example configs in `examples/` for your domain.
+- **Bug fixes and tests** -Always appreciated.
 
 ## License
 

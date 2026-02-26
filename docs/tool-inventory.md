@@ -280,12 +280,12 @@ Create a custom tool at runtime from agent-provided Python code. Registered imme
 | `registered` | bool | Whether registration succeeded |
 | `total_custom_tools` | int | Count of custom tools in session |
 
-**Security guardrails — blocked operations:**
-- `subprocess`, `os.system` — no shell commands
-- `eval`, `exec` — no dynamic code execution
-- `open`, file I/O — no direct file access
-- `socket` — no network operations
-- `spark`, `dbutils` — no direct Databricks access
+**Security guardrails -blocked operations:**
+- `subprocess`, `os.system` -no shell commands
+- `eval`, `exec` -no dynamic code execution
+- `open`, file I/O -no direct file access
+- `socket` -no network operations
+- `spark`, `dbutils` -no direct Databricks access
 
 **Allowed:** pandas, numpy, dict/list/string operations, math, `stage_dataframe()` bridge function.
 
@@ -450,7 +450,7 @@ Scan a directory for documentation files, prioritized by type.
 
 **Class:** `DataProfilerTool` | **File:** `data_agents/engineer/tools/data_profiler.py`
 
-Profile a data file's structure — column types, distributions, missing values, outliers.
+Profile a data file's structure -column types, distributions, missing values, outliers.
 
 **Parameters:**
 
@@ -603,7 +603,7 @@ Rename columns in a Delta table via ALTER TABLE (metadata-only, no data rewrite)
 | `succeeded` | int | Columns renamed |
 | `failed` | list | Columns that failed |
 
-**Notes:** Metadata-only operation via ALTER TABLE RENAME COLUMN — instant, no data rewrite.
+**Notes:** Metadata-only operation via ALTER TABLE RENAME COLUMN -instant, no data rewrite.
 
 ---
 

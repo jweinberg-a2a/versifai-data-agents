@@ -1,6 +1,6 @@
 # Architecture
 
-Versifai is an autonomous, LLM-powered framework with three specialized AI agents that discover, engineer, validate, and analyze data on Databricks Unity Catalog — then write a narrative report from the results.
+Versifai is an autonomous, LLM-powered framework with three specialized AI agents that discover, engineer, validate, and analyze data on Databricks Unity Catalog -then write a narrative report from the results.
 
 This page walks through the architecture from the top down: the overall pipeline, the core abstractions, how tools work, and finally a complete tool-level walkthrough of a real run.
 
@@ -28,11 +28,11 @@ Each stage has exactly three moving parts:
 
 | Part | What It Is | What Changes Between Projects |
 |------|-----------|-------------------------------|
-| **Config** | A Python dataclass holding all domain knowledge | Everything — this is where your project lives |
-| **Agent** | A generic Python class that reads the config and does work | Nothing — agents are reusable across projects |
+| **Config** | A Python dataclass holding all domain knowledge | Everything -this is where your project lives |
+| **Agent** | A generic Python class that reads the config and does work | Nothing -agents are reusable across projects |
 | **Notebook** | A Databricks notebook that creates the agent and runs it | Just the import path to your config |
 
-The agents are generic. **All domain-specific knowledge lives in configs.** You never modify agent code — you write new configs.
+The agents are generic. **All domain-specific knowledge lives in configs.** You never modify agent code -you write new configs.
 
 ---
 
@@ -52,7 +52,7 @@ flowchart TD
     ACT --> OBSERVE["**Observe**<br>Tool returns ToolResult<br>stored in AgentMemory"]
     OBSERVE --> REASON
 
-    TOOL -->|"No — done"| END([Agent returns final answer])
+    TOOL -->|"No -done"| END([Agent returns final answer])
 
     style REASON fill:#e8f0fe,stroke:#4a6f93
     style ACT fill:#e8f4e8,stroke:#4a8a4a
@@ -61,7 +61,7 @@ flowchart TD
 
 The agent never executes arbitrary code. It reasons about what to do, calls a tool, observes the result, and reasons again. This loop continues until the agent decides it's done or hits a turn limit.
 
-### Tools — The Unit of Capability
+### Tools -The Unit of Capability
 
 Tools are how agents interact with the world. Every tool follows the same contract:
 
@@ -82,7 +82,7 @@ Every tool:
 - Has a **name**, **description**, and **parameter schema** (JSON Schema)
 - Implements `_execute()` which does the work and returns a `ToolResult`
 - Is registered in a `ToolRegistry` at agent construction time
-- Can be tested in isolation — no LLM needed for unit tests
+- Can be tested in isolation -no LLM needed for unit tests
 
 ### How Tools Are Registered
 
@@ -105,7 +105,7 @@ tool_definitions = registry.to_claude_tools()
 result = registry.execute(tool_name="profile_data", tool_input={...})
 ```
 
-### ToolResult — The Standard Return Type
+### ToolResult -The Standard Return Type
 
 Every tool returns a `ToolResult`. This is the only way tools communicate back to the agent:
 
@@ -117,15 +117,15 @@ Every tool returns a `ToolResult`. This is the only way tools communicate back t
 | `summary` | `str` | Human-readable summary for the agent |
 | `image_path` | `str` | Path to PNG for inline display |
 
-Tools never raise exceptions. They always return a `ToolResult`, even on failure. This keeps the ReAct loop stable — the agent sees the error and can reason about what to do next.
+Tools never raise exceptions. They always return a `ToolResult`, even on failure. This keeps the ReAct loop stable -the agent sees the error and can reason about what to do next.
 
-### AgentMemory — Context Management
+### AgentMemory -Context Management
 
 The `AgentMemory` class manages conversation history and prevents context overflow:
 
-- **Auto-summarization** — at 30 messages, older messages are compressed
-- **Tool result trimming** — large results older than 10 messages are truncated to 300 chars
-- **Per-source reset** — history clears between sources, but decisions carry forward
+- **Auto-summarization** -at 30 messages, older messages are compressed
+- **Tool result trimming** -large results older than 10 messages are truncated to 300 chars
+- **Per-source reset** -history clears between sources, but decisions carry forward
 
 ---
 
@@ -136,7 +136,7 @@ Each agent has a specialized toolkit. Some tools are shared across agents.
 ```mermaid
 flowchart TD
     SHARED["Shared tools (4)<br>execute_sql, list_catalog_tables,<br>web_search, create_custom_tool"] --- ENG & SCI & STORY
-    SHARED2["Shared — Sci + Story (4)<br>create_visualization, view_chart,<br>save_note, scrape_web"] --- SCI & STORY
+    SHARED2["Shared -Sci + Story (4)<br>create_visualization, view_chart,<br>save_note, scrape_web"] --- SCI & STORY
 
     ENG["Data Engineer<br>10 specialized tools"]
     SCI["Data Scientist<br>7 specialized tools"]
@@ -156,7 +156,7 @@ For the complete parameter and return type reference for every tool, see the [To
 
 ---
 
-## Data Engineer Agent — Deep Dive
+## Data Engineer Agent -Deep Dive
 
 The Data Engineer is the first agent in the pipeline. It takes a directory of raw files and turns them into clean, validated Delta tables in Unity Catalog.
 
@@ -200,11 +200,11 @@ flowchart TD
 
 ### Key Behaviors
 
-**Smart resume** — If the notebook crashes after loading 2 of 4 sources, re-running skips the completed sources. The agent queries Unity Catalog for existing tables and compares loaded files (via `source_file_name` metadata) against current directory contents. See [Run Management & Reproducibility](run-management.md) for the full resume system.
+**Smart resume** -If the notebook crashes after loading 2 of 4 sources, re-running skips the completed sources. The agent queries Unity Catalog for existing tables and compares loaded files (via `source_file_name` metadata) against current directory contents. See [Run Management & Reproducibility](run-management.md) for the full resume system.
 
-**Batch transform** — For sources with many files (e.g., 45 monthly CSVs), `transform_and_load` supports batch mode — pass a `files` array to process everything in one tool call.
+**Batch transform** -For sources with many files (e.g., 45 monthly CSVs), `transform_and_load` supports batch mode -pass a `files` array to process everything in one tool call.
 
-**Auto-flush** — When staged data exceeds 30M rows, the tool auto-flushes to parquet on the staging volume and clears memory. The final `write_to_catalog` creates the Delta table from all accumulated parquet batches.
+**Auto-flush** -When staged data exceeds 30M rows, the tool auto-flushes to parquet on the staging volume and clears memory. The final `write_to_catalog` creates the Delta table from all accumulated parquet batches.
 
 **Three-tier write strategy:**
 
@@ -216,7 +216,7 @@ flowchart TD
 
 ---
 
-## Data Scientist Agent — Deep Dive
+## Data Scientist Agent -Deep Dive
 
 The Data Scientist reads from the Delta tables the engineer created, builds analytical datasets, runs statistics, fits models, and saves structured findings.
 
@@ -236,7 +236,7 @@ flowchart LR
 
 ### Tool-Level Walkthrough
 
-Here's what the agent does for a single research theme — "Does quack frequency correlate with next-day rain?"
+Here's what the agent does for a single research theme -"Does quack frequency correlate with next-day rain?"
 
 ```mermaid
 flowchart TD
@@ -260,9 +260,9 @@ flowchart TD
 
 ### Key Behaviors
 
-**Theme-driven analysis** — Each theme in the `ResearchConfig` is a self-contained research question with methodology steps, required tables, expected outputs, and a signature visualization. The agent executes themes in sequence order.
+**Theme-driven analysis** -Each theme in the `ResearchConfig` is a self-contained research question with methodology steps, required tables, expected outputs, and a signature visualization. The agent executes themes in sequence order.
 
-**Evidence tiers** — Every finding is classified by statistical strength:
+**Evidence tiers** -Every finding is classified by statistical strength:
 
 | Tier | Criteria | Used For |
 |------|----------|----------|
@@ -272,13 +272,13 @@ flowchart TD
 | CONTEXTUAL | Descriptive, no hypothesis test | Background context |
 | WEAK | p ≥ 0.05, negligible effect | Limitations, caveats |
 
-**Confounder detection** — `check_confounders` decomposes aggregate relationships into subgroups to detect Simpson's Paradox — where the overall trend reverses within every subgroup.
+**Confounder detection** -`check_confounders` decomposes aggregate relationships into subgroups to detect Simpson's Paradox -where the overall trend reverses within every subgroup.
 
-**Reproducibility** — Every SQL query, statistical test, and chart is logged to per-theme notes files via `save_note`. A human can follow the exact reasoning path without the AI. See [Run Management & Reproducibility](run-management.md) for the full artifact and notes system.
+**Reproducibility** -Every SQL query, statistical test, and chart is logged to per-theme notes files via `save_note`. A human can follow the exact reasoning path without the AI. See [Run Management & Reproducibility](run-management.md) for the full artifact and notes system.
 
 ---
 
-## StoryTeller Agent — Deep Dive
+## StoryTeller Agent -Deep Dive
 
 The StoryTeller reads the scientist's outputs (findings, charts, tables, notes) and produces a narrative report grounded in statistical evidence.
 
@@ -300,7 +300,7 @@ flowchart LR
 
 ### Tool-Level Walkthrough
 
-Here's how the StoryTeller writes one section of the report — the "Duck vs. Doppler" showdown:
+Here's how the StoryTeller writes one section of the report -the "Duck vs. Doppler" showdown:
 
 ```mermaid
 flowchart TD
@@ -321,19 +321,19 @@ flowchart TD
 
 ### Key Behaviors
 
-**Evidence-grounded writing** — The StoryTeller cannot make claims that aren't backed by findings. `evaluate_evidence` scores each finding's statistical strength and `curate` ranks them for each section's purpose.
+**Evidence-grounded writing** -The StoryTeller cannot make claims that aren't backed by findings. `evaluate_evidence` scores each finding's statistical strength and `curate` ranks them for each section's purpose.
 
-**Narrative text must match statistics** — If a finding has p=0.73, it's classified as WEAK evidence regardless of how the text describes it. The evidence threshold config controls what's allowed as a lead finding vs. supporting evidence.
+**Narrative text must match statistics** -If a finding has p=0.73, it's classified as WEAK evidence regardless of how the text describes it. The evidence threshold config controls what's allowed as a lead finding vs. supporting evidence.
 
-**Citation management** — `cite_source` maintains a bibliography. The `assemble` operation generates formatted references at the end of the report.
+**Citation management** -`cite_source` maintains a bibliography. The `assemble` operation generates formatted references at the end of the report.
 
-**Editorial review** — After the initial write, `run_editor()` enables a human-in-the-loop pass where the operator can give specific rewrite instructions (e.g., "simplify the methodology for a policymaker audience").
+**Editorial review** -After the initial write, `run_editor()` enables a human-in-the-loop pass where the operator can give specific rewrite instructions (e.g., "simplify the methodology for a policymaker audience").
 
 ---
 
 ## Config-Driven Design
 
-The agents are generic — the intelligence about *your* data lives in config dataclasses.
+The agents are generic -the intelligence about *your* data lives in config dataclasses.
 
 ```mermaid
 flowchart LR
@@ -375,9 +375,9 @@ llm = LLMClient(model="gemini/gemini-1.5-pro")   # Google
 
 Key features:
 
-- **Prompt caching** — system prompt and tool definitions use `cache_control` to avoid re-billing static tokens each turn
-- **Retry logic** — exponential backoff on rate limits, connection errors, 5xx errors
-- **Usage tracking** — input/output/cache-read/cache-creation token counts per call
+- **Prompt caching** -system prompt and tool definitions use `cache_control` to avoid re-billing static tokens each turn
+- **Retry logic** -exponential backoff on rate limits, connection errors, 5xx errors
+- **Usage tracking** -input/output/cache-read/cache-creation token counts per call
 
 ---
 
@@ -410,8 +410,8 @@ Raw data files are accessed via Databricks Volumes at `/Volumes/catalog/schema/v
 
 Tools that run SQL follow a two-tier pattern:
 
-1. **Try Spark first** — faster, native in Databricks notebooks
-2. **Fall back to Databricks SDK** — works outside notebooks, uses async polling
+1. **Try Spark first** -faster, native in Databricks notebooks
+2. **Fall back to Databricks SDK** -works outside notebooks, uses async polling
 
 ---
 

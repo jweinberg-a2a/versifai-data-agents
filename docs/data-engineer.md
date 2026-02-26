@@ -2,7 +2,7 @@
 
 The `DataEngineerAgent` discovers raw files, profiles data, designs schemas, and transforms and loads data into Databricks Unity Catalog Delta tables. It handles archives, schema drift, encoding issues, and multi-year historical data autonomously.
 
-The `DataAnalystAgent` works in tandem — it validates every table the engineer builds, checking schema quality, join key integrity, and cross-table joinability.
+The `DataAnalystAgent` works in tandem -it validates every table the engineer builds, checking schema quality, join key integrity, and cross-table joinability.
 
 ## Pipeline Phases
 
@@ -14,9 +14,9 @@ Explores the volume, maps directories, identifies file types and archives, creat
 
 Queries Unity Catalog for existing tables. Compares loaded files (via `source_file_name` metadata) against current directory contents. Routes each source to:
 
-- **Full processing** — new source, no existing table
-- **Incremental append** — existing table, new files detected
-- **Skip** — existing table, no new files
+- **Full processing** -new source, no existing table
+- **Incremental append** -existing table, new files detected
+- **Skip** -existing table, no new files
 
 Pass `force_full=True` to `run()` to bypass detection and reprocess everything.
 
@@ -30,7 +30,7 @@ The Data Analyst agent reviews all tables via SQL queries. Issues get sent back 
 
 ## Batch Transform & Auto-Flush
 
-For sources with many files (e.g., 45 monthly CSVs), `transform_and_load` supports **batch mode** — pass a `files` array to process all files in a single tool call instead of one-at-a-time.
+For sources with many files (e.g., 45 monthly CSVs), `transform_and_load` supports **batch mode** -pass a `files` array to process all files in a single tool call instead of one-at-a-time.
 
 When staged data exceeds **30M rows**, the tool **auto-flushes** to parquet on the staging volume and clears memory. The final `write_to_catalog` call creates the Delta table from all accumulated parquet batches.
 

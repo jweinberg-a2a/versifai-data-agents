@@ -6,16 +6,16 @@ The `DataScientistAgent` runs autonomous research analysis against validated dat
 
 The scientist operates in **theme-based analysis**. Each theme represents a research question or area of investigation (e.g., "Geographic Disparity", "Temporal Trends"). For each theme, the agent:
 
-1. **Orientation** — Reviews available data and plans the analysis approach
-2. **Silver dataset construction** — Creates derived analytical tables via SQL
-3. **Statistical analysis** — Runs hypothesis tests, correlations, descriptive statistics
-4. **Model fitting** — Regression, classification, or clustering as appropriate
-5. **Visualization** — Produces charts and plots for each finding
-6. **Findings** — Persists structured research findings with evidence
+1. **Orientation** -Reviews available data and plans the analysis approach
+2. **Silver dataset construction** -Creates derived analytical tables via SQL
+3. **Statistical analysis** -Runs hypothesis tests, correlations, descriptive statistics
+4. **Model fitting** -Regression, classification, or clustering as appropriate
+5. **Visualization** -Produces charts and plots for each finding
+6. **Findings** -Persists structured research findings with evidence
 
 ## Silver Tables
 
-The scientist can create derived tables prefixed with `silver_` via SQL. These are read-write. All other (bronze) tables are read-only — enforced by the `SilverOnlyExecuteSQLTool`.
+The scientist can create derived tables prefixed with `silver_` via SQL. These are read-write. All other (bronze) tables are read-only -enforced by the `SilverOnlyExecuteSQLTool`.
 
 ## Available Tools
 

@@ -6,11 +6,11 @@ The `StoryTellerAgent` transforms research findings into evidence-grounded narra
 
 The storyteller operates in **section-based writing**. Each section of the narrative is defined in the config and written independently:
 
-1. **Read findings** — Loads all findings from the scientist's output
-2. **Evaluate evidence** — Classifies each finding by evidence tier
-3. **Curate** — Selects the strongest, most relevant findings for each section
-4. **Write** — Produces markdown with inline citations and visual references
-5. **Assemble** — Combines all sections into a final narrative report with table of contents
+1. **Read findings** -Loads all findings from the scientist's output
+2. **Evaluate evidence** -Classifies each finding by evidence tier
+3. **Curate** -Selects the strongest, most relevant findings for each section
+4. **Write** -Produces markdown with inline citations and visual references
+5. **Assemble** -Combines all sections into a final narrative report with table of contents
 
 ## Available Tools
 
@@ -92,7 +92,7 @@ agent.run_editor(
     instructions="Simplify the methodology section for a policymaker audience."
 )
 
-# Open-ended review — the agent asks what to improve
+# Open-ended review -the agent asks what to improve
 agent.run_editor()
 ```
 

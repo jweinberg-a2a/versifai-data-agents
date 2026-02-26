@@ -36,7 +36,7 @@ export OPENAI_API_KEY="sk-..."
 
 ### 1. Run a Data Engineering Agent
 
-Agents run inside **Databricks notebooks**. You write a config, create the agent, and call `.run()` — the agent handles the rest through its ReAct loop:
+Agents run inside **Databricks notebooks**. You write a config, create the agent, and call `.run()` -the agent handles the rest through its ReAct loop:
 
 ```python
 from versifai.data_agents import DataEngineerAgent, ProjectConfig
@@ -53,7 +53,7 @@ result = agent.run()
 print(f"Processed {result['sources_completed']} sources")
 ```
 
-Here's what this looks like running in a Databricks notebook — the agent autonomously profiles files, reasons about schema drift, and calls tools to load data into Unity Catalog:
+Here's what this looks like running in a Databricks notebook -the agent autonomously profiles files, reasons about schema drift, and calls tools to load data into Unity Catalog:
 
 ![Data Engineer agent running in a Databricks notebook](assets/data_engineer_notebook.png)
 
@@ -124,11 +124,11 @@ agent._llm = llm  # Override the default
 All agents support resuming from interruption:
 
 ```python
-# First run — gets interrupted at source 3 of 10
+# First run -gets interrupted at source 3 of 10
 agent = DataEngineerAgent(cfg=cfg, dbutils=dbutils)
 agent.run()  # Ctrl+C after source 3
 
-# Re-run — automatically picks up from source 4
+# Re-run -automatically picks up from source 4
 agent = DataEngineerAgent(cfg=cfg, dbutils=dbutils)
 agent.run()  # Skips sources 1-3, continues from 4
 ```

@@ -1,6 +1,6 @@
 # Run Management & Reproducibility
 
-Versifai agents don't just produce answers — they produce **auditable artifacts
+Versifai agents don't just produce answers -they produce **auditable artifacts
 that show their work**. Every SQL query, every statistical test, every chart,
 every decision is recorded to disk. If you remove the AI agent from the process,
 a human can follow the exact same reasoning path and verify every conclusion.
@@ -15,7 +15,7 @@ and **how knowledge flows between agents**.
 Most AI systems work like this: **Input → LLM → Answer.** The answer is the
 only output. If something goes wrong, you start over.
 
-Versifai agents run in a **ReAct loop** — a cycle of reasoning and tool calls.
+Versifai agents run in a **ReAct loop** -a cycle of reasoning and tool calls.
 At each step in the loop, the agent produces durable artifacts on disk. The
 answer is one output among many:
 
@@ -57,20 +57,20 @@ and the agent can resume from where it left off.
 
 **Why this matters:**
 
-- **Reproducibility** — A human can re-run any SQL query, re-generate any chart,
+- **Reproducibility** -A human can re-run any SQL query, re-generate any chart,
   and verify any statistical claim without the LLM
-- **Resumability** — If the agent crashes at theme 4 of 7, it restarts at theme 5
+- **Resumability** -If the agent crashes at theme 4 of 7, it restarts at theme 5
   with full knowledge of what was already done
-- **Auditability** — Every decision has a timestamp, every chart has its source
+- **Auditability** -Every decision has a timestamp, every chart has its source
   data, every finding has its p-value and methodology
-- **Inter-agent handoff** — The StoryTeller reads the Scientist's structured
+- **Inter-agent handoff** -The StoryTeller reads the Scientist's structured
   outputs, not raw LLM text
 
 ---
 
 ## Run Isolation
 
-Every agent execution gets its own **run directory** — a timestamped folder
+Every agent execution gets its own **run directory** -a timestamped folder
 that contains all outputs for that run. This means you can run the same agent
 multiple times without overwriting previous results.
 
@@ -84,7 +84,7 @@ multiple times without overwriting previous results.
 └── Date: 2026-02-23
 ```
 
-Run IDs are **lexicographically sortable** — alphabetical order = chronological
+Run IDs are **lexicographically sortable** -alphabetical order = chronological
 order. This makes "find the latest run" trivial.
 
 ### Directory Structure
@@ -135,7 +135,7 @@ runs/20260223_143012_a1b2/
 
 ### Data Engineer
 
-The Data Engineer's outputs are **Delta tables in Unity Catalog** — not files on
+The Data Engineer's outputs are **Delta tables in Unity Catalog** -not files on
 disk. It creates clean, validated, joinable tables from raw data files.
 
 ```mermaid
@@ -162,7 +162,7 @@ Every table includes:
 | `load_timestamp` | When this row was loaded (reproducibility) |
 | Join key (e.g., `station_id`) | Links this table to every other table |
 
-The `source_file_name` column is what enables **smart resume** — on re-run, the
+The `source_file_name` column is what enables **smart resume** -on re-run, the
 agent queries the table to see which files are already loaded and skips them.
 
 ### Data Scientist
@@ -185,7 +185,7 @@ flowchart LR
     style NOTES fill:#f0f0f0,stroke:#999
 ```
 
-#### findings.json — Structured Evidence
+#### findings.json -Structured Evidence
 
 Every statistical finding the agent discovers is saved as a structured record.
 This is the primary handoff artifact to the StoryTeller.
@@ -210,14 +210,14 @@ This is the primary handoff artifact to the StoryTeller.
 | `research_question_id` | Links finding to the research theme that produced it |
 | `title` | One-line summary for the StoryTeller to reference |
 | `finding` | The actual discovery in plain language |
-| `evidence` | Statistical backing — p-values, effect sizes, sample sizes, methods |
-| `significance` | `high` / `medium` / `low` — drives evidence tier classification |
+| `evidence` | Statistical backing -p-values, effect sizes, sample sizes, methods |
+| `significance` | `high` / `medium` / `low` -drives evidence tier classification |
 | `visualization_path` | Chart that supports this finding |
 
-#### Notes — The Reasoning Log
+#### Notes -The Reasoning Log
 
 Per-theme notes files are the most important artifact for reproducibility.
-They record **everything the agent did and why** — every SQL query, every
+They record **everything the agent did and why** -every SQL query, every
 statistical test, every decision.
 
 ```markdown
@@ -332,7 +332,7 @@ The scientist checks **three sources** to determine what's complete:
 | **findings.json** | Which themes have findings? | Finding with `research_question_id: "theme_1"` → theme 1 done |
 | **RunState** | What did the run state record? | `completed_items.themes: ["theme_0", "theme_1"]` |
 
-The system uses a **union rule** — if any of these three sources says a piece
+The system uses a **union rule** -if any of these three sources says a piece
 of work is done, it's treated as done.
 
 ```python
@@ -359,11 +359,11 @@ The storyteller checks for **section files on disk**:
 # Scan the output directory for existing sections
 for filename in os.listdir(output_path):
     if filename.startswith("section_") and filename.endswith(".md"):
-        # This section exists — skip it on resume
+        # This section exists -skip it on resume
         completed[section_id] = content
 ```
 
-This is why sections are persisted immediately — each one is a durable
+This is why sections are persisted immediately -each one is a durable
 checkpoint.
 
 ### What Resume Looks Like
@@ -371,17 +371,17 @@ checkpoint.
 ```
 $ python run_scientist.py
 
-Phase 1: Orientation — SKIPPED (already completed)
+Phase 1: Orientation -SKIPPED (already completed)
 Phase 2: Silver Construction
-  ├── silver_weather_duck_daily — SKIPPED (exists in catalog)
-  ├── silver_duck_forecast_comparison — SKIPPED (exists in catalog)
-  └── silver_ice_cream_weather — RUNNING...
+  ├── silver_weather_duck_daily -SKIPPED (exists in catalog)
+  ├── silver_duck_forecast_comparison -SKIPPED (exists in catalog)
+  └── silver_ice_cream_weather -RUNNING...
 Phase 3: Theme Analysis
-  ├── Theme 0: The Quack Census — SKIPPED (findings exist)
-  ├── Theme 1: Quack Before the Storm — SKIPPED (findings exist)
-  ├── Theme 2: The Fluff Factor — SKIPPED (findings exist)
-  ├── Theme 3: The Ice Cream Confounder — SKIPPED (findings exist)
-  ├── Theme 4: V-Formation Tornado Warning — RUNNING...  ← picks up here
+  ├── Theme 0: The Quack Census -SKIPPED (findings exist)
+  ├── Theme 1: Quack Before the Storm -SKIPPED (findings exist)
+  ├── Theme 2: The Fluff Factor -SKIPPED (findings exist)
+  ├── Theme 3: The Ice Cream Confounder -SKIPPED (findings exist)
+  ├── Theme 4: V-Formation Tornado Warning -RUNNING...  ← picks up here
   ...
 ```
 
@@ -426,7 +426,7 @@ It's persisted to `run_metadata.json` and updated after every completed item.
 ## Carryover Context
 
 When an agent moves between phases, its conversation history is cleared to
-save tokens — but **key knowledge is preserved** via carryover context.
+save tokens -but **key knowledge is preserved** via carryover context.
 
 ```mermaid
 flowchart LR
@@ -444,11 +444,11 @@ flowchart LR
 
 The `AgentMemory` class manages this:
 
-- **`reset_for_new_source()`** — Clears conversation history but preserves
+- **`reset_for_new_source()`** -Clears conversation history but preserves
   source summaries, context notes, and decisions
-- **`get_carryover_context()`** — Builds a markdown summary of everything
+- **`get_carryover_context()`** -Builds a markdown summary of everything
   learned so far (last 10 notes, all source summaries)
-- **`log_source_summary()`** — Records a one-line summary of what was done
+- **`log_source_summary()`** -Records a one-line summary of what was done
   for a source/phase
 
 This means the agent in phase 3 knows what happened in phases 1 and 2 —
@@ -480,7 +480,7 @@ flowchart LR
 
 ### Engineer → Scientist
 
-The handoff is **implicit** — both agents point to the same Unity Catalog
+The handoff is **implicit** -both agents point to the same Unity Catalog
 schema. The scientist runs `list_catalog_tables` and sees the tables the
 engineer created.
 
