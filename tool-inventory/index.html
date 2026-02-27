@@ -1,0 +1,4855 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Agentic AI framework for autonomous data engineering, science, and storytelling.">
+      
+      
+      
+        <link rel="canonical" href="https://docs.versifai.org/tool-inventory/">
+      
+      
+        <link rel="prev" href="../custom-agents/">
+      
+      
+        <link rel="next" href="../api/core/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/IconOnly_NoBuffer.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
+    
+    
+      
+        <title>Tool Reference - Versifai</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#versifai-tool-inventory" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Versifai" class="md-header__button md-logo" aria-label="Versifai" data-md-component="logo">
+      
+  <img src="../assets/FullLogo_Transparent_NoBuffer.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Versifai
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Tool Reference
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jweinberg-a2a/versifai-data-agents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jweinberg-a2a/versifai-data-agents
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Versifai" class="md-nav__button md-logo" aria-label="Versifai" data-md-component="logo">
+      
+  <img src="../assets/FullLogo_Transparent_NoBuffer.png" alt="logo">
+
+    </a>
+    Versifai
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jweinberg-a2a/versifai-data-agents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jweinberg-a2a/versifai-data-agents
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial-world-development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial: World Development
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../run-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Run Management & Reproducibility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-engineer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Engineer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-scientist/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Scientist
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storyteller/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    StoryTeller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../custom-agents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Building Custom Agents
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tool Reference
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tool Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#tool-cross-reference-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tool Cross-Reference Matrix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shared-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shared Tools
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Shared Tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#execute_sql" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        execute_sql
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list_catalog_tables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        list_catalog_tables
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#web_search" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        web_search
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scrape_web" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        scrape_web
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create_visualization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        create_visualization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#view_chart" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        view_chart
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#save_note" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        save_note
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create_custom_tool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        create_custom_tool
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-engineer-agent-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Engineer Agent Tools
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Engineer Agent Tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#explore_volume" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        explore_volume
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extract_archive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        extract_archive
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#read_file_header" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        read_file_header
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#read_documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        read_documentation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scan_for_documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        scan_for_documentation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#profile_data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        profile_data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#design_schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        design_schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transform_and_load" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        transform_and_load
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#write_to_catalog" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        write_to_catalog
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rename_columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        rename_columns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-scientist-agent-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Scientist Agent Tools
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Scientist Agent Tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#summary_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#statistical_analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        statistical_analysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fit_model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        fit_model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check_confounders" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        check_confounders
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate_silver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate_silver
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate_statistics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate_statistics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#review_literature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        review_literature
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#save_finding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        save_finding
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#log_model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        log_model
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#storyteller-agent-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        StoryTeller Agent Tools
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="StoryTeller Agent Tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#summary_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#read_findings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        read_findings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#read_chart" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        read_chart
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#read_table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        read_table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#write_narrative" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        write_narrative
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evaluate_evidence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        evaluate_evidence
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cite_source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cite_source
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Framework
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/data-agents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Agents
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/science-agents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Science Agents
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/story-agents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Story Agents
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#tool-cross-reference-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tool Cross-Reference Matrix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shared-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shared Tools
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Shared Tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#execute_sql" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        execute_sql
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#list_catalog_tables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        list_catalog_tables
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#web_search" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        web_search
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scrape_web" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        scrape_web
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create_visualization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        create_visualization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#view_chart" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        view_chart
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#save_note" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        save_note
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create_custom_tool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        create_custom_tool
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-engineer-agent-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Engineer Agent Tools
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Engineer Agent Tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#explore_volume" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        explore_volume
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extract_archive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        extract_archive
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#read_file_header" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        read_file_header
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#read_documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        read_documentation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scan_for_documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        scan_for_documentation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#profile_data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        profile_data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#design_schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        design_schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transform_and_load" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        transform_and_load
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#write_to_catalog" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        write_to_catalog
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rename_columns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        rename_columns
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-scientist-agent-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Scientist Agent Tools
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Scientist Agent Tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#summary_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#statistical_analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        statistical_analysis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fit_model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        fit_model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check_confounders" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        check_confounders
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate_silver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate_silver
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate_statistics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate_statistics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#review_literature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        review_literature
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#save_finding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        save_finding
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#log_model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        log_model
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#storyteller-agent-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        StoryTeller Agent Tools
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="StoryTeller Agent Tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#summary_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#read_findings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        read_findings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#read_chart" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        read_chart
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#read_table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        read_table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#write_narrative" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        write_narrative
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evaluate_evidence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        evaluate_evidence
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cite_source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        cite_source
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="versifai-tool-inventory">Versifai Tool Inventory<a class="headerlink" href="#versifai-tool-inventory" title="Permanent link">&para;</a></h1>
+<p>Complete reference for every tool available to each agent. All tools extend <code>BaseTool</code> and return <code>ToolResult</code>.</p>
+<p><strong>ToolResult fields:</strong> <code>success</code> (bool), <code>data</code> (Any), <code>error</code> (str), <code>summary</code> (str), <code>image_path</code> (str)</p>
+<hr />
+<h2 id="tool-cross-reference-matrix">Tool Cross-Reference Matrix<a class="headerlink" href="#tool-cross-reference-matrix" title="Permanent link">&para;</a></h2>
+<p>Which tools are available to which agents:</p>
+<table>
+<thead>
+<tr>
+<th>Tool Name</th>
+<th style="text-align: center;">Data Engineer</th>
+<th style="text-align: center;">Data Scientist</th>
+<th style="text-align: center;">StoryTeller</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>execute_sql</code></td>
+<td style="text-align: center;">Full</td>
+<td style="text-align: center;">Silver-only</td>
+<td style="text-align: center;">Silver-only</td>
+</tr>
+<tr>
+<td><code>list_catalog_tables</code></td>
+<td style="text-align: center;">Y</td>
+<td style="text-align: center;">Y</td>
+<td style="text-align: center;">Y</td>
+</tr>
+<tr>
+<td><code>web_search</code></td>
+<td style="text-align: center;">Y</td>
+<td style="text-align: center;">Y</td>
+<td style="text-align: center;">Y</td>
+</tr>
+<tr>
+<td><code>scrape_web</code></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">Y</td>
+<td style="text-align: center;">Y</td>
+</tr>
+<tr>
+<td><code>create_visualization</code></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">Y</td>
+<td style="text-align: center;">Y</td>
+</tr>
+<tr>
+<td><code>view_chart</code></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">Y</td>
+<td style="text-align: center;">Y</td>
+</tr>
+<tr>
+<td><code>save_note</code></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">Y</td>
+<td style="text-align: center;">Y</td>
+</tr>
+<tr>
+<td><code>create_custom_tool</code></td>
+<td style="text-align: center;">Y</td>
+<td style="text-align: center;">Y</td>
+<td style="text-align: center;">Y</td>
+</tr>
+<tr>
+<td><code>explore_volume</code></td>
+<td style="text-align: center;">Y</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td><code>extract_archive</code></td>
+<td style="text-align: center;">Y</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td><code>read_file_header</code></td>
+<td style="text-align: center;">Y</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td><code>read_documentation</code></td>
+<td style="text-align: center;">Y</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td><code>scan_for_documentation</code></td>
+<td style="text-align: center;">Y</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td><code>profile_data</code></td>
+<td style="text-align: center;">Y</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td><code>design_schema</code></td>
+<td style="text-align: center;">Y</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td><code>transform_and_load</code></td>
+<td style="text-align: center;">Y</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td><code>write_to_catalog</code></td>
+<td style="text-align: center;">Y</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td><code>rename_columns</code></td>
+<td style="text-align: center;">Y</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td><code>statistical_analysis</code></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">Y</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td><code>fit_model</code></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">Y</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td><code>check_confounders</code></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">Y</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td><code>validate_silver</code></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">Y</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td><code>validate_statistics</code></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">Y</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td><code>review_literature</code></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">Y</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td><code>save_finding</code></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">Y</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td><code>log_model</code></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">Y*</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td><code>read_findings</code></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">Y</td>
+</tr>
+<tr>
+<td><code>read_chart</code></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">Y</td>
+</tr>
+<tr>
+<td><code>read_table</code></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">Y</td>
+</tr>
+<tr>
+<td><code>write_narrative</code></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">Y</td>
+</tr>
+<tr>
+<td><code>evaluate_evidence</code></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">Y</td>
+</tr>
+<tr>
+<td><code>cite_source</code></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">Y</td>
+</tr>
+</tbody>
+</table>
+<p>* <code>log_model</code> is conditionally registered only when <code>cfg.mlflow_experiment</code> is set.</p>
+<hr />
+<h2 id="shared-tools">Shared Tools<a class="headerlink" href="#shared-tools" title="Permanent link">&para;</a></h2>
+<p>These tools are registered by two or more agents.</p>
+<hr />
+<h3 id="execute_sql"><code>execute_sql</code><a class="headerlink" href="#execute_sql" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>ExecuteSQLTool</code> / <code>SilverOnlyExecuteSQLTool</code> | <strong>File:</strong> <code>core/tools/catalog_writer.py</code></p>
+<p>Execute SQL queries against Unity Catalog. Data Engineer gets full write access; Data Scientist and StoryTeller get write-protected access (DDL/DML restricted to <code>silver_*</code> tables).</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sql</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>SQL query (DDL, DML, or SELECT)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rows</code></td>
+<td>list[dict]</td>
+<td>Query result rows (SELECT only, capped at 100)</td>
+</tr>
+<tr>
+<td><code>row_count</code></td>
+<td>int</td>
+<td>Number of rows returned</td>
+</tr>
+<tr>
+<td><code>method</code></td>
+<td>string</td>
+<td>Execution method (<code>spark</code> or <code>sdk</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Notes:</strong>
+- SELECT results capped at 100 rows for agent display; use WHERE/LIMIT for large sets
+- OOM detection with actionable error messages suggesting LIMIT, WHERE, or GROUP BY
+- Spark execution with 10-minute timeout, SDK fallback with async polling
+- SilverOnly variant returns <code>success=False</code> if DDL/DML targets non-silver tables</p>
+<hr />
+<h3 id="list_catalog_tables"><code>list_catalog_tables</code><a class="headerlink" href="#list_catalog_tables" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>ListCatalogTablesTool</code> | <strong>File:</strong> <code>core/tools/catalog_writer.py</code></p>
+<p>List all tables in the configured Unity Catalog schema.</p>
+<p><strong>Parameters:</strong> None required.</p>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tables</code></td>
+<td>list[str]</td>
+<td>Table names in the schema</td>
+</tr>
+<tr>
+<td><code>count</code></td>
+<td>int</td>
+<td>Number of tables</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="web_search"><code>web_search</code><a class="headerlink" href="#web_search" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>WebSearchTool</code> | <strong>File:</strong> <code>core/tools/web_search.py</code></p>
+<p>Search the web or fetch a specific URL for data documentation and metadata.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>query</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>Search query, matched against <code>ProjectConfig.documentation_urls</code></td>
+</tr>
+<tr>
+<td><code>url</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Specific URL to fetch directly (bypasses query matching)</td>
+</tr>
+<tr>
+<td><code>max_chars</code></td>
+<td>int</td>
+<td style="text-align: center;">-</td>
+<td>Max characters to return (default 10000)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>url</code></td>
+<td>string</td>
+<td>Fetched URL (direct mode)</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td>string</td>
+<td>Extracted text content (direct mode)</td>
+</tr>
+<tr>
+<td><code>results</code></td>
+<td>list[dict]</td>
+<td>Search results with url/content (search mode)</td>
+</tr>
+<tr>
+<td><code>urls_checked</code></td>
+<td>list[str]</td>
+<td>URLs that were fetched (search mode)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Notes:</strong>
+- Matches queries against <code>ProjectConfig.documentation_urls</code> for known data portals
+- Falls back to DuckDuckGo search if no documentation URL match
+- HTML text extraction via BeautifulSoup (falls back to regex strip)</p>
+<hr />
+<h3 id="scrape_web"><code>scrape_web</code><a class="headerlink" href="#scrape_web" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>WebScraperTool</code> | <strong>File:</strong> <code>core/tools/web_scraper.py</code></p>
+<p>Advanced web scraping with JavaScript rendering. Three operations.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>operation</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td><code>discover_site</code>, <code>fetch_page</code>, or <code>extract_tables</code></td>
+</tr>
+<tr>
+<td><code>url</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>Target URL</td>
+</tr>
+<tr>
+<td><code>section_filter</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Keyword filter for <code>discover_site</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns (by operation):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Key Fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>discover_site</code></td>
+<td><code>base_url</code>, <code>total_pages</code>, <code>sections</code> (list of name/url/page_count)</td>
+</tr>
+<tr>
+<td><code>fetch_page</code></td>
+<td><code>url</code>, <code>text</code>, <code>content_length</code>, <code>source</code> (direct/google_cache/playwright)</td>
+</tr>
+<tr>
+<td><code>extract_tables</code></td>
+<td><code>url</code>, <code>tables</code> (list of headers/rows), <code>count</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Notes:</strong>
+- Playwright headless browser for JavaScript-rendered pages
+- Falls back to Google cache when direct fetch fails
+- Supports PDF extraction</p>
+<hr />
+<h3 id="create_visualization"><code>create_visualization</code><a class="headerlink" href="#create_visualization" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>CreateVisualizationTool</code> | <strong>File:</strong> <code>core/tools/visualization.py</code></p>
+<p>Create publication-quality charts, maps, and result tables. 15 chart types including choropleth maps. Logs all metadata (SQL, data, render code) to theme notes for reproducibility.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>chart_type</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td><code>bar</code>, <code>scatter</code>, <code>heatmap</code>, <code>line</code>, <code>box</code>, <code>histogram</code>, <code>waterfall</code>, <code>dumbbell</code>, <code>lollipop</code>, <code>violin</code>, <code>choropleth</code>, <code>dual_choropleth</code>, <code>sankey</code>, <code>table</code>, <code>custom</code></td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>Chart title</td>
+</tr>
+<tr>
+<td><code>filename</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>Output filename (e.g., <code>rq1_chart.png</code>)</td>
+</tr>
+<tr>
+<td><code>sql_query</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>SQL to fetch data (preferred over <code>data</code> for large datasets)</td>
+</tr>
+<tr>
+<td><code>data</code></td>
+<td>list[dict]</td>
+<td style="text-align: center;">-</td>
+<td>Pre-computed data rows (fallback if SQL not possible)</td>
+</tr>
+<tr>
+<td><code>x_column</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>X-axis column name</td>
+</tr>
+<tr>
+<td><code>y_column</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Y-axis column name</td>
+</tr>
+<tr>
+<td><code>color_column</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Color/grouping column</td>
+</tr>
+<tr>
+<td><code>theme_id</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Theme ID for notes logging</td>
+</tr>
+<tr>
+<td><code>interpretation</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>2-3 sentence chart interpretation (logged to notes)</td>
+</tr>
+<tr>
+<td><code>render_code</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Full Python program for <code>custom</code> chart type</td>
+</tr>
+<tr>
+<td><code>datasets</code></td>
+<td>dict</td>
+<td style="text-align: center;">-</td>
+<td>Additional named SQL data sources for <code>custom</code> charts</td>
+</tr>
+<tr>
+<td><code>fips_column</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>FIPS code column (choropleth only, default <code>fips</code>)</td>
+</tr>
+<tr>
+<td><code>color_scale</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Color scale: <code>Viridis</code>, <code>RdYlGn</code>, <code>RdBu</code>, <code>Blues</code>, <code>Reds</code>, <code>YlOrRd</code>, <code>Plasma</code>, <code>Inferno</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>chart_path</code></td>
+<td>string</td>
+<td>Path to saved PNG/CSV</td>
+</tr>
+<tr>
+<td><code>chart_type</code></td>
+<td>string</td>
+<td>Chart type used</td>
+</tr>
+<tr>
+<td><code>row_count</code></td>
+<td>int</td>
+<td>Number of data rows rendered</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Notes:</strong>
+- <code>sql_query</code> executes via Spark with no row cap (unlike execute_sql's 100-row display limit)
+- Chart metadata (SQL, data, render code, interpretation) logged to theme notes file
+- <code>custom</code> chart type: agent writes full Python; available variables include <code>df</code>, <code>pd</code>, <code>np</code>, <code>plt</code>, <code>sns</code>, <code>go</code>, <code>px</code>
+- Saves to configured results volume path</p>
+<hr />
+<h3 id="view_chart"><code>view_chart</code><a class="headerlink" href="#view_chart" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>ViewChartTool</code> | <strong>File:</strong> <code>core/tools/view_chart.py</code></p>
+<p>View a previously created chart or list all available charts and tables.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>filename</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Specific file to view. Omit to list all.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>charts</code></td>
+<td>list[str]</td>
+<td>Available PNG files (list mode)</td>
+</tr>
+<tr>
+<td><code>tables</code></td>
+<td>list[str]</td>
+<td>Available CSV files (list mode)</td>
+</tr>
+<tr>
+<td><code>filename</code></td>
+<td>string</td>
+<td>Viewed file name (view mode)</td>
+</tr>
+<tr>
+<td><code>path</code></td>
+<td>string</td>
+<td>Full file path (view mode)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Notes:</strong>
+- PNG files displayed inline via base64 in Databricks notebooks
+- CSV files returned as formatted text
+- Sets <code>image_path</code> on ToolResult for automatic rendering</p>
+<hr />
+<h3 id="save_note"><code>save_note</code><a class="headerlink" href="#save_note" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>SaveNoteTool</code> | <strong>File:</strong> <code>core/tools/save_note.py</code></p>
+<p>Save a research note to a per-theme notes file for reproducibility and audit.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>theme_id</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>Theme identifier (e.g., <code>theme_1</code>, <code>rq_1</code>)</td>
+</tr>
+<tr>
+<td><code>note</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>Note content (supports markdown)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>theme_id</code></td>
+<td>string</td>
+<td>Theme ID</td>
+</tr>
+<tr>
+<td><code>file</code></td>
+<td>string</td>
+<td>Path to notes file</td>
+</tr>
+<tr>
+<td><code>timestamp</code></td>
+<td>string</td>
+<td>ISO timestamp</td>
+</tr>
+<tr>
+<td><code>char_count</code></td>
+<td>int</td>
+<td>Note length</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Notes:</strong>
+- Uses read-then-write pattern for Databricks FUSE compatibility (no append mode)
+- One notes file per theme
+- Timestamps included for audit trail</p>
+<hr />
+<h3 id="create_custom_tool"><code>create_custom_tool</code><a class="headerlink" href="#create_custom_tool" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>DynamicToolBuilderTool</code> | <strong>File:</strong> <code>core/tools/dynamic_tool_builder.py</code></p>
+<p>Create a custom tool at runtime from agent-provided Python code. Registered immediately for use.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tool_name</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>Name for the new tool</td>
+</tr>
+<tr>
+<td><code>tool_description</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>Description visible to agent</td>
+</tr>
+<tr>
+<td><code>parameters</code></td>
+<td>dict</td>
+<td style="text-align: center;">Y</td>
+<td>JSON Schema for the tool's parameters</td>
+</tr>
+<tr>
+<td><code>code</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>Python implementation (receives **kwargs, must return dict)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tool_name</code></td>
+<td>string</td>
+<td>Created tool name</td>
+</tr>
+<tr>
+<td><code>registered</code></td>
+<td>bool</td>
+<td>Whether registration succeeded</td>
+</tr>
+<tr>
+<td><code>total_custom_tools</code></td>
+<td>int</td>
+<td>Count of custom tools in session</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Security guardrails -blocked operations:</strong>
+- <code>subprocess</code>, <code>os.system</code> -no shell commands
+- <code>eval</code>, <code>exec</code> -no dynamic code execution
+- <code>open</code>, file I/O -no direct file access
+- <code>socket</code> -no network operations
+- <code>spark</code>, <code>dbutils</code> -no direct Databricks access</p>
+<p><strong>Allowed:</strong> pandas, numpy, dict/list/string operations, math, <code>stage_dataframe()</code> bridge function.</p>
+<hr />
+<h2 id="data-engineer-agent-tools">Data Engineer Agent Tools<a class="headerlink" href="#data-engineer-agent-tools" title="Permanent link">&para;</a></h2>
+<p><strong>Agent:</strong> <code>DataEngineerAgent</code> | <strong>File:</strong> <code>data_agents/engineer/agent.py</code></p>
+<p><strong>Total tools:</strong> 14 + 1 pseudo-tool (<code>ask_human</code>) | <strong>SQL access:</strong> Full (read/write)</p>
+<h3 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>explore_volume</code></td>
+<td>Browse Databricks Volume directories</td>
+</tr>
+<tr>
+<td><code>extract_archive</code></td>
+<td>Unpack ZIP/GZ/TAR archives</td>
+</tr>
+<tr>
+<td><code>read_file_header</code></td>
+<td>Preview file headers and sample rows</td>
+</tr>
+<tr>
+<td><code>read_documentation</code></td>
+<td>Read and classify documentation files</td>
+</tr>
+<tr>
+<td><code>scan_for_documentation</code></td>
+<td>Find documentation in a directory</td>
+</tr>
+<tr>
+<td><code>profile_data</code></td>
+<td>Profile column types, distributions, nulls</td>
+</tr>
+<tr>
+<td><code>design_schema</code></td>
+<td>Design Delta table schema from source columns</td>
+</tr>
+<tr>
+<td><code>transform_and_load</code></td>
+<td>Transform and stage data for catalog write</td>
+</tr>
+<tr>
+<td><code>write_to_catalog</code></td>
+<td>Write staged DataFrames to Unity Catalog</td>
+</tr>
+<tr>
+<td><code>rename_columns</code></td>
+<td>Rename columns in Delta tables</td>
+</tr>
+<tr>
+<td>+ 4 shared tools</td>
+<td><code>execute_sql</code>, <code>list_catalog_tables</code>, <code>web_search</code>, <code>create_custom_tool</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="explore_volume"><code>explore_volume</code><a class="headerlink" href="#explore_volume" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>VolumeExplorerTool</code> | <strong>File:</strong> <code>data_agents/engineer/tools/volume_explorer.py</code></p>
+<p>List files and subdirectories in a Databricks Volume with metadata.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>Volume path (e.g., <code>/Volumes/catalog/schema/volume/data</code>)</td>
+</tr>
+<tr>
+<td><code>recursive</code></td>
+<td>bool</td>
+<td style="text-align: center;">-</td>
+<td>Recurse into subdirectories (default false)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path</code></td>
+<td>string</td>
+<td>Explored path</td>
+</tr>
+<tr>
+<td><code>entry_count</code></td>
+<td>int</td>
+<td>Number of entries</td>
+</tr>
+<tr>
+<td><code>entries</code></td>
+<td>list[dict]</td>
+<td>File/directory entries with <code>name</code>, <code>type</code>, <code>size_bytes</code>, <code>size_mb</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="extract_archive"><code>extract_archive</code><a class="headerlink" href="#extract_archive" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>FileExtractorTool</code> | <strong>File:</strong> <code>data_agents/engineer/tools/file_extractor.py</code></p>
+<p>Extract compressed archive files.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>file_path</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>Path to archive file</td>
+</tr>
+<tr>
+<td><code>dest_path</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Destination directory (default: same as archive)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>source_archive</code></td>
+<td>string</td>
+<td>Archive path</td>
+</tr>
+<tr>
+<td><code>destination</code></td>
+<td>string</td>
+<td>Extraction directory</td>
+</tr>
+<tr>
+<td><code>file_count</code></td>
+<td>int</td>
+<td>Number of extracted files</td>
+</tr>
+<tr>
+<td><code>files</code></td>
+<td>list[str]</td>
+<td>Paths to extracted files</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Supported formats:</strong> ZIP (.zip), GZIP (.gz), TAR (.tar), TAR.GZ (.tgz, .tar.gz)</p>
+<hr />
+<h3 id="read_file_header"><code>read_file_header</code><a class="headerlink" href="#read_file_header" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>FileReaderTool</code> | <strong>File:</strong> <code>data_agents/engineer/tools/file_reader.py</code></p>
+<p>Read file headers and sample rows from data files.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>file_path</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>Path to data file</td>
+</tr>
+<tr>
+<td><code>n_rows</code></td>
+<td>int</td>
+<td style="text-align: center;">-</td>
+<td>Sample rows to read (default 10)</td>
+</tr>
+<tr>
+<td><code>encoding</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Encoding override (auto-detected)</td>
+</tr>
+<tr>
+<td><code>separator</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>CSV separator override (auto-detected)</td>
+</tr>
+<tr>
+<td><code>sheet_name</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Excel sheet name (default: first)</td>
+</tr>
+<tr>
+<td><code>skip_rows</code></td>
+<td>int</td>
+<td style="text-align: center;">-</td>
+<td>Rows to skip before reading (default 0)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>columns</code></td>
+<td>list[str]</td>
+<td>Column names</td>
+</tr>
+<tr>
+<td><code>column_count</code></td>
+<td>int</td>
+<td>Number of columns</td>
+</tr>
+<tr>
+<td><code>columns_detail</code></td>
+<td>list[dict]</td>
+<td>Per-column dtype and sample values</td>
+</tr>
+<tr>
+<td><code>sample_data</code></td>
+<td>list[dict]</td>
+<td>Sample rows</td>
+</tr>
+<tr>
+<td><code>estimated_total_rows</code></td>
+<td>int</td>
+<td>Estimated row count</td>
+</tr>
+<tr>
+<td><code>file_size_mb</code></td>
+<td>float</td>
+<td>File size</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Supported formats:</strong> CSV, TSV, Excel (.xls/.xlsx), Parquet, SAS (.sas7bdat), Stata (.dta)</p>
+<hr />
+<h3 id="read_documentation"><code>read_documentation</code><a class="headerlink" href="#read_documentation" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>DocumentationReaderTool</code> | <strong>File:</strong> <code>data_agents/engineer/tools/doc_reader.py</code></p>
+<p>Read and classify a documentation file.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>file_path</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>Path to documentation file</td>
+</tr>
+<tr>
+<td><code>max_chars</code></td>
+<td>int</td>
+<td style="text-align: center;">-</td>
+<td>Max characters to return (default 15000)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>file_path</code></td>
+<td>string</td>
+<td>File path</td>
+</tr>
+<tr>
+<td><code>doc_type</code></td>
+<td>string</td>
+<td>Detected type (e.g., <code>markdown</code>, <code>pdf</code>)</td>
+</tr>
+<tr>
+<td><code>classification</code></td>
+<td>string</td>
+<td><code>data_dictionary</code>, <code>readme</code>, <code>schema_documentation</code>, <code>api_reference</code>, <code>general_documentation</code></td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td>string</td>
+<td>Extracted text content</td>
+</tr>
+<tr>
+<td><code>truncated</code></td>
+<td>bool</td>
+<td>Whether content was truncated</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Supported formats:</strong> TXT, MD, HTML, PDF, CSV, Excel</p>
+<hr />
+<h3 id="scan_for_documentation"><code>scan_for_documentation</code><a class="headerlink" href="#scan_for_documentation" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>ScanForDocumentationTool</code> | <strong>File:</strong> <code>data_agents/engineer/tools/doc_reader.py</code></p>
+<p>Scan a directory for documentation files, prioritized by type.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>Directory path to scan</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>documentation_files</code></td>
+<td>list[dict]</td>
+<td>Found files with <code>filename</code>, <code>path</code>, <code>priority</code>, <code>doc_type</code></td>
+</tr>
+<tr>
+<td><code>count</code></td>
+<td>int</td>
+<td>Number of files found</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Priority order:</strong> README &gt; DICTIONARY/DATA_DICTIONARY &gt; SCHEMA &gt; other docs</p>
+<hr />
+<h3 id="profile_data"><code>profile_data</code><a class="headerlink" href="#profile_data" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>DataProfilerTool</code> | <strong>File:</strong> <code>data_agents/engineer/tools/data_profiler.py</code></p>
+<p>Profile a data file's structure -column types, distributions, missing values, outliers.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>file_path</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>Path to data file</td>
+</tr>
+<tr>
+<td><code>sample_size</code></td>
+<td>int</td>
+<td style="text-align: center;">-</td>
+<td>Rows to sample (default 500)</td>
+</tr>
+<tr>
+<td><code>encoding</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Encoding override</td>
+</tr>
+<tr>
+<td><code>separator</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Separator override</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rows_sampled</code></td>
+<td>int</td>
+<td>Actual rows sampled</td>
+</tr>
+<tr>
+<td><code>column_count</code></td>
+<td>int</td>
+<td>Number of columns</td>
+</tr>
+<tr>
+<td><code>columns</code></td>
+<td>list[str]</td>
+<td>Column names</td>
+</tr>
+<tr>
+<td><code>column_profiles</code></td>
+<td>list[dict]</td>
+<td>Per-column: dtype, null_count, unique_count, min/max/mean/median/std, sample_values</td>
+</tr>
+<tr>
+<td><code>potential_fips_columns</code></td>
+<td>list[str]</td>
+<td>Columns detected as FIPS codes</td>
+</tr>
+<tr>
+<td><code>potential_geo_columns</code></td>
+<td>list[str]</td>
+<td>Columns detected as geographic</td>
+</tr>
+<tr>
+<td><code>memory_usage_mb</code></td>
+<td>float</td>
+<td>Estimated memory usage</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Heuristics:</strong>
+- FIPS: columns with "fips" in name or 5-digit zero-padded patterns
+- Geographic: columns named "state", "county", "city", "zip", etc.</p>
+<hr />
+<h3 id="design_schema"><code>design_schema</code><a class="headerlink" href="#design_schema" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>SchemaDesignerTool</code> | <strong>File:</strong> <code>data_agents/engineer/tools/schema_designer.py</code></p>
+<p>Design a Delta table schema from source file columns. Auto-infers types, detects cryptic names, generates CREATE TABLE SQL.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>source_name</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>Source name key (must match a profiled file)</td>
+</tr>
+<tr>
+<td><code>table_name</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>Target table name (e.g., <code>silver_county_demographics</code>)</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Table description</td>
+</tr>
+<tr>
+<td><code>column_names</code></td>
+<td>list[str]</td>
+<td style="text-align: center;">-</td>
+<td>Subset of columns to include (default: all)</td>
+</tr>
+<tr>
+<td><code>join_key_source_column</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Column to use as primary/join key</td>
+</tr>
+<tr>
+<td><code>type_overrides</code></td>
+<td>dict</td>
+<td style="text-align: center;">-</td>
+<td>Manual type overrides: <code>{col: data_type}</code></td>
+</tr>
+<tr>
+<td><code>name_overrides</code></td>
+<td>dict</td>
+<td style="text-align: center;">-</td>
+<td>Manual name overrides: <code>{source: target}</code></td>
+</tr>
+<tr>
+<td><code>columns</code></td>
+<td>list[dict]</td>
+<td style="text-align: center;">-</td>
+<td>Full column definitions with transform expressions</td>
+</tr>
+<tr>
+<td><code>partition_columns</code></td>
+<td>list[str]</td>
+<td style="text-align: center;">-</td>
+<td>Partition columns (e.g., <code>["year", "state"]</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>schema</code></td>
+<td>dict</td>
+<td>Full schema with column definitions</td>
+</tr>
+<tr>
+<td><code>create_table_sql</code></td>
+<td>string</td>
+<td>Executable CREATE TABLE SQL</td>
+</tr>
+<tr>
+<td><code>warnings</code></td>
+<td>list[str]</td>
+<td>Cryptic names, missing join keys, etc.</td>
+</tr>
+<tr>
+<td><code>column_count</code></td>
+<td>int</td>
+<td>Number of columns in schema</td>
+</tr>
+<tr>
+<td><code>has_join_key</code></td>
+<td>bool</td>
+<td>Whether a join key was identified</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Auto-detection:</strong> <code>pct_</code>/<code>rate_</code> -&gt; DOUBLE; <code>id</code>/<code>key</code> -&gt; STRING; date patterns -&gt; DATE/TIMESTAMP</p>
+<hr />
+<h3 id="transform_and_load"><code>transform_and_load</code><a class="headerlink" href="#transform_and_load" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>DataTransformerTool</code> | <strong>File:</strong> <code>data_agents/engineer/tools/data_transformer.py</code></p>
+<p>Transform source data per designed schema and stage for catalog write. Supports single-file and batch modes.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>source_name</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>Source key (must match a designed schema)</td>
+</tr>
+<tr>
+<td><code>file_path</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Source file (single-file mode)</td>
+</tr>
+<tr>
+<td><code>files</code></td>
+<td>list[dict]</td>
+<td style="text-align: center;">-</td>
+<td>Batch mode: list of <code>{file_path, encoding, separator}</code></td>
+</tr>
+<tr>
+<td><code>source_year</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Year label (e.g., <code>2024</code>)</td>
+</tr>
+<tr>
+<td><code>column_overrides</code></td>
+<td>dict</td>
+<td style="text-align: center;">-</td>
+<td>Per-column transform overrides</td>
+</tr>
+<tr>
+<td><code>encoding</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Encoding override</td>
+</tr>
+<tr>
+<td><code>separator</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Separator override</td>
+</tr>
+<tr>
+<td><code>skip_rows</code></td>
+<td>int</td>
+<td style="text-align: center;">-</td>
+<td>Rows to skip</td>
+</tr>
+<tr>
+<td><code>sheet_name</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Excel sheet</td>
+</tr>
+<tr>
+<td><code>append</code></td>
+<td>bool</td>
+<td style="text-align: center;">-</td>
+<td>Append to staged data (default true)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>original_rows</code></td>
+<td>int</td>
+<td>Source row count</td>
+</tr>
+<tr>
+<td><code>transformed_rows</code></td>
+<td>int</td>
+<td>Rows after transform</td>
+</tr>
+<tr>
+<td><code>total_staged_rows</code></td>
+<td>int</td>
+<td>Cumulative staged rows</td>
+</tr>
+<tr>
+<td><code>columns_mapped</code></td>
+<td>int</td>
+<td>Columns successfully mapped</td>
+</tr>
+<tr>
+<td><code>auto_flush</code></td>
+<td>bool</td>
+<td>Whether auto-flush triggered</td>
+</tr>
+<tr>
+<td><code>sample_data</code></td>
+<td>list[dict]</td>
+<td>Sample transformed rows</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Notes:</strong>
+- Auto-flush to parquet at 30M row threshold to prevent OOM
+- Column mapping, type casting, null handling per schema
+- Batch mode normalizes multiple files to single schema</p>
+<hr />
+<h3 id="write_to_catalog"><code>write_to_catalog</code><a class="headerlink" href="#write_to_catalog" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>CatalogWriterTool</code> | <strong>File:</strong> <code>core/tools/catalog_writer.py</code></p>
+<p>Write staged DataFrames to Unity Catalog as managed Delta tables.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>source_name</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>Staged data key</td>
+</tr>
+<tr>
+<td><code>table_name</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>Target table (e.g., <code>silver_county_demographics</code>)</td>
+</tr>
+<tr>
+<td><code>mode</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td><code>overwrite</code> (default) or <code>append</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>table_name</code></td>
+<td>string</td>
+<td>Full catalog.schema.table name</td>
+</tr>
+<tr>
+<td><code>rows_written</code></td>
+<td>int</td>
+<td>Rows written</td>
+</tr>
+<tr>
+<td><code>verified_row_count</code></td>
+<td>int</td>
+<td>Post-write verification count</td>
+</tr>
+<tr>
+<td><code>method</code></td>
+<td>string</td>
+<td><code>spark</code> or <code>sdk</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Notes:</strong>
+- Direct write up to 2M rows; stages to parquet above that threshold
+- Post-write verification via COUNT(*) query
+- Spark first, Databricks SDK fallback</p>
+<hr />
+<h3 id="rename_columns"><code>rename_columns</code><a class="headerlink" href="#rename_columns" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>RenameColumnsTool</code> | <strong>File:</strong> <code>core/tools/column_renamer.py</code></p>
+<p>Rename columns in a Delta table via ALTER TABLE (metadata-only, no data rewrite).</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>table_name</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>Table name (without catalog.schema prefix)</td>
+</tr>
+<tr>
+<td><code>column_renames</code></td>
+<td>dict</td>
+<td style="text-align: center;">Y</td>
+<td><code>{old_name: new_name}</code> mapping</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>table_name</code></td>
+<td>string</td>
+<td>Full table name</td>
+</tr>
+<tr>
+<td><code>succeeded</code></td>
+<td>int</td>
+<td>Columns renamed</td>
+</tr>
+<tr>
+<td><code>failed</code></td>
+<td>list</td>
+<td>Columns that failed</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Notes:</strong> Metadata-only operation via ALTER TABLE RENAME COLUMN -instant, no data rewrite.</p>
+<hr />
+<h2 id="data-scientist-agent-tools">Data Scientist Agent Tools<a class="headerlink" href="#data-scientist-agent-tools" title="Permanent link">&para;</a></h2>
+<p><strong>Agent:</strong> <code>DataScientistAgent</code> | <strong>File:</strong> <code>science_agents/scientist/agent.py</code></p>
+<p><strong>Total tools:</strong> 14-15 | <strong>SQL access:</strong> Silver-only (write-protected)</p>
+<h3 id="summary_1">Summary<a class="headerlink" href="#summary_1" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>statistical_analysis</code></td>
+<td>8 analysis types: describe, distribution, hypothesis test, correlation, effect size, data quality, assumptions, Bayesian</td>
+</tr>
+<tr>
+<td><code>fit_model</code></td>
+<td>9 model types: regression, classification, clustering, time series, counterfactual, Bayesian</td>
+</tr>
+<tr>
+<td><code>check_confounders</code></td>
+<td>Detect Simpson's Paradox and confounding variables</td>
+</tr>
+<tr>
+<td><code>validate_silver</code></td>
+<td>6 data quality checks for silver-layer tables</td>
+</tr>
+<tr>
+<td><code>validate_statistics</code></td>
+<td>4 checks: multiple comparisons, multicollinearity, ecological fallacy, robustness</td>
+</tr>
+<tr>
+<td><code>review_literature</code></td>
+<td>Search, fetch, and compare published research</td>
+</tr>
+<tr>
+<td><code>save_finding</code></td>
+<td>Save structured findings to JSON for StoryTeller</td>
+</tr>
+<tr>
+<td><code>log_model</code></td>
+<td>Log trained models to MLflow (conditional)</td>
+</tr>
+<tr>
+<td>+ 8 shared tools</td>
+<td><code>execute_sql</code>, <code>list_catalog_tables</code>, <code>web_search</code>, <code>scrape_web</code>, <code>create_visualization</code>, <code>view_chart</code>, <code>save_note</code>, <code>create_custom_tool</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="statistical_analysis"><code>statistical_analysis</code><a class="headerlink" href="#statistical_analysis" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>StatisticalAnalysisTool</code> | <strong>File:</strong> <code>science_agents/scientist/tools/statistical_analysis.py</code></p>
+<p>Perform statistical analysis with 8 analysis types.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>analysis_type</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td><code>describe</code>, <code>distribution</code>, <code>hypothesis_test</code>, <code>correlation</code>, <code>effect_size</code>, <code>data_quality</code>, <code>assumption_check</code>, <code>bayesian_test</code></td>
+</tr>
+<tr>
+<td><code>sql_query</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>SELECT query — tool fetches all rows directly</td>
+</tr>
+<tr>
+<td><code>columns</code></td>
+<td>list[str]</td>
+<td style="text-align: center;">-</td>
+<td>Columns to analyze (default: all numeric)</td>
+</tr>
+<tr>
+<td><code>group_column</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Grouping column (hypothesis_test, effect_size)</td>
+</tr>
+<tr>
+<td><code>value_column</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Value column (hypothesis_test, effect_size)</td>
+</tr>
+<tr>
+<td><code>method</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Specific method (see below)</td>
+</tr>
+<tr>
+<td><code>confidence_level</code></td>
+<td>float</td>
+<td style="text-align: center;">-</td>
+<td>Confidence level (default 0.95)</td>
+</tr>
+<tr>
+<td><code>prior</code></td>
+<td>dict</td>
+<td style="text-align: center;">-</td>
+<td>Bayesian prior: <code>{mean, std}</code>, <code>{alpha, beta}</code></td>
+</tr>
+<tr>
+<td><code>rope</code></td>
+<td>list[float]</td>
+<td style="text-align: center;">-</td>
+<td>Region of Practical Equivalence <code>[low, high]</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Methods by analysis type:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Analysis Type</th>
+<th>Available Methods</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>hypothesis_test</code></td>
+<td><code>ttest_ind</code>, <code>ttest_rel</code>, <code>mannwhitney</code>, <code>chi_square</code>, <code>anova</code>, <code>kruskal</code></td>
+</tr>
+<tr>
+<td><code>correlation</code></td>
+<td><code>pearson</code>, <code>spearman</code></td>
+</tr>
+<tr>
+<td><code>assumption_check</code></td>
+<td><code>regression</code>, <code>ttest</code>, <code>anova</code>, <code>chi_square</code></td>
+</tr>
+<tr>
+<td><code>bayesian_test</code></td>
+<td><code>bayesian_ttest</code>, <code>bayesian_proportion</code>, <code>bayesian_correlation</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns (key fields by type):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Analysis Type</th>
+<th>Key Return Fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>describe</code></td>
+<td>Per-column: <code>count</code>, <code>mean</code>, <code>median</code>, <code>std</code>, <code>min</code>, <code>max</code>, <code>q25</code>, <code>q75</code>, <code>skew</code>, <code>kurtosis</code></td>
+</tr>
+<tr>
+<td><code>distribution</code></td>
+<td>Normality tests (Shapiro-Wilk, D'Agostino), distribution fitting</td>
+</tr>
+<tr>
+<td><code>hypothesis_test</code></td>
+<td><code>test_statistic</code>, <code>p_value</code>, <code>result</code> (REJECT_NULL / FAIL_TO_REJECT)</td>
+</tr>
+<tr>
+<td><code>correlation</code></td>
+<td>Correlation matrix with p-values</td>
+</tr>
+<tr>
+<td><code>effect_size</code></td>
+<td>Cohen's d, rank-biserial, magnitude classification</td>
+</tr>
+<tr>
+<td><code>data_quality</code></td>
+<td>Missing rates, outlier detection, cardinality</td>
+</tr>
+<tr>
+<td><code>assumption_check</code></td>
+<td>Normality, homoscedasticity, independence checks</td>
+</tr>
+<tr>
+<td><code>bayesian_test</code></td>
+<td><code>posterior_mean</code>, <code>credible_interval</code>, <code>bayes_factor</code>, <code>rope_analysis</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="fit_model"><code>fit_model</code><a class="headerlink" href="#fit_model" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>ModelFittingTool</code> | <strong>File:</strong> <code>science_agents/scientist/tools/model_fitting.py</code></p>
+<p>Fit statistical and ML models with 9 model types.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>model_type</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td><code>linear_regression</code>, <code>logistic_regression</code>, <code>random_forest</code>, <code>gradient_boosting</code>, <code>kmeans</code>, <code>time_series</code>, <code>counterfactual</code>, <code>cross_validate</code>, <code>bayesian_regression</code></td>
+</tr>
+<tr>
+<td><code>sql_query</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>SELECT statement — tool fetches all rows via Spark/SDK</td>
+</tr>
+<tr>
+<td><code>target_column</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Target variable</td>
+</tr>
+<tr>
+<td><code>feature_columns</code></td>
+<td>list[str]</td>
+<td style="text-align: center;">-</td>
+<td>Feature variables</td>
+</tr>
+<tr>
+<td><code>time_column</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Time column (time_series only)</td>
+</tr>
+<tr>
+<td><code>parameters</code></td>
+<td>dict</td>
+<td style="text-align: center;">-</td>
+<td>Model-specific params (e.g., <code>{n_clusters: 4}</code>, <code>{scenarios: [...]}</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns (key fields by model type):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Model Type</th>
+<th>Key Return Fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>linear_regression</code></td>
+<td><code>r_squared</code>, <code>coefficients</code>, <code>p_values</code>, <code>vif_scores</code>, <code>f_statistic</code></td>
+</tr>
+<tr>
+<td><code>logistic_regression</code></td>
+<td><code>accuracy</code>, <code>auc</code>, <code>precision</code>, <code>recall</code>, confusion matrix</td>
+</tr>
+<tr>
+<td><code>random_forest</code></td>
+<td><code>accuracy</code>, <code>auc</code>, <code>feature_importance</code></td>
+</tr>
+<tr>
+<td><code>gradient_boosting</code></td>
+<td><code>accuracy</code>, <code>feature_importance</code></td>
+</tr>
+<tr>
+<td><code>kmeans</code></td>
+<td>Silhouette scores, cluster profiles</td>
+</tr>
+<tr>
+<td><code>time_series</code></td>
+<td>Trend decomposition, change points, forecasts</td>
+</tr>
+<tr>
+<td><code>counterfactual</code></td>
+<td><code>scenario</code>, <code>predicted_outcome</code>, <code>interpretation</code></td>
+</tr>
+<tr>
+<td><code>cross_validate</code></td>
+<td>Multi-model comparison metrics</td>
+</tr>
+<tr>
+<td><code>bayesian_regression</code></td>
+<td><code>coefficients</code> (mean/std), <code>credible_intervals</code>, <code>probability_direction</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Notes:</strong>
+- <strong>Always use <code>sql_query</code></strong> — the tool fetches all rows directly via Spark/SDK. Do not serialize data inline.
+- VIF (Variance Inflation Factor) computed automatically for linear regression to detect multicollinearity
+- <code>counterfactual</code> enables what-if scenario analysis
+- <code>bayesian_regression</code> supports informative priors from published research</p>
+<hr />
+<h3 id="check_confounders"><code>check_confounders</code><a class="headerlink" href="#check_confounders" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>CheckConfoundersTool</code> | <strong>File:</strong> <code>science_agents/scientist/tools/check_confounders.py</code></p>
+<p>Detect Simpson's Paradox by decomposing aggregate relationships into subgroups.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sql_query</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>SELECT statement — tool fetches all rows via Spark/SDK</td>
+</tr>
+<tr>
+<td><code>outcome_column</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>Outcome/dependent variable</td>
+</tr>
+<tr>
+<td><code>predictor_column</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>Predictor/independent variable</td>
+</tr>
+<tr>
+<td><code>grouping_columns</code></td>
+<td>list[str]</td>
+<td style="text-align: center;">Y</td>
+<td>Potential confounder columns to stratify by</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>aggregate</code></td>
+<td>dict</td>
+<td>Overall <code>correlation</code>, <code>direction</code>, <code>strength</code></td>
+</tr>
+<tr>
+<td><code>decompositions</code></td>
+<td>dict</td>
+<td>Per-group correlations for each grouping column</td>
+</tr>
+<tr>
+<td><code>paradox_detected</code></td>
+<td>bool</td>
+<td>Whether Simpson's Paradox found</td>
+</tr>
+<tr>
+<td><code>paradox_type</code></td>
+<td>string</td>
+<td><code>direction_reversal</code>, <code>strength_masking</code>, or <code>strength_reversal</code></td>
+</tr>
+<tr>
+<td><code>strongest_confounder</code></td>
+<td>string</td>
+<td>Most impactful grouping column</td>
+</tr>
+<tr>
+<td><code>recommendation</code></td>
+<td>string</td>
+<td>Interpretation and guidance</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="validate_silver"><code>validate_silver</code><a class="headerlink" href="#validate_silver" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>ValidateSilverTool</code> | <strong>File:</strong> <code>science_agents/scientist/tools/validate_silver.py</code></p>
+<p>Validate silver-layer data quality with 6 check types.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>check_type</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td><code>grain</code>, <code>enrollment_sanity</code>, <code>year_alignment</code>, <code>join_completeness</code>, <code>value_ranges</code>, <code>zero_columns</code></td>
+</tr>
+<tr>
+<td><code>data</code></td>
+<td>list[dict]</td>
+<td style="text-align: center;">Y</td>
+<td>Data rows</td>
+</tr>
+<tr>
+<td><code>primary_key_columns</code></td>
+<td>list[str]</td>
+<td style="text-align: center;">-</td>
+<td>PK columns (for <code>grain</code>)</td>
+</tr>
+<tr>
+<td><code>enrollment_columns</code></td>
+<td>list[str]</td>
+<td style="text-align: center;">-</td>
+<td>Enrollment columns (for <code>enrollment_sanity</code>)</td>
+</tr>
+<tr>
+<td><code>max_enrollment_per_row</code></td>
+<td>int</td>
+<td style="text-align: center;">-</td>
+<td>Max reasonable value (default 1M)</td>
+</tr>
+<tr>
+<td><code>year_column_left</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Left year column (for <code>year_alignment</code>)</td>
+</tr>
+<tr>
+<td><code>year_column_right</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Right year column</td>
+</tr>
+<tr>
+<td><code>expected_offset</code></td>
+<td>int</td>
+<td style="text-align: center;">-</td>
+<td>Expected year offset (default -1)</td>
+</tr>
+<tr>
+<td><code>left_count</code></td>
+<td>int</td>
+<td style="text-align: center;">-</td>
+<td>Left table rows (for <code>join_completeness</code>)</td>
+</tr>
+<tr>
+<td><code>matched_count</code></td>
+<td>int</td>
+<td style="text-align: center;">-</td>
+<td>Matched rows</td>
+</tr>
+<tr>
+<td><code>column_ranges</code></td>
+<td>dict</td>
+<td style="text-align: center;">-</td>
+<td>Expected ranges: <code>{col: {min, max}}</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>issues_found</code></td>
+<td>bool</td>
+<td>Whether any issues detected</td>
+</tr>
+<tr>
+<td><code>issue_count</code></td>
+<td>int</td>
+<td>Number of issues</td>
+</tr>
+<tr>
+<td><code>details</code></td>
+<td>list[str]</td>
+<td>Issue descriptions</td>
+</tr>
+<tr>
+<td><code>suggested_fix</code></td>
+<td>string</td>
+<td>Recommended fix</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="validate_statistics"><code>validate_statistics</code><a class="headerlink" href="#validate_statistics" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>ValidateStatisticsTool</code> | <strong>File:</strong> <code>science_agents/scientist/tools/validate_statistics.py</code></p>
+<p>Validate statistical analyses for common pitfalls.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>check_type</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td><code>multiple_comparisons</code>, <code>multicollinearity</code>, <code>ecological_fallacy</code>, <code>robustness</code></td>
+</tr>
+<tr>
+<td><code>data</code></td>
+<td>list[dict]</td>
+<td style="text-align: center;">-</td>
+<td>Data (for multicollinearity/robustness)</td>
+</tr>
+<tr>
+<td><code>p_values</code></td>
+<td>list[float]</td>
+<td style="text-align: center;">-</td>
+<td>P-values (for multiple_comparisons)</td>
+</tr>
+<tr>
+<td><code>alpha</code></td>
+<td>float</td>
+<td style="text-align: center;">-</td>
+<td>Significance threshold (default 0.05)</td>
+</tr>
+<tr>
+<td><code>feature_columns</code></td>
+<td>list[str]</td>
+<td style="text-align: center;">-</td>
+<td>Features (for multicollinearity)</td>
+</tr>
+<tr>
+<td><code>outcome_column</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Outcome (for robustness)</td>
+</tr>
+<tr>
+<td><code>predictor_column</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Predictor (for ecological_fallacy)</td>
+</tr>
+<tr>
+<td><code>data_fine_grain</code></td>
+<td>list[dict]</td>
+<td style="text-align: center;">-</td>
+<td>Individual-level data (for ecological_fallacy)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns (by check type):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Check Type</th>
+<th>Key Return Fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>multiple_comparisons</code></td>
+<td><code>bonferroni_corrected</code>, <code>bh_corrected</code>, per-p-value significance</td>
+</tr>
+<tr>
+<td><code>multicollinearity</code></td>
+<td><code>vif_scores</code>, <code>high_vif</code> (columns with VIF &gt; 5)</td>
+</tr>
+<tr>
+<td><code>ecological_fallacy</code></td>
+<td><code>aggregate_correlation</code>, <code>individual_correlation</code>, <code>risk</code> level</td>
+</tr>
+<tr>
+<td><code>robustness</code></td>
+<td>Sensitivity to outlier removal, stability assessment</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="review_literature"><code>review_literature</code><a class="headerlink" href="#review_literature" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>LiteratureReviewTool</code> | <strong>File:</strong> <code>science_agents/scientist/tools/literature_review.py</code></p>
+<p>Search for and compare published research.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>operation</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td><code>search</code>, <code>fetch_article</code>, <code>compare_findings</code></td>
+</tr>
+<tr>
+<td><code>query</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Search query (for <code>search</code>)</td>
+</tr>
+<tr>
+<td><code>url</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Article URL (for <code>fetch_article</code>)</td>
+</tr>
+<tr>
+<td><code>own_finding</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Your finding (for <code>compare_findings</code>)</td>
+</tr>
+<tr>
+<td><code>published_finding</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Published finding to compare against</td>
+</tr>
+<tr>
+<td><code>source_title</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Published source title</td>
+</tr>
+<tr>
+<td><code>max_results</code></td>
+<td>int</td>
+<td style="text-align: center;">-</td>
+<td>Max search results (default 10)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns (by operation):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Key Return Fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>search</code></td>
+<td><code>results</code> list with title, authors, year, url, abstract</td>
+</tr>
+<tr>
+<td><code>fetch_article</code></td>
+<td><code>title</code>, <code>authors</code>, <code>abstract</code>, <code>full_text</code>, <code>key_findings</code></td>
+</tr>
+<tr>
+<td><code>compare_findings</code></td>
+<td><code>alignment</code> (ALIGNED/CONTRADICTS/NOVEL), <code>similarity_score</code>, <code>differences</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="save_finding"><code>save_finding</code><a class="headerlink" href="#save_finding" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>SaveFindingTool</code> | <strong>File:</strong> <code>science_agents/scientist/tools/save_finding.py</code></p>
+<p>Save a structured research finding to findings JSON for the StoryTeller agent.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>research_question_id</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>RQ identifier (e.g., <code>rq_1</code>)</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>Short finding title</td>
+</tr>
+<tr>
+<td><code>finding</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>Finding statement</td>
+</tr>
+<tr>
+<td><code>evidence</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>Supporting evidence (stats, p-values, N)</td>
+</tr>
+<tr>
+<td><code>significance</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td><code>high</code>, <code>medium</code>, or <code>low</code></td>
+</tr>
+<tr>
+<td><code>visualization_path</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Path to associated chart</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>research_question_id</code></td>
+<td>string</td>
+<td>RQ ID</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>string</td>
+<td>Finding title</td>
+</tr>
+<tr>
+<td><code>timestamp</code></td>
+<td>string</td>
+<td>ISO timestamp</td>
+</tr>
+<tr>
+<td><code>index</code></td>
+<td>int</td>
+<td>Finding index in JSON file</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="log_model"><code>log_model</code><a class="headerlink" href="#log_model" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>LogModelTool</code> | <strong>File:</strong> <code>science_agents/scientist/tools/log_model.py</code></p>
+<p>Log a trained model to MLflow with metrics and optional Unity Catalog registration.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>model_type</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>Model type (e.g., <code>linear_regression</code>)</td>
+</tr>
+<tr>
+<td><code>data</code></td>
+<td>list[dict]</td>
+<td style="text-align: center;">Y</td>
+<td>Training data</td>
+</tr>
+<tr>
+<td><code>target_column</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>Target column</td>
+</tr>
+<tr>
+<td><code>feature_columns</code></td>
+<td>list[str]</td>
+<td style="text-align: center;">Y</td>
+<td>Feature columns</td>
+</tr>
+<tr>
+<td><code>metrics</code></td>
+<td>dict</td>
+<td style="text-align: center;">Y</td>
+<td>Metrics to log (e.g., <code>{r_squared: 0.85}</code>)</td>
+</tr>
+<tr>
+<td><code>model_name</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td>Registered model name</td>
+</tr>
+<tr>
+<td><code>parameters</code></td>
+<td>dict</td>
+<td style="text-align: center;">-</td>
+<td>Hyperparameters</td>
+</tr>
+<tr>
+<td><code>tags</code></td>
+<td>dict</td>
+<td style="text-align: center;">-</td>
+<td>Custom MLflow tags</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mlflow_run_id</code></td>
+<td>string</td>
+<td>MLflow run ID</td>
+</tr>
+<tr>
+<td><code>model_uri</code></td>
+<td>string</td>
+<td>Model URI for loading</td>
+</tr>
+<tr>
+<td><code>registered_model</code></td>
+<td>string</td>
+<td>Registered model name</td>
+</tr>
+<tr>
+<td><code>metrics_logged</code></td>
+<td>dict</td>
+<td>Logged metrics</td>
+</tr>
+<tr>
+<td><code>top_features</code></td>
+<td>list[str]</td>
+<td>Top features by importance</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Notes:</strong>
+- Only registered when <code>cfg.mlflow_experiment</code> is configured
+- Optional Unity Catalog model registration for production deployment</p>
+<hr />
+<h2 id="storyteller-agent-tools">StoryTeller Agent Tools<a class="headerlink" href="#storyteller-agent-tools" title="Permanent link">&para;</a></h2>
+<p><strong>Agent:</strong> <code>StoryTellerAgent</code> | <strong>File:</strong> <code>story_agents/storyteller/agent.py</code></p>
+<p><strong>Total tools:</strong> 14 | <strong>SQL access:</strong> Silver-only (SELECT in practice)</p>
+<h3 id="summary_2">Summary<a class="headerlink" href="#summary_2" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>read_findings</code></td>
+<td>Read findings saved by Data Scientist</td>
+</tr>
+<tr>
+<td><code>read_chart</code></td>
+<td>Read chart metadata from results directory</td>
+</tr>
+<tr>
+<td><code>read_table</code></td>
+<td>Read CSV result tables</td>
+</tr>
+<tr>
+<td><code>write_narrative</code></td>
+<td>Write, read, and assemble narrative sections</td>
+</tr>
+<tr>
+<td><code>evaluate_evidence</code></td>
+<td>Score evidence strength, curate findings</td>
+</tr>
+<tr>
+<td><code>cite_source</code></td>
+<td>Manage citations and references</td>
+</tr>
+<tr>
+<td>+ 8 shared tools</td>
+<td><code>execute_sql</code>, <code>list_catalog_tables</code>, <code>web_search</code>, <code>scrape_web</code>, <code>create_visualization</code>, <code>view_chart</code>, <code>save_note</code>, <code>create_custom_tool</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="read_findings"><code>read_findings</code><a class="headerlink" href="#read_findings" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>ReadFindingsTool</code> | <strong>File:</strong> <code>story_agents/storyteller/tools/read_findings.py</code></p>
+<p>Read research findings saved by the Data Scientist agent. 5 operations.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>operation</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td><code>list</code>, <code>get</code>, <code>by_theme</code>, <code>high_significance</code>, <code>search</code></td>
+</tr>
+<tr>
+<td><code>index</code></td>
+<td>int</td>
+<td style="text-align: center;">-</td>
+<td>Finding index (for <code>get</code>)</td>
+</tr>
+<tr>
+<td><code>theme_id</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Theme/RQ ID (for <code>by_theme</code>)</td>
+</tr>
+<tr>
+<td><code>query</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Search query (for <code>search</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns (by operation):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Key Return Fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>list</code></td>
+<td><code>findings</code> list (index, title, significance), <code>total_count</code></td>
+</tr>
+<tr>
+<td><code>get</code></td>
+<td>Full finding: title, finding, evidence, significance, visualization_path</td>
+</tr>
+<tr>
+<td><code>by_theme</code></td>
+<td>Filtered findings for theme</td>
+</tr>
+<tr>
+<td><code>high_significance</code></td>
+<td>Only high/medium significance findings</td>
+</tr>
+<tr>
+<td><code>search</code></td>
+<td>Keyword-matched findings with relevance scores</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="read_chart"><code>read_chart</code><a class="headerlink" href="#read_chart" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>ReadChartTool</code> | <strong>File:</strong> <code>story_agents/storyteller/tools/read_chart.py</code></p>
+<p>Read chart metadata from the results directory.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>operation</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td><code>list</code>, <code>by_theme</code>, <code>metadata</code></td>
+</tr>
+<tr>
+<td><code>theme_id</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Theme ID (for <code>by_theme</code>)</td>
+</tr>
+<tr>
+<td><code>chart_filename</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Chart filename (for <code>metadata</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns (by operation):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Key Return Fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>list</code></td>
+<td><code>charts</code> list (filename, theme_id, title), <code>total_count</code></td>
+</tr>
+<tr>
+<td><code>by_theme</code></td>
+<td>Charts filtered by theme</td>
+</tr>
+<tr>
+<td><code>metadata</code></td>
+<td>Full metadata: chart_type, x/y columns, row_count, interpretation</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="read_table"><code>read_table</code><a class="headerlink" href="#read_table" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>ReadTableTool</code> | <strong>File:</strong> <code>story_agents/storyteller/tools/read_table.py</code></p>
+<p>Read CSV result tables from the results directory.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>operation</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td><code>list</code>, <code>read</code>, <code>summary</code></td>
+</tr>
+<tr>
+<td><code>filename</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Table filename (for <code>read</code>/<code>summary</code>)</td>
+</tr>
+<tr>
+<td><code>max_rows</code></td>
+<td>int</td>
+<td style="text-align: center;">-</td>
+<td>Max rows to return (default 100)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns (by operation):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Key Return Fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>list</code></td>
+<td><code>tables</code> list (filename, row_count, column_count), <code>total_count</code></td>
+</tr>
+<tr>
+<td><code>read</code></td>
+<td><code>columns</code>, <code>rows</code> (as list[dict]), <code>row_count</code></td>
+</tr>
+<tr>
+<td><code>summary</code></td>
+<td>Per-column statistics: mean, std, min, max</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="write_narrative"><code>write_narrative</code><a class="headerlink" href="#write_narrative" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>WriteNarrativeTool</code> | <strong>File:</strong> <code>story_agents/storyteller/tools/write_narrative.py</code></p>
+<p>Write, read, update, and assemble narrative sections for the final report. 5 operations.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>operation</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td><code>write_section</code>, <code>read_section</code>, <code>update_section</code>, <code>list_sections</code>, <code>assemble</code></td>
+</tr>
+<tr>
+<td><code>section_id</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Section identifier (e.g., <code>introduction</code>, <code>rq_1_findings</code>)</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Section title (for <code>write_section</code>)</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Markdown content (for <code>write_section</code>/<code>update_section</code>)</td>
+</tr>
+<tr>
+<td><code>sequence</code></td>
+<td>int</td>
+<td style="text-align: center;">-</td>
+<td>Order in final document (for <code>write_section</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns (by operation):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Key Return Fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>write_section</code></td>
+<td><code>section_id</code>, <code>sequence</code>, <code>created</code></td>
+</tr>
+<tr>
+<td><code>read_section</code></td>
+<td><code>title</code>, <code>content</code>, <code>sequence</code></td>
+</tr>
+<tr>
+<td><code>list_sections</code></td>
+<td><code>sections</code> list (id, title, sequence), <code>total_count</code></td>
+</tr>
+<tr>
+<td><code>assemble</code></td>
+<td><code>document_path</code>, <code>table_of_contents</code>, <code>section_count</code>, <code>word_count</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Notes:</strong>
+- <code>assemble</code> generates the final markdown report with auto-generated table of contents
+- Sections ordered by <code>sequence</code> number in final document</p>
+<hr />
+<h3 id="evaluate_evidence"><code>evaluate_evidence</code><a class="headerlink" href="#evaluate_evidence" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>EvaluateEvidenceTool</code> | <strong>File:</strong> <code>story_agents/storyteller/tools/evaluate_evidence.py</code></p>
+<p>Score evidence strength and curate findings for narrative sections.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>operation</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td><code>evaluate</code> or <code>curate</code></td>
+</tr>
+<tr>
+<td><code>finding</code></td>
+<td>dict</td>
+<td style="text-align: center;">-</td>
+<td>Single finding (for <code>evaluate</code>)</td>
+</tr>
+<tr>
+<td><code>findings</code></td>
+<td>list[dict]</td>
+<td style="text-align: center;">-</td>
+<td>Multiple findings (for <code>curate</code>)</td>
+</tr>
+<tr>
+<td><code>purpose</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Section purpose for curation (e.g., <code>lead finding for introduction</code>)</td>
+</tr>
+<tr>
+<td><code>max_findings</code></td>
+<td>int</td>
+<td style="text-align: center;">-</td>
+<td>Max curated findings (default 5)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns (by operation):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Key Return Fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>evaluate</code></td>
+<td><code>tier</code>, <code>tier_description</code>, <code>usable_as_lead</code>, <code>usable_as_support</code>, <code>effect_size</code>, <code>p_value</code></td>
+</tr>
+<tr>
+<td><code>curate</code></td>
+<td><code>curated</code> list (ranked by tier), <code>lead_candidates</code>, <code>support_candidates</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Evidence Tier Classification:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Criteria</th>
+<th>Suitable For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>DEFINITIVE</strong></td>
+<td>p &lt; 0.001, large effect size</td>
+<td>Primary conclusions</td>
+</tr>
+<tr>
+<td><strong>STRONG</strong></td>
+<td>p &lt; 0.01, medium+ effect</td>
+<td>Leading paragraphs</td>
+</tr>
+<tr>
+<td><strong>SUGGESTIVE</strong></td>
+<td>p &lt; 0.05</td>
+<td>Supporting evidence</td>
+</tr>
+<tr>
+<td><strong>CONTEXTUAL</strong></td>
+<td>Descriptive, no test</td>
+<td>Background context</td>
+</tr>
+<tr>
+<td><strong>WEAK</strong></td>
+<td>p &gt;= 0.05, negligible effect</td>
+<td>Limitations</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="cite_source"><code>cite_source</code><a class="headerlink" href="#cite_source" title="Permanent link">&para;</a></h3>
+<p><strong>Class:</strong> <code>CiteSourceTool</code> | <strong>File:</strong> <code>story_agents/storyteller/tools/cite_source.py</code></p>
+<p>Manage citations and references for the narrative report.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th style="text-align: center;">Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>operation</code></td>
+<td>string</td>
+<td style="text-align: center;">Y</td>
+<td><code>add</code>, <code>list</code>, <code>format</code>, <code>search</code></td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Source title (for <code>add</code>)</td>
+</tr>
+<tr>
+<td><code>url</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Source URL (for <code>add</code>)</td>
+</tr>
+<tr>
+<td><code>author</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Author (for <code>add</code>)</td>
+</tr>
+<tr>
+<td><code>year</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Publication year (for <code>add</code>)</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Brief description (for <code>add</code>)</td>
+</tr>
+<tr>
+<td><code>cite_key</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Citation key (for <code>format</code>)</td>
+</tr>
+<tr>
+<td><code>query</code></td>
+<td>string</td>
+<td style="text-align: center;">-</td>
+<td>Search query (for <code>search</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Returns (by operation):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Key Return Fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>add</code></td>
+<td><code>cite_key</code> (auto-generated), <code>added</code></td>
+</tr>
+<tr>
+<td><code>list</code></td>
+<td><code>sources</code> list (cite_key, title, author, year), <code>total_count</code></td>
+</tr>
+<tr>
+<td><code>format</code></td>
+<td><code>citation_formats</code> with apa, chicago, inline</td>
+</tr>
+<tr>
+<td><code>search</code></td>
+<td><code>results</code> with relevance scores</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/jweinberg-a2a/versifai-data-agents" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.expand", "navigation.top", "content.code.copy", "content.code.annotate", "search.suggest", "search.highlight", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../javascripts/extra.js"></script>
+      
+    
+  </body>
+</html>

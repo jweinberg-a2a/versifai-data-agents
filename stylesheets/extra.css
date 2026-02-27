@@ -1,0 +1,89 @@
+/* ── Versifai theme ─────────────────────────────────────────────────── */
+
+:root {
+  /* Blue header/nav bar */
+  --md-primary-fg-color: #5a7fa3;
+  --md-primary-fg-color--light: #6b8fb3;
+  --md-primary-fg-color--dark: #4a6f93;
+  --md-primary-bg-color: #ffffff;
+  --md-primary-bg-color--light: #f7fafc;
+
+  /* Blue accent for links, buttons, highlights */
+  --md-accent-fg-color: #5a7fa3;
+  --md-accent-fg-color--transparent: rgba(90, 127, 163, 0.1);
+
+  /* Typeset link color */
+  --md-typeset-a-color: #5a7fa3;
+}
+
+/* Hide site name text — the logo already contains the wordmark */
+.md-header__topic {
+  display: none;
+}
+
+/* Subtle bottom border on header for definition */
+.md-header {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* Hide redundant site name at top of left sidebar */
+.md-nav--primary > .md-nav__title {
+  display: none;
+}
+
+/* Hide "Made with Material for MkDocs" footer */
+.md-footer-meta {
+  display: none;
+}
+
+/* ── Mermaid diagram expand-on-click ─────────────────────────────────── */
+
+/* Make diagrams look clickable */
+.mermaid,
+pre.mermaid,
+[class*="mermaid"] {
+  cursor: zoom-in;
+}
+
+/* Fullscreen overlay */
+.mermaid-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.96);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+  padding: 48px;
+  box-sizing: border-box;
+}
+
+.mermaid-overlay > svg {
+  max-width: 90vw;
+  max-height: 85vh;
+  width: auto !important;
+  height: auto !important;
+  filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.1));
+}
+
+.mermaid-overlay-close {
+  position: absolute;
+  top: 16px;
+  right: 24px;
+  font-size: 18px;
+  color: #666;
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 4px 12px;
+  cursor: pointer;
+  font-family: sans-serif;
+}
+
+.mermaid-overlay-close:hover {
+  background: #e0e0e0;
+}

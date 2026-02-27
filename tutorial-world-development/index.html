@@ -1,0 +1,2438 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Agentic AI framework for autonomous data engineering, science, and storytelling.">
+      
+      
+      
+        <link rel="canonical" href="https://docs.versifai.org/tutorial-world-development/">
+      
+      
+        <link rel="prev" href="../getting-started/">
+      
+      
+        <link rel="next" href="../architecture/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/IconOnly_NoBuffer.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
+    
+    
+      
+        <title>Tutorial: World Development - Versifai</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#tutorial-world-development-indicators" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Versifai" class="md-header__button md-logo" aria-label="Versifai" data-md-component="logo">
+      
+  <img src="../assets/FullLogo_Transparent_NoBuffer.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Versifai
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Tutorial: World Development
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jweinberg-a2a/versifai-data-agents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jweinberg-a2a/versifai-data-agents
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Versifai" class="md-nav__button md-logo" aria-label="Versifai" data-md-component="logo">
+      
+  <img src="../assets/FullLogo_Transparent_NoBuffer.png" alt="logo">
+
+    </a>
+    Versifai
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jweinberg-a2a/versifai-data-agents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jweinberg-a2a/versifai-data-agents
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial: World Development
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial: World Development
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-youre-about-to-build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What You're About to Build
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Dataset
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stage-0-download-the-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stage 0: Download the Data
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stage-1-the-engineer-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stage 1: The Engineer Config
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Stage 1: The Engineer Config">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#join-key-country-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Join Key -Country Code
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alternative-keys-region-and-income-group" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alternative Keys -Region and Income Group
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#source-processing-hints-wide-format-pivot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Source Processing Hints -Wide-Format Pivot
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#domain-guidance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain Guidance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#running-the-engineer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running the Engineer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stage-2-the-research-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stage 2: The Research Config
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Stage 2: The Research Config">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-thesis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Thesis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#six-analysis-themes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Six Analysis Themes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#three-silver-datasets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Three Silver Datasets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#domain-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain Context
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#running-the-scientist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running the Scientist
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stage-3-the-storyteller-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stage 3: The Storyteller Config
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Stage 3: The Storyteller Config">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#style-guide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Style Guide
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#eight-narrative-sections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Eight Narrative Sections
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evidence-thresholds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evidence Thresholds
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#domain-writing-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain Writing Rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#running-the-storyteller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running the Storyteller
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-final-report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Final Report
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-flow-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Flow Summary
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Flow Summary">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-each-agent-produces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Each Agent Produces
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output-file-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Output File Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-it-all-connects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How It All Connects
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adapting-for-your-own-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adapting for Your Own Project
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-concepts-recap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Concepts Recap
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../run-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Run Management & Reproducibility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-engineer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Engineer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-scientist/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Scientist
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storyteller/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    StoryTeller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../custom-agents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Building Custom Agents
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tool-inventory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tool Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Framework
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/data-agents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Agents
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/science-agents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Science Agents
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/story-agents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Story Agents
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-youre-about-to-build" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What You're About to Build
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Dataset
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stage-0-download-the-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stage 0: Download the Data
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stage-1-the-engineer-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stage 1: The Engineer Config
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Stage 1: The Engineer Config">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#join-key-country-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Join Key -Country Code
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alternative-keys-region-and-income-group" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alternative Keys -Region and Income Group
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#source-processing-hints-wide-format-pivot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Source Processing Hints -Wide-Format Pivot
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#domain-guidance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain Guidance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#running-the-engineer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running the Engineer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stage-2-the-research-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stage 2: The Research Config
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Stage 2: The Research Config">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-thesis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Thesis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#six-analysis-themes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Six Analysis Themes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#three-silver-datasets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Three Silver Datasets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#domain-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain Context
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#running-the-scientist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running the Scientist
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stage-3-the-storyteller-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stage 3: The Storyteller Config
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Stage 3: The Storyteller Config">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#style-guide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Style Guide
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#eight-narrative-sections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Eight Narrative Sections
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evidence-thresholds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evidence Thresholds
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#domain-writing-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain Writing Rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#running-the-storyteller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running the Storyteller
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-final-report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Final Report
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-flow-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Flow Summary
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Flow Summary">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-each-agent-produces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Each Agent Produces
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output-file-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Output File Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-it-all-connects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How It All Connects
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adapting-for-your-own-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adapting for Your Own Project
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-concepts-recap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Concepts Recap
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="tutorial-world-development-indicators">Tutorial: World Development Indicators<a class="headerlink" href="#tutorial-world-development-indicators" title="Permanent link">&para;</a></h1>
+<p>This tutorial builds a complete Versifai project using <strong>real World Bank data</strong> —
+6 development indicators covering 217 countries from 1960 to 2023. By the end,
+three AI agents will have ingested raw ZIP archives, run statistical analysis on
+classic development economics questions, and produced a narrative research report.</p>
+<p>The dataset is real. The analysis is real. The output is a genuine research
+artifact -not a toy example.</p>
+<h2 id="what-youre-about-to-build">What You're About to Build<a class="headerlink" href="#what-youre-about-to-build" title="Permanent link">&para;</a></h2>
+<p>Three agents run in sequence, each picking up where the last one left off:</p>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Notebook</th>
+<th>Agent</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0. Download</td>
+<td><code>00_download_data.py</code></td>
+<td>(script)</td>
+<td>6 ZIP files in Volume</td>
+</tr>
+<tr>
+<td>1. Ingest</td>
+<td><code>01_run_engineer.py</code></td>
+<td>DataEngineerAgent</td>
+<td>7 Delta tables in Unity Catalog</td>
+</tr>
+<tr>
+<td>2. Analyze</td>
+<td><code>02_run_scientist.py</code></td>
+<td>DataScientistAgent</td>
+<td>findings.json, charts/, tables/</td>
+</tr>
+<tr>
+<td>3. Narrate</td>
+<td><code>03_run_storyteller.py</code></td>
+<td>StoryTellerAgent</td>
+<td>world_development_report.md</td>
+</tr>
+</tbody>
+</table>
+<p>All example files live in
+<a href="https://github.com/jweinberg-a2a/versifai-data-agents/tree/main/examples/world_development" target="_blank"><code>examples/world_development/</code></a>.</p>
+<hr />
+<h2 id="the-dataset">The Dataset<a class="headerlink" href="#the-dataset" title="Permanent link">&para;</a></h2>
+<p><strong>Source:</strong> <a href="https://data.worldbank.org/">World Bank Open Data API</a> -free,
+authoritative, no authentication required.</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Indicator</th>
+<th>Table</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NY.GDP.PCAP.CD</code></td>
+<td>GDP per capita (current US$)</td>
+<td><code>silver_gdp_per_capita</code></td>
+</tr>
+<tr>
+<td><code>SP.DYN.LE00.IN</code></td>
+<td>Life expectancy at birth (years)</td>
+<td><code>silver_life_expectancy</code></td>
+</tr>
+<tr>
+<td><code>SE.PRM.NENR</code></td>
+<td>School enrollment, primary (% net)</td>
+<td><code>silver_school_enrollment</code></td>
+</tr>
+<tr>
+<td><code>SH.XPD.CHEX.PC.CD</code></td>
+<td>Health expenditure per capita (US$)</td>
+<td><code>silver_health_expenditure</code></td>
+</tr>
+<tr>
+<td><code>EN.ATM.CO2E.PC</code></td>
+<td>CO2 emissions (metric tons per capita)</td>
+<td><code>silver_co2_emissions</code></td>
+</tr>
+<tr>
+<td><code>SP.POP.TOTL</code></td>
+<td>Population total</td>
+<td><code>silver_population</code></td>
+</tr>
+</tbody>
+</table>
+<p>Plus <code>silver_country_metadata</code> -region and income group classifications for
+every country.</p>
+<p>Each indicator is downloaded as a ZIP archive (~3MB each, ~20MB total) containing
+wide-format CSVs with years as columns. This is a real engineering challenge —
+the Data Engineer agent must extract ZIPs, skip metadata rows, pivot wide-to-long,
+and standardize column names.</p>
+<hr />
+<h2 id="stage-0-download-the-data">Stage 0: Download the Data<a class="headerlink" href="#stage-0-download-the-data" title="Permanent link">&para;</a></h2>
+<p><strong>File:</strong> <code>examples/world_development/notebooks/00_download_data.py</code></p>
+<p>This notebook downloads all 6 indicators from the World Bank API and saves
+them to a Databricks Volume:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">urllib.request</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">INDICATORS</span> <span class="o">=</span> <span class="p">{</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="s2">&quot;NY.GDP.PCAP.CD&quot;</span><span class="p">:</span> <span class="s2">&quot;gdp_per_capita&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="s2">&quot;SP.DYN.LE00.IN&quot;</span><span class="p">:</span> <span class="s2">&quot;life_expectancy&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="s2">&quot;SE.PRM.NENR&quot;</span><span class="p">:</span> <span class="s2">&quot;school_enrollment&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="s2">&quot;SH.XPD.CHEX.PC.CD&quot;</span><span class="p">:</span> <span class="s2">&quot;health_expenditure&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="s2">&quot;EN.ATM.CO2E.PC&quot;</span><span class="p">:</span> <span class="s2">&quot;co2_emissions&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="s2">&quot;SP.POP.TOTL&quot;</span><span class="p">:</span> <span class="s2">&quot;population&quot;</span><span class="p">,</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="p">}</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="k">for</span> <span class="n">code</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">INDICATORS</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://api.worldbank.org/v2/en/indicator/</span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s2">?downloadformat=csv&quot;</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;/Volumes/my_catalog/world_development/raw_data/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">.zip&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p>The download is idempotent -it skips files that already exist. After running,
+your Volume will contain 6 ZIP files:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>/Volumes/my_catalog/world_development/raw_data/
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>├── gdp_per_capita.zip       (~3MB)
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>├── life_expectancy.zip      (~2MB)
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>├── school_enrollment.zip    (~2MB)
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>├── health_expenditure.zip   (~2MB)
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>├── co2_emissions.zip        (~2MB)
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>└── population.zip           (~3MB)
+</code></pre></div>
+<hr />
+<h2 id="stage-1-the-engineer-config">Stage 1: The Engineer Config<a class="headerlink" href="#stage-1-the-engineer-config" title="Permanent link">&para;</a></h2>
+<p><strong>File:</strong> <code>examples/world_development/engineer_config.py</code></p>
+<p>The <code>ProjectConfig</code> tells the Data Engineer Agent everything about ingesting
+these World Bank ZIP files.</p>
+<h3 id="join-key-country-code">Join Key -Country Code<a class="headerlink" href="#join-key-country-code" title="Permanent link">&para;</a></h3>
+<p>Every table must include a <code>country_code</code> column (ISO 3166-1 alpha-3) so they
+can be joined:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">versifai.data_agents.engineer.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">JoinKeyConfig</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">join_key</span> <span class="o">=</span> <span class="n">JoinKeyConfig</span><span class="p">(</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">column_name</span><span class="o">=</span><span class="s2">&quot;country_code&quot;</span><span class="p">,</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;STRING&quot;</span><span class="p">,</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;ISO 3166-1 alpha-3 country code (e.g., &#39;USA&#39;, &#39;GBR&#39;, &#39;CHN&#39;).&quot;</span><span class="p">,</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="n">validation_rule</span><span class="o">=</span><span class="s2">&quot;Must be exactly 3 uppercase letters matching [A-Z]</span><span class="si">{3}</span><span class="s2">&quot;</span><span class="p">,</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="n">expected_entity_count</span><span class="o">=</span><span class="mi">217</span><span class="p">,</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="p">)</span>
+</code></pre></div>
+<h3 id="alternative-keys-region-and-income-group">Alternative Keys -Region and Income Group<a class="headerlink" href="#alternative-keys-region-and-income-group" title="Permanent link">&para;</a></h3>
+<p>World Bank assigns every country to a region and income group. These enable
+stratified analysis:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">versifai.data_agents.engineer.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">AlternativeKeyConfig</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">alternative_keys</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">AlternativeKeyConfig</span><span class="p">(</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>        <span class="n">column_name</span><span class="o">=</span><span class="s2">&quot;region&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;World Bank region for regional aggregations&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>        <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;STRING&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>        <span class="n">grain</span><span class="o">=</span><span class="s2">&quot;region&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="p">),</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="n">AlternativeKeyConfig</span><span class="p">(</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>        <span class="n">column_name</span><span class="o">=</span><span class="s2">&quot;income_group&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Low income, Lower middle income, Upper middle income, High income&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>        <span class="n">data_type</span><span class="o">=</span><span class="s2">&quot;STRING&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>        <span class="n">grain</span><span class="o">=</span><span class="s2">&quot;income_group&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>    <span class="p">),</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="p">]</span>
+</code></pre></div>
+<h3 id="source-processing-hints-wide-format-pivot">Source Processing Hints -Wide-Format Pivot<a class="headerlink" href="#source-processing-hints-wide-format-pivot" title="Permanent link">&para;</a></h3>
+<p>This is where the real engineering guidance lives. World Bank CSVs have a
+non-standard format:</p>
+<ul>
+<li><strong>4 metadata rows</strong> at the top (must be skipped)</li>
+<li><strong>Wide format</strong> -years as columns: <code>1960, 1961, ..., 2023</code></li>
+<li>Each ZIP contains 3 files: data CSV, country metadata CSV, indicator metadata CSV</li>
+</ul>
+<p>The hints tell the agent exactly how to handle this:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">versifai.data_agents.engineer.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">SourceProcessingHint</span><span class="p">,</span> <span class="n">SourceFileHint</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">SourceProcessingHint</span><span class="p">(</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">source_pattern</span><span class="o">=</span><span class="s2">&quot;gdp_per_capita&quot;</span><span class="p">,</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;GDP per capita (current US$) -World Bank indicator NY.GDP.PCAP.CD&quot;</span><span class="p">,</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="n">multi_table</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># This ZIP produces TWO tables</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    <span class="n">files</span><span class="o">=</span><span class="p">[</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>        <span class="n">SourceFileHint</span><span class="p">(</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>            <span class="n">file_pattern</span><span class="o">=</span><span class="s2">&quot;API_NY.GDP.PCAP.CD&quot;</span><span class="p">,</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>            <span class="n">target_table</span><span class="o">=</span><span class="s2">&quot;silver_gdp_per_capita&quot;</span><span class="p">,</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;GDP per capita by country and year&quot;</span><span class="p">,</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>        <span class="p">),</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>        <span class="n">SourceFileHint</span><span class="p">(</span>
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>            <span class="n">file_pattern</span><span class="o">=</span><span class="s2">&quot;Metadata_Country&quot;</span><span class="p">,</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>            <span class="n">target_table</span><span class="o">=</span><span class="s2">&quot;silver_country_metadata&quot;</span><span class="p">,</span>
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Country classifications: region, income group&quot;</span><span class="p">,</span>
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>        <span class="p">),</span>
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>    <span class="p">],</span>
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>    <span class="n">notes</span><span class="o">=</span><span class="p">(</span>
+<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>        <span class="s2">&quot;The main data CSV has 4 metadata rows at the top -skip them. &quot;</span>
+<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>        <span class="s2">&quot;This is WIDE FORMAT -pivot to LONG FORMAT with columns: &quot;</span>
+<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>        <span class="s2">&quot;country_name, country_code, year, and the indicator value column.&quot;</span>
+<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>    <span class="p">),</span>
+<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="p">)</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Country metadata deduplication</p>
+<p>Country metadata is identical across all 6 ZIPs. Only the first source
+hint (gdp_per_capita) sets <code>multi_table=True</code> to load it. The remaining
+5 ZIPs skip the metadata file.</p>
+</div>
+<h3 id="domain-guidance">Domain Guidance<a class="headerlink" href="#domain-guidance" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">WORLD_DEVELOPMENT</span> <span class="o">=</span> <span class="n">ProjectConfig</span><span class="p">(</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="o">...</span><span class="p">,</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">grain_detection_guidance</span><span class="o">=</span><span class="p">(</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>        <span class="s2">&quot;Country-level: Look for &#39;Country Code&#39; or 3-letter ISO codes</span><span class="se">\n</span><span class="s2">&quot;</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>        <span class="s2">&quot;Country-year: After pivoting wide-format data, grain is (country_code, year)</span><span class="se">\n</span><span class="s2">&quot;</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>        <span class="s2">&quot;WARNING: World Bank data includes aggregate entities (e.g., &#39;World&#39;, &quot;</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>        <span class="s2">&quot;&#39;East Asia &amp; Pacific&#39;) alongside individual countries.&quot;</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>    <span class="p">),</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    <span class="n">column_naming_examples</span><span class="o">=</span><span class="p">(</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>        <span class="s2">&quot;&#39;Country Name&#39; -&gt; country_name</span><span class="se">\n</span><span class="s2">&quot;</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>        <span class="s2">&quot;&#39;Country Code&#39; -&gt; country_code</span><span class="se">\n</span><span class="s2">&quot;</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>        <span class="s2">&quot;Year columns (1960..2023) -&gt; pivot to: year (INT) + value column</span><span class="se">\n</span><span class="s2">&quot;</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>        <span class="s2">&quot;&#39;IncomeGroup&#39; -&gt; income_group&quot;</span>
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>    <span class="p">),</span>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="p">)</span>
+</code></pre></div>
+<p>See the complete config in
+<a href="https://github.com/jweinberg-a2a/versifai-data-agents/blob/main/examples/world_development/engineer_config.py" target="_blank"><code>engineer_config.py</code></a>.</p>
+<h3 id="running-the-engineer">Running the Engineer<a class="headerlink" href="#running-the-engineer" title="Permanent link">&para;</a></h3>
+<p><strong>File:</strong> <code>examples/world_development/notebooks/01_run_engineer.py</code></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">examples.world_development.engineer_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">WORLD_DEVELOPMENT</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">versifai.data_agents.engineer.agent</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataEngineerAgent</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="n">cfg</span> <span class="o">=</span> <span class="n">WORLD_DEVELOPMENT</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="n">agent</span> <span class="o">=</span> <span class="n">DataEngineerAgent</span><span class="p">(</span><span class="n">cfg</span><span class="o">=</span><span class="n">cfg</span><span class="p">,</span> <span class="n">dbutils</span><span class="o">=</span><span class="n">dbutils</span><span class="p">)</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1"># Stage 1: Discover, extract, pivot, load</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="n">results</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">source_path</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">volume_path</span><span class="p">)</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="c1"># Stage 2: Standardize column names</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="n">agent</span><span class="o">.</span><span class="n">run_rename</span><span class="p">()</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="c1"># Stage 3: Build data catalog</span>
+<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="n">agent</span><span class="o">.</span><span class="n">run_catalog</span><span class="p">()</span>
+<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>
+<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="c1"># Stage 4: Validate all tables</span>
+<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="n">agent</span><span class="o">.</span><span class="n">run_quality_check</span><span class="p">()</span>
+</code></pre></div>
+<p><strong>Result:</strong> 7 Delta tables in Unity Catalog -6 indicator tables (one per
+indicator, long format) plus <code>silver_country_metadata</code>.</p>
+<hr />
+<h2 id="stage-2-the-research-config">Stage 2: The Research Config<a class="headerlink" href="#stage-2-the-research-config" title="Permanent link">&para;</a></h2>
+<p><strong>File:</strong> <code>examples/world_development/research_configs/global_development.py</code></p>
+<p>The <code>ResearchConfig</code> defines the entire research agenda: a thesis, 6 analysis
+themes, 3 silver datasets, and 5 literature references.</p>
+<h3 id="the-thesis">The Thesis<a class="headerlink" href="#the-thesis" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">GLOBAL_DEVELOPMENT</span> <span class="o">=</span> <span class="n">ResearchConfig</span><span class="p">(</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Does Economic Development Drive Human Wellbeing?&quot;</span><span class="p">,</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="n">thesis</span><span class="o">=</span><span class="p">(</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>        <span class="s2">&quot;Economic development (GDP per capita) is strongly correlated with life &quot;</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>        <span class="s2">&quot;expectancy and health outcomes, but the relationship is log-linear with &quot;</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>        <span class="s2">&quot;sharply diminishing returns. Education correlates with growth but causality &quot;</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>        <span class="s2">&quot;is confounded. Healthcare spending efficiency varies enormously. Carbon &quot;</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>        <span class="s2">&quot;emissions track development, though high-income nations show signs of &quot;</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>        <span class="s2">&quot;decoupling. Whether the world is converging or diverging depends on what &quot;</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>        <span class="s2">&quot;you measure.&quot;</span>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>    <span class="p">),</span>
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>    <span class="n">agent_role</span><span class="o">=</span><span class="s2">&quot;Development Economist and Global Health Researcher&quot;</span><span class="p">,</span>
+<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="p">)</span>
+</code></pre></div>
+<h3 id="six-analysis-themes">Six Analysis Themes<a class="headerlink" href="#six-analysis-themes" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Title</th>
+<th>Type</th>
+<th>Key Question</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>The Development Dashboard</td>
+<td>descriptive</td>
+<td>What does the data look like?</td>
+</tr>
+<tr>
+<td>1</td>
+<td>The Preston Curve</td>
+<td>correlation</td>
+<td>Does GDP predict life expectancy?</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Education and Economic Growth</td>
+<td>comparative</td>
+<td>Do educated countries grow faster?</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Healthcare Spending Returns</td>
+<td>correlation</td>
+<td>Does health spending beat GDP alone?</td>
+</tr>
+<tr>
+<td>4</td>
+<td>The Carbon Cost of Development</td>
+<td>trend</td>
+<td>Is growth carbon-intensive? Kuznets Curve?</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Convergence or Divergence?</td>
+<td>trend</td>
+<td>Are countries converging in GDP and health?</td>
+</tr>
+</tbody>
+</table>
+<p>Each theme is a self-contained research question with methodology, expected
+outputs, and a signature visualization:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">versifai.science_agents.scientist.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalysisTheme</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">AnalysisTheme</span><span class="p">(</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;theme_1&quot;</span><span class="p">,</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;The Preston Curve&quot;</span><span class="p">,</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>    <span class="n">question</span><span class="o">=</span><span class="s2">&quot;Does the classic concave Preston Curve hold in modern data?&quot;</span><span class="p">,</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>    <span class="n">analysis_type</span><span class="o">=</span><span class="s2">&quot;correlation&quot;</span><span class="p">,</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>    <span class="n">sequence</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>    <span class="n">required_tables</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;silver_development_recent&quot;</span><span class="p">],</span>
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>    <span class="n">analysis_steps</span><span class="o">=</span><span class="p">[</span>
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>        <span class="s2">&quot;Compute Pearson and Spearman correlation: log(GDP) vs life expectancy&quot;</span><span class="p">,</span>
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>        <span class="s2">&quot;Fit log-linear regression: life_expectancy ~ log(gdp_per_capita)&quot;</span><span class="p">,</span>
+<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>        <span class="s2">&quot;Test for concavity: add quadratic term&quot;</span><span class="p">,</span>
+<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>        <span class="s2">&quot;Identify outliers deviating from the curve&quot;</span><span class="p">,</span>
+<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>        <span class="s2">&quot;Compare curve shape across decades (2000, 2010, 2020)&quot;</span><span class="p">,</span>
+<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>    <span class="p">],</span>
+<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>    <span class="n">signature_visualization</span><span class="o">=</span><span class="p">(</span>
+<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>        <span class="s2">&quot;The Preston Curve scatter plot: log(GDP) vs life expectancy, &quot;</span>
+<a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a>        <span class="s2">&quot;dots sized by population, colored by income group.&quot;</span>
+<a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a>    <span class="p">),</span>
+<a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a><span class="p">)</span>
+</code></pre></div>
+<h3 id="three-silver-datasets">Three Silver Datasets<a class="headerlink" href="#three-silver-datasets" title="Permanent link">&para;</a></h3>
+<p>The agent builds pre-joined analytical tables before running themes:</p>
+<table>
+<thead>
+<tr>
+<th>Dataset</th>
+<th>Description</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>silver_development_panel</code></td>
+<td>All 6 indicators + metadata joined on (country_code, year)</td>
+<td>Themes 0-4</td>
+</tr>
+<tr>
+<td><code>silver_development_recent</code></td>
+<td>Panel filtered to 2000-2023, excludes aggregates</td>
+<td>Themes 1-4</td>
+</tr>
+<tr>
+<td><code>silver_development_long_run</code></td>
+<td>Balanced panel 1960-2023, ~100-120 countries</td>
+<td>Theme 5</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">versifai.science_agents.scientist.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">SilverDatasetSpec</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="n">SilverDatasetSpec</span><span class="p">(</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;silver_development_recent&quot;</span><span class="p">,</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;2000-2023 panel with best data coverage&quot;</span><span class="p">,</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    <span class="n">source_tables</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;silver_development_panel&quot;</span><span class="p">],</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>    <span class="n">join_key</span><span class="o">=</span><span class="s2">&quot;country_code&quot;</span><span class="p">,</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>    <span class="n">time_column</span><span class="o">=</span><span class="s2">&quot;year&quot;</span><span class="p">,</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>    <span class="n">data_notes</span><span class="o">=</span><span class="p">(</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>        <span class="s2">&quot;Filter WHERE year &gt;= 2000. Exclude aggregate entities -keep only &quot;</span>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>        <span class="s2">&quot;individual countries (those with a non-NULL region).&quot;</span>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>    <span class="p">),</span>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="p">)</span>
+</code></pre></div>
+<h3 id="domain-context">Domain Context<a class="headerlink" href="#domain-context" title="Permanent link">&para;</a></h3>
+<p>The config injects data-specific knowledge into the agent's system prompt:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">GLOBAL_DEVELOPMENT</span> <span class="o">=</span> <span class="n">ResearchConfig</span><span class="p">(</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="o">...</span><span class="p">,</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="n">domain_context</span><span class="o">=</span><span class="p">(</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>        <span class="s2">&quot;## Data Quirks</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>        <span class="s2">&quot;- World Bank aggregates (e.g., &#39;WLD&#39;, &#39;EAS&#39;) must be excluded</span><span class="se">\n</span><span class="s2">&quot;</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>        <span class="s2">&quot;- GDP per capita is in current US$ -use log transforms</span><span class="se">\n</span><span class="s2">&quot;</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>        <span class="s2">&quot;- Health expenditure starts ~2000; earlier years are missing</span><span class="se">\n</span><span class="s2">&quot;</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>        <span class="s2">&quot;- School enrollment can exceed 100% (UNESCO methodology)</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>        <span class="s2">&quot;## Expected Value Ranges</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>        <span class="s2">&quot;- GDP per capita: $200 (Burundi) to $100,000+ (Luxembourg)</span><span class="se">\n</span><span class="s2">&quot;</span>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>        <span class="s2">&quot;- Life expectancy: 50-85 years</span><span class="se">\n</span><span class="s2">&quot;</span>
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>        <span class="s2">&quot;- CO2 emissions: 0.05-40 metric tons per capita</span><span class="se">\n</span><span class="s2">&quot;</span>
+<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>    <span class="p">),</span>
+<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>    <span class="n">analysis_method_guidance</span><span class="o">=</span><span class="p">{</span>
+<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>        <span class="s2">&quot;correlation&quot;</span><span class="p">:</span> <span class="p">(</span>
+<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>            <span class="s2">&quot;Always log-transform GDP and health expenditure. Report both &quot;</span>
+<a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a>            <span class="s2">&quot;Pearson and Spearman. Size scatter points by population.&quot;</span>
+<a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a>        <span class="p">),</span>
+<a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a>        <span class="s2">&quot;trend&quot;</span><span class="p">:</span> <span class="p">(</span>
+<a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a>            <span class="s2">&quot;For convergence, use balanced panels. Report sigma-convergence &quot;</span>
+<a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a>            <span class="s2">&quot;(CV of log GDP by decade). Annotate structural breaks.&quot;</span>
+<a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a>        <span class="p">),</span>
+<a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a>    <span class="p">},</span>
+<a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a><span class="p">)</span>
+</code></pre></div>
+<p>See the complete config in
+<a href="https://github.com/jweinberg-a2a/versifai-data-agents/blob/main/examples/world_development/research_configs/global_development.py" target="_blank"><code>global_development.py</code></a>.</p>
+<h3 id="running-the-scientist">Running the Scientist<a class="headerlink" href="#running-the-scientist" title="Permanent link">&para;</a></h3>
+<p><strong>File:</strong> <code>examples/world_development/notebooks/02_run_scientist.py</code></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">examples.world_development.research_configs.global_development</span><span class="w"> </span><span class="kn">import</span> <span class="n">GLOBAL_DEVELOPMENT</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">versifai.science_agents.scientist.agent</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataScientistAgent</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="n">cfg</span> <span class="o">=</span> <span class="n">GLOBAL_DEVELOPMENT</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="n">agent</span> <span class="o">=</span> <span class="n">DataScientistAgent</span><span class="p">(</span><span class="n">cfg</span><span class="o">=</span><span class="n">cfg</span><span class="p">,</span> <span class="n">dbutils</span><span class="o">=</span><span class="n">dbutils</span><span class="p">)</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="c1"># Full pipeline: Orientation → Silver Construction → Theme Analysis → Synthesis</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="n">results</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</code></pre></div>
+<p>The agent runs through 4 phases automatically. If it crashes midway, re-running
+skips completed themes (smart resume).</p>
+<p>You can also run specific themes:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># Skip themes 0-2, run themes 3-5 only</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="n">agent</span><span class="o">.</span><span class="n">run_themes</span><span class="p">(</span><span class="n">start_theme</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="c1"># Or run specific themes</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="n">agent</span><span class="o">.</span><span class="n">run_themes</span><span class="p">(</span><span class="n">themes</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>  <span class="c1"># Preston Curve + Carbon Cost</span>
+</code></pre></div>
+<p><strong>Result:</strong> Structured findings with p-values and effect sizes, charts for
+each theme, CSV summary tables, and per-theme markdown reasoning notes.</p>
+<hr />
+<h2 id="stage-3-the-storyteller-config">Stage 3: The Storyteller Config<a class="headerlink" href="#stage-3-the-storyteller-config" title="Permanent link">&para;</a></h2>
+<p><strong>File:</strong> <code>examples/world_development/storyteller_config.py</code></p>
+<p>The <code>StorytellerConfig</code> defines how to turn the scientist's findings into
+<em>"The Shape of Global Progress"</em> -an 8-section narrative report.</p>
+<h3 id="style-guide">Style Guide<a class="headerlink" href="#style-guide" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">versifai.story_agents.storyteller.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">StyleGuide</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="n">style</span> <span class="o">=</span> <span class="n">StyleGuide</span><span class="p">(</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>    <span class="n">voice</span><span class="o">=</span><span class="s2">&quot;third-person analytical&quot;</span><span class="p">,</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>    <span class="n">audience</span><span class="o">=</span><span class="s2">&quot;Policy analysts, development economists, and informed general readers&quot;</span><span class="p">,</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>    <span class="n">document_type</span><span class="o">=</span><span class="s2">&quot;Analytical white paper&quot;</span><span class="p">,</span>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>    <span class="n">tone_guidance</span><span class="o">=</span><span class="p">(</span>
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>        <span class="s2">&quot;Authoritative but accessible. Write like The Economist or Our World in Data -&quot;</span>
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>        <span class="s2">&quot;precise, evidence-first, globally aware. Let the data speak.&quot;</span>
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>    <span class="p">),</span>
+<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>    <span class="n">anti_patterns</span><span class="o">=</span><span class="p">(</span>
+<a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a>        <span class="s2">&quot;- NO: Vague claims like &#39;the world is getting better/worse&#39; without data</span><span class="se">\n</span><span class="s2">&quot;</span>
+<a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a>        <span class="s2">&quot;- NO: Conflating correlation with causation</span><span class="se">\n</span><span class="s2">&quot;</span>
+<a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a>        <span class="s2">&quot;- NO: Cherry-picking countries that support a narrative</span><span class="se">\n</span><span class="s2">&quot;</span>
+<a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a>    <span class="p">),</span>
+<a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a><span class="p">)</span>
+</code></pre></div>
+<h3 id="eight-narrative-sections">Eight Narrative Sections<a class="headerlink" href="#eight-narrative-sections" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Title</th>
+<th>Source Themes</th>
+<th>Max Words</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>The Shape of Progress (hook)</td>
+<td>theme_0</td>
+<td>800</td>
+</tr>
+<tr>
+<td>1</td>
+<td>When Wealth Buys Years</td>
+<td>theme_1</td>
+<td>1,200</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Schools, Skills, and Growth</td>
+<td>theme_2</td>
+<td>1,000</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Diminishing Returns</td>
+<td>theme_3</td>
+<td>1,200</td>
+</tr>
+<tr>
+<td>4</td>
+<td>The Carbon Crossroads</td>
+<td>theme_4</td>
+<td>1,200</td>
+</tr>
+<tr>
+<td>5</td>
+<td>A Narrowing Gap?</td>
+<td>theme_5</td>
+<td>1,500</td>
+</tr>
+<tr>
+<td>6</td>
+<td>What Development Data Reveals</td>
+<td>all</td>
+<td>1,000</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Methodology &amp; Reproducibility</td>
+<td>all</td>
+<td>2,000</td>
+</tr>
+</tbody>
+</table>
+<p>Each section maps to research themes and includes transition text:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">versifai.story_agents.storyteller.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">NarrativeSection</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="n">NarrativeSection</span><span class="p">(</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;section_preston&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;When Wealth Buys Years&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>    <span class="n">purpose</span><span class="o">=</span><span class="s2">&quot;Present the GDP-life expectancy relationship and the Preston Curve&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>    <span class="n">source_theme_ids</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;theme_1&quot;</span><span class="p">],</span>
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>    <span class="n">max_words</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span>
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>    <span class="n">key_evidence</span><span class="o">=</span><span class="s2">&quot;Preston Curve regression, R-squared, outlier analysis, decade shifts&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>    <span class="n">narrative_guidance</span><span class="o">=</span><span class="p">(</span>
+<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>        <span class="s2">&quot;Lead with the Preston Curve scatter plot. Explain the log-linear shape -&quot;</span>
+<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>        <span class="s2">&quot;why doubling GDP from $2K to $4K buys more years than $40K to $80K.&quot;</span>
+<a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a>    <span class="p">),</span>
+<a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a>    <span class="n">transition_from</span><span class="o">=</span><span class="s2">&quot;With data in hand, we begin with the most iconic relationship.&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a>    <span class="n">transition_to</span><span class="o">=</span><span class="s2">&quot;If wealth buys health with diminishing returns, what about direct investment?&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a>    <span class="n">sequence</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a><span class="p">)</span>
+</code></pre></div>
+<h3 id="evidence-thresholds">Evidence Thresholds<a class="headerlink" href="#evidence-thresholds" title="Permanent link">&para;</a></h3>
+<p>Zero tolerance for ungrounded claims:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">versifai.story_agents.storyteller.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">EvidenceThreshold</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="n">evidence</span> <span class="o">=</span> <span class="n">EvidenceThreshold</span><span class="p">(</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>    <span class="n">min_significance_for_lead</span><span class="o">=</span><span class="s2">&quot;high&quot;</span><span class="p">,</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>    <span class="n">min_significance_for_support</span><span class="o">=</span><span class="s2">&quot;medium&quot;</span><span class="p">,</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>    <span class="n">require_effect_size</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>    <span class="n">max_unsupported_claims</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="p">)</span>
+</code></pre></div>
+<h3 id="domain-writing-rules">Domain Writing Rules<a class="headerlink" href="#domain-writing-rules" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">WORLD_DEVELOPMENT_STORY</span> <span class="o">=</span> <span class="n">StorytellerConfig</span><span class="p">(</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>    <span class="o">...</span><span class="p">,</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>    <span class="n">domain_writing_rules</span><span class="o">=</span><span class="p">(</span>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>        <span class="s2">&quot;EVIDENCE-FIRST ANALYTICAL TONE: Every claim must cite a specific statistic. &quot;</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>        <span class="s2">&quot;Acknowledge when data limitations affect conclusions. Let readers draw their &quot;</span>
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>        <span class="s2">&quot;own policy conclusions -the report&#39;s job is to present evidence, not advocate.&quot;</span>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>    <span class="p">),</span>
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>    <span class="n">citation_source_guidance</span><span class="o">=</span><span class="p">(</span>
+<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>        <span class="s2">&quot;World Bank technical documentation, peer-reviewed development economics literature, &quot;</span>
+<a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>        <span class="s2">&quot;Our World in Data, OECD reports, and classic texts on growth theory.&quot;</span>
+<a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>    <span class="p">),</span>
+<a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="p">)</span>
+</code></pre></div>
+<p>See the complete config in
+<a href="https://github.com/jweinberg-a2a/versifai-data-agents/blob/main/examples/world_development/storyteller_config.py" target="_blank"><code>storyteller_config.py</code></a>.</p>
+<h3 id="running-the-storyteller">Running the Storyteller<a class="headerlink" href="#running-the-storyteller" title="Permanent link">&para;</a></h3>
+<p><strong>File:</strong> <code>examples/world_development/notebooks/03_run_storyteller.py</code></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">examples.world_development.storyteller_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">WORLD_DEVELOPMENT_STORY</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">versifai.story_agents.storyteller.agent</span><span class="w"> </span><span class="kn">import</span> <span class="n">StoryTellerAgent</span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="n">cfg</span> <span class="o">=</span> <span class="n">WORLD_DEVELOPMENT_STORY</span>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="n">agent</span> <span class="o">=</span> <span class="n">StoryTellerAgent</span><span class="p">(</span><span class="n">cfg</span><span class="o">=</span><span class="n">cfg</span><span class="p">,</span> <span class="n">dbutils</span><span class="o">=</span><span class="n">dbutils</span><span class="p">)</span>
+<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>
+<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="c1"># Full pipeline: Inventory → Evidence → Write → Coherence → Finalize</span>
+<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="n">results</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</code></pre></div>
+<p>You can also rewrite specific sections or run an editorial pass:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1"># Rewrite sections 0, 3, and 5</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="n">agent</span><span class="o">.</span><span class="n">run_sections</span><span class="p">(</span><span class="n">sections</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="c1"># Editor pass with specific instructions</span>
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="n">agent</span><span class="o">.</span><span class="n">run_editor</span><span class="p">(</span>
+<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>    <span class="n">instructions</span><span class="o">=</span><span class="s2">&quot;Strengthen the transition from the Preston Curve section &quot;</span>
+<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>    <span class="s2">&quot;into the Education section.&quot;</span>
+<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="p">)</span>
+</code></pre></div>
+<p><strong>Result:</strong> <code>world_development_report.md</code> -a narrative report with table of
+contents, inline citations, and bibliography.</p>
+<hr />
+<h2 id="the-final-report">The Final Report<a class="headerlink" href="#the-final-report" title="Permanent link">&para;</a></h2>
+<!-- TODO: Replace with link to actual report output once pipeline has been run -->
+
+<p>The full report produced by the StoryTeller agent will be linked here after
+the pipeline runs end-to-end on Databricks. Check back soon, or run the
+notebooks yourself to generate it.</p>
+<hr />
+<h2 id="data-flow-summary">Data Flow Summary<a class="headerlink" href="#data-flow-summary" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart LR
+    DL["Download&lt;br&gt;6 ZIPs"] --&gt; VOL[/"Volume&lt;br&gt;6 ZIP archives"/]
+    VOL --&gt; ENG["**Data Engineer**&lt;br&gt;Extract, pivot,&lt;br&gt;load to Delta"]
+    ENG --&gt; CAT[("7 Delta Tables&lt;br&gt;in Unity Catalog")]
+    CAT --&gt; SCI["**Data Scientist**&lt;br&gt;Join, analyze,&lt;br&gt;6 themes"]
+    SCI --&gt; OUT[/"Findings +&lt;br&gt;Charts + Tables"/]
+    OUT --&gt; ST["**StoryTeller**&lt;br&gt;Evaluate evidence,&lt;br&gt;write narrative"]
+    ST --&gt; RPT[/"world_development_&lt;br&gt;report.md"/]
+
+    style DL fill:#fff8e1,stroke:#b38600
+    style VOL fill:#fff8e1,stroke:#b38600
+    style ENG fill:#e8f0fe,stroke:#4a6f93
+    style CAT fill:#e8f4e8,stroke:#4a8a4a
+    style SCI fill:#e8f0fe,stroke:#4a6f93
+    style OUT fill:#fff8e1,stroke:#b38600
+    style ST fill:#e8f0fe,stroke:#4a6f93
+    style RPT fill:#e8f4e8,stroke:#4a8a4a</code></pre>
+<h3 id="what-each-agent-produces">What Each Agent Produces<a class="headerlink" href="#what-each-agent-produces" title="Permanent link">&para;</a></h3>
+<p><strong>Data Engineer</strong> -7 Delta tables:</p>
+<ul>
+<li><code>silver_gdp_per_capita</code> -GDP per capita by country and year (long format)</li>
+<li><code>silver_life_expectancy</code> -Life expectancy by country and year</li>
+<li><code>silver_school_enrollment</code> -Primary enrollment rate by country and year</li>
+<li><code>silver_health_expenditure</code> -Health spending per capita by country and year</li>
+<li><code>silver_co2_emissions</code> -CO2 per capita by country and year</li>
+<li><code>silver_population</code> -Total population by country and year</li>
+<li><code>silver_country_metadata</code> -Region, income group, special notes per country</li>
+</ul>
+<p><strong>Data Scientist</strong> -research artifacts:</p>
+<ul>
+<li><code>findings.json</code> -Structured findings with p-values, effect sizes, evidence tiers</li>
+<li><code>charts/</code> -PNG visualizations (Preston Curve, Kuznets Curve, convergence, etc.)</li>
+<li><code>tables/</code> -CSV summary tables (regression coefficients, ANOVA results, etc.)</li>
+<li><code>notes/</code> -Per-theme markdown reasoning logs</li>
+</ul>
+<p><strong>StoryTeller</strong> -narrative report:</p>
+<ul>
+<li><code>world_development_report.md</code> -~10,000-word analytical report with TOC, citations, bibliography</li>
+</ul>
+<h3 id="output-file-structure">Output File Structure<a class="headerlink" href="#output-file-structure" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>/Volumes/my_catalog/world_development/
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>├── raw_data/                              # Input (downloaded by notebook 0)
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>│   ├── gdp_per_capita.zip
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>│   ├── life_expectancy.zip
+<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>│   ├── school_enrollment.zip
+<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>│   ├── health_expenditure.zip
+<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a>│   ├── co2_emissions.zip
+<a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a>│   └── population.zip
+<a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a>│
+<a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a>├── results/                               # Data Scientist outputs
+<a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a>│   ├── findings.json
+<a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a>│   ├── charts/
+<a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a>│   │   ├── development_dashboard_grid.png
+<a id="__codelineno-19-14" name="__codelineno-19-14" href="#__codelineno-19-14"></a>│   │   ├── preston_curve_scatter.png
+<a id="__codelineno-19-15" name="__codelineno-19-15" href="#__codelineno-19-15"></a>│   │   ├── education_growth_boxplots.png
+<a id="__codelineno-19-16" name="__codelineno-19-16" href="#__codelineno-19-16"></a>│   │   ├── healthcare_spending_scatter.png
+<a id="__codelineno-19-17" name="__codelineno-19-17" href="#__codelineno-19-17"></a>│   │   ├── carbon_kuznets_two_panel.png
+<a id="__codelineno-19-18" name="__codelineno-19-18" href="#__codelineno-19-18"></a>│   │   └── convergence_dual_axis.png
+<a id="__codelineno-19-19" name="__codelineno-19-19" href="#__codelineno-19-19"></a>│   ├── tables/
+<a id="__codelineno-19-20" name="__codelineno-19-20" href="#__codelineno-19-20"></a>│   │   ├── data_inventory_summary.csv
+<a id="__codelineno-19-21" name="__codelineno-19-21" href="#__codelineno-19-21"></a>│   │   ├── preston_curve_regression.csv
+<a id="__codelineno-19-22" name="__codelineno-19-22" href="#__codelineno-19-22"></a>│   │   ├── enrollment_tertile_comparison.csv
+<a id="__codelineno-19-23" name="__codelineno-19-23" href="#__codelineno-19-23"></a>│   │   ├── spending_model_comparison.csv
+<a id="__codelineno-19-24" name="__codelineno-19-24" href="#__codelineno-19-24"></a>│   │   ├── kuznets_regression.csv
+<a id="__codelineno-19-25" name="__codelineno-19-25" href="#__codelineno-19-25"></a>│   │   └── convergence_by_decade.csv
+<a id="__codelineno-19-26" name="__codelineno-19-26" href="#__codelineno-19-26"></a>│   └── notes/
+<a id="__codelineno-19-27" name="__codelineno-19-27" href="#__codelineno-19-27"></a>│       ├── theme_0.md
+<a id="__codelineno-19-28" name="__codelineno-19-28" href="#__codelineno-19-28"></a>│       ├── theme_1.md
+<a id="__codelineno-19-29" name="__codelineno-19-29" href="#__codelineno-19-29"></a>│       ├── theme_2.md
+<a id="__codelineno-19-30" name="__codelineno-19-30" href="#__codelineno-19-30"></a>│       ├── theme_3.md
+<a id="__codelineno-19-31" name="__codelineno-19-31" href="#__codelineno-19-31"></a>│       ├── theme_4.md
+<a id="__codelineno-19-32" name="__codelineno-19-32" href="#__codelineno-19-32"></a>│       └── theme_5.md
+<a id="__codelineno-19-33" name="__codelineno-19-33" href="#__codelineno-19-33"></a>│
+<a id="__codelineno-19-34" name="__codelineno-19-34" href="#__codelineno-19-34"></a>└── narrative/                             # StoryTeller outputs
+<a id="__codelineno-19-35" name="__codelineno-19-35" href="#__codelineno-19-35"></a>    └── world_development_report.md
+</code></pre></div>
+<hr />
+<h2 id="how-it-all-connects">How It All Connects<a class="headerlink" href="#how-it-all-connects" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Part</th>
+<th>What It Is</th>
+<th>What Changes Between Projects</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Config</strong></td>
+<td>A Python dataclass holding all domain knowledge</td>
+<td>Everything -this is where your project lives</td>
+</tr>
+<tr>
+<td><strong>Agent</strong></td>
+<td>A generic Python class that reads the config and does work</td>
+<td>Nothing -agents are reusable across projects</td>
+</tr>
+<tr>
+<td><strong>Notebook</strong></td>
+<td>A Databricks notebook that creates the agent and runs it</td>
+<td>Just the import path to your config</td>
+</tr>
+</tbody>
+</table>
+<p>The agents are generic. All domain-specific knowledge lives in the configs.
+To start a new project, write new configs and run the same agents.</p>
+<hr />
+<h2 id="adapting-for-your-own-project">Adapting for Your Own Project<a class="headerlink" href="#adapting-for-your-own-project" title="Permanent link">&para;</a></h2>
+<p>Copy the World Development example and replace the domain content:</p>
+<ol>
+<li>
+<p><strong>Copy the example:</strong>
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>cp<span class="w"> </span>-r<span class="w"> </span>examples/world_development<span class="w"> </span>examples/my_project
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Edit <code>engineer_config.py</code>:</strong></p>
+<ul>
+<li>Change <code>catalog</code>, <code>schema</code>, <code>volume_path</code> to your Databricks target</li>
+<li>Update <code>join_key</code> to your primary join column</li>
+<li>List your data sources in <code>known_sources</code></li>
+<li>Add processing hints if your data has a non-standard format</li>
+<li>Add <code>grain_detection_guidance</code> and <code>column_naming_examples</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Edit <code>research_configs/</code>:</strong></p>
+<ul>
+<li>Write your thesis</li>
+<li>Define 5-10 analysis themes with research questions</li>
+<li>Specify silver datasets for pre-joined tables</li>
+<li>Set <code>agent_role</code> and <code>domain_context</code></li>
+<li>Add <code>analysis_method_guidance</code> for domain-specific methodology</li>
+</ul>
+</li>
+<li>
+<p><strong>Edit <code>storyteller_config.py</code>:</strong></p>
+<ul>
+<li>Define narrative sections (one per major finding)</li>
+<li>Set the style guide for your audience</li>
+<li>Configure evidence thresholds</li>
+<li>Add <code>domain_writing_rules</code> and <code>citation_source_guidance</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Write a download notebook</strong> (if using public data) or upload files manually</p>
+</li>
+<li>
+<p><strong>Run the notebooks in order:</strong></p>
+<ul>
+<li><code>00_download_data.py</code> -Get the data</li>
+<li><code>01_run_engineer.py</code> -Ingest into Delta tables</li>
+<li><code>02_run_scientist.py</code> -Analyze</li>
+<li><code>03_run_storyteller.py</code> -Write the report</li>
+</ul>
+</li>
+</ol>
+<p>The agent code is the same for every project. Your configs are the only thing
+that changes.</p>
+<hr />
+<h2 id="key-concepts-recap">Key Concepts Recap<a class="headerlink" href="#key-concepts-recap" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>What It Is</th>
+<th>Where It Lives</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ProjectConfig</strong></td>
+<td>Data engineering instructions (catalog, schema, join keys, sources)</td>
+<td><code>engineer_config.py</code></td>
+</tr>
+<tr>
+<td><strong>ResearchConfig</strong></td>
+<td>Research methodology (thesis, themes, silver datasets, domain context)</td>
+<td><code>research_configs/*.py</code></td>
+</tr>
+<tr>
+<td><strong>StorytellerConfig</strong></td>
+<td>Narrative rules (sections, style, evidence thresholds)</td>
+<td><code>storyteller_config.py</code></td>
+</tr>
+<tr>
+<td><strong>AnalysisTheme</strong></td>
+<td>One research question with steps and a signature chart</td>
+<td>Inside ResearchConfig</td>
+</tr>
+<tr>
+<td><strong>SilverDatasetSpec</strong></td>
+<td>A pre-joined analytical table to build</td>
+<td>Inside ResearchConfig</td>
+</tr>
+<tr>
+<td><strong>NarrativeSection</strong></td>
+<td>One section of the report with tone and evidence mapping</td>
+<td>Inside StorytellerConfig</td>
+</tr>
+<tr>
+<td><strong>Smart Resume</strong></td>
+<td>Agents skip completed work on re-run</td>
+<td>Built into all agents</td>
+</tr>
+<tr>
+<td><strong>Tools</strong></td>
+<td>The unit of agent capability (SQL, stats, charts, etc.)</td>
+<td><code>src/versifai/*/tools/</code></td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/jweinberg-a2a/versifai-data-agents" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.expand", "navigation.top", "content.code.copy", "content.code.annotate", "search.suggest", "search.highlight", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../javascripts/extra.js"></script>
+      
+    
+  </body>
+</html>

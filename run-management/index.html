@@ -1,0 +1,2055 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Agentic AI framework for autonomous data engineering, science, and storytelling.">
+      
+      
+      
+        <link rel="canonical" href="https://docs.versifai.org/run-management/">
+      
+      
+        <link rel="prev" href="../architecture/">
+      
+      
+        <link rel="next" href="../data-engineer/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/IconOnly_NoBuffer.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
+    
+    
+      
+        <title>Run Management & Reproducibility - Versifai</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#run-management-reproducibility" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Versifai" class="md-header__button md-logo" aria-label="Versifai" data-md-component="logo">
+      
+  <img src="../assets/FullLogo_Transparent_NoBuffer.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Versifai
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Run Management & Reproducibility
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jweinberg-a2a/versifai-data-agents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jweinberg-a2a/versifai-data-agents
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Versifai" class="md-nav__button md-logo" aria-label="Versifai" data-md-component="logo">
+      
+  <img src="../assets/FullLogo_Transparent_NoBuffer.png" alt="logo">
+
+    </a>
+    Versifai
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jweinberg-a2a/versifai-data-agents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jweinberg-a2a/versifai-data-agents
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial-world-development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial: World Development
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Run Management & Reproducibility
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Run Management & Reproducibility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-core-idea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Core Idea
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run-isolation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run Isolation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Run Isolation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#run-id-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run ID Format
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#directory-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Directory Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-each-agent-outputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Each Agent Outputs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What Each Agent Outputs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-engineer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Engineer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-scientist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Scientist
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Scientist">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#findingsjson-structured-evidence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        findings.json -Structured Evidence
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#notes-the-reasoning-log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Notes -The Reasoning Log
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chart-metadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chart Metadata
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#storyteller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        StoryTeller
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#smart-resume" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Smart Resume
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Smart Resume">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How It Works
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-scientist-resume" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Scientist Resume
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#storyteller-resume" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        StoryTeller Resume
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-resume-looks-like" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Resume Looks Like
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run-state-tracking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run State Tracking
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#carryover-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Carryover Context
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inter-agent-handoff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inter-Agent Handoff
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Inter-Agent Handoff">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engineer-scientist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Engineer → Scientist
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scientist-storyteller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scientist → StoryTeller
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-reproducibility-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Reproducibility Contract
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-engineer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Engineer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-scientist/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Scientist
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storyteller/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    StoryTeller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../custom-agents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Building Custom Agents
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tool-inventory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tool Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Framework
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/data-agents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Agents
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/science-agents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Science Agents
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/story-agents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Story Agents
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-core-idea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Core Idea
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run-isolation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run Isolation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Run Isolation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#run-id-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run ID Format
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#directory-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Directory Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-each-agent-outputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Each Agent Outputs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What Each Agent Outputs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-engineer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Engineer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-scientist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Scientist
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Scientist">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#findingsjson-structured-evidence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        findings.json -Structured Evidence
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#notes-the-reasoning-log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Notes -The Reasoning Log
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chart-metadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chart Metadata
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#storyteller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        StoryTeller
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#smart-resume" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Smart Resume
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Smart Resume">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How It Works
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#data-scientist-resume" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Scientist Resume
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#storyteller-resume" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        StoryTeller Resume
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-resume-looks-like" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Resume Looks Like
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run-state-tracking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run State Tracking
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#carryover-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Carryover Context
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inter-agent-handoff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inter-Agent Handoff
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Inter-Agent Handoff">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#engineer-scientist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Engineer → Scientist
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scientist-storyteller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scientist → StoryTeller
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-reproducibility-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Reproducibility Contract
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="run-management-reproducibility">Run Management &amp; Reproducibility<a class="headerlink" href="#run-management-reproducibility" title="Permanent link">&para;</a></h1>
+<p>Versifai agents don't just produce answers -they produce <strong>auditable artifacts
+that show their work</strong>. Every SQL query, every statistical test, every chart,
+every decision is recorded to disk. If you remove the AI agent from the process,
+a human can follow the exact same reasoning path and verify every conclusion.</p>
+<p>This page explains <strong>what agents output</strong>, <strong>how runs are isolated and resumed</strong>,
+and <strong>how knowledge flows between agents</strong>.</p>
+<hr />
+<h2 id="the-core-idea">The Core Idea<a class="headerlink" href="#the-core-idea" title="Permanent link">&para;</a></h2>
+<p>Most AI systems work like this: <strong>Input → LLM → Answer.</strong> The answer is the
+only output. If something goes wrong, you start over.</p>
+<p>Versifai agents run in a <strong>ReAct loop</strong> -a cycle of reasoning and tool calls.
+At each step in the loop, the agent produces durable artifacts on disk. The
+answer is one output among many:</p>
+<pre class="mermaid"><code>flowchart TD
+    PROMPT["Prompt + config&lt;br&gt;injected into agent"] --&gt; REASON["LLM reasons&lt;br&gt;about next step"]
+    REASON --&gt; TOOL{"Agent calls&lt;br&gt;a tool"}
+
+    TOOL --&gt;|execute_sql| SQL["SQL runs on Spark&lt;br&gt;→ results returned"]
+    TOOL --&gt;|save_note| NOTE["Reasoning + SQL&lt;br&gt;→ written to notes/ file"]
+    TOOL --&gt;|create_visualization| CHART["Chart rendered&lt;br&gt;→ saved to charts/"]
+    TOOL --&gt;|save_finding| FINDING["Structured evidence&lt;br&gt;→ appended to findings.json"]
+    TOOL --&gt;|write_narrative| SECTION["Section draft&lt;br&gt;→ saved to section_*.md"]
+
+    SQL --&gt; BACK["Tool result returned&lt;br&gt;to LLM"]
+    NOTE --&gt; BACK
+    CHART --&gt; BACK
+    FINDING --&gt; BACK
+    SECTION --&gt; BACK
+
+    BACK --&gt; STATE["RunState updated&lt;br&gt;→ run_metadata.json"]
+    STATE --&gt; DONE{Done?}
+    DONE --&gt;|No| REASON
+    DONE --&gt;|Yes| FINAL["Final output +&lt;br&gt;all artifacts on disk"]
+
+    style PROMPT fill:#e8f0fe,stroke:#4a6f93
+    style REASON fill:#fff8e1,stroke:#b38600
+    style NOTE fill:#f0f0f0,stroke:#999
+    style CHART fill:#f0f0f0,stroke:#999
+    style FINDING fill:#e8f4e8,stroke:#4a8a4a
+    style SECTION fill:#f0f0f0,stroke:#999
+    style STATE fill:#e8f0fe,stroke:#4a6f93
+    style FINAL fill:#e8f4e8,stroke:#4a8a4a</code></pre>
+<p>Every cycle through the loop leaves something on disk. If the agent crashes
+at any point, the artifacts from completed cycles are already persisted —
+and the agent can resume from where it left off.</p>
+<p><strong>Why this matters:</strong></p>
+<ul>
+<li><strong>Reproducibility</strong> -A human can re-run any SQL query, re-generate any chart,
+  and verify any statistical claim without the LLM</li>
+<li><strong>Resumability</strong> -If the agent crashes at theme 4 of 7, it restarts at theme 5
+  with full knowledge of what was already done</li>
+<li><strong>Auditability</strong> -Every decision has a timestamp, every chart has its source
+  data, every finding has its p-value and methodology</li>
+<li><strong>Inter-agent handoff</strong> -The StoryTeller reads the Scientist's structured
+  outputs, not raw LLM text</li>
+</ul>
+<hr />
+<h2 id="run-isolation">Run Isolation<a class="headerlink" href="#run-isolation" title="Permanent link">&para;</a></h2>
+<p>Every agent execution gets its own <strong>run directory</strong> -a timestamped folder
+that contains all outputs for that run. This means you can run the same agent
+multiple times without overwriting previous results.</p>
+<h3 id="run-id-format">Run ID Format<a class="headerlink" href="#run-id-format" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>20260223_143012_a1b2
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│        │       │
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>│        │       └── Random suffix (4 hex chars)
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│        └── Time: 14:30:12
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>└── Date: 2026-02-23
+</code></pre></div>
+<p>Run IDs are <strong>lexicographically sortable</strong> -alphabetical order = chronological
+order. This makes "find the latest run" trivial.</p>
+<h3 id="directory-structure">Directory Structure<a class="headerlink" href="#directory-structure" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart LR
+    VOL["/Volumes/.../results/runs/"] --&gt; RUN1["20260223_100000_f4e1/"]
+    VOL --&gt; RUN2["20260223_143012_a1b2/"]
+    VOL --&gt; RUN3["20260225_091500_c7d3/"]
+
+    RUN1 -.- S1(["interrupted"])
+    RUN2 -.- S2(["completed"])
+    RUN3 -.- S3(["in progress"])
+
+    style RUN1 fill:#fee,stroke:#c33
+    style RUN2 fill:#efe,stroke:#3a3
+    style RUN3 fill:#ffe,stroke:#b80
+    style S1 fill:#fee,stroke:#c33
+    style S2 fill:#efe,stroke:#3a3
+    style S3 fill:#ffe,stroke:#b80</code></pre>
+<p>Each run directory is self-contained:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>runs/20260223_143012_a1b2/
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>├── run_metadata.json          # Run state, timing, completion status
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>├── findings.json              # Structured research findings (Scientist)
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>├── narrative_report.md        # Final assembled report (StoryTeller)
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>├── section_intro.md           # Individual narrative sections (StoryTeller)
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>├── section_analysis.md
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>├── charts/                    # Visualization outputs
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>│   ├── theme0_distribution.png
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>│   ├── theme1_scatter.png
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>│   └── theme5_precision_recall.png
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>├── tables/                    # CSV result tables
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>│   ├── correlation_matrix.csv
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>│   └── model_comparison.csv
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>└── notes/                     # Per-theme reasoning logs
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>    ├── theme_0_notes.txt
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>    ├── theme_1_notes.txt
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>    └── silver_notes.txt
+</code></pre></div>
+<hr />
+<h2 id="what-each-agent-outputs">What Each Agent Outputs<a class="headerlink" href="#what-each-agent-outputs" title="Permanent link">&para;</a></h2>
+<h3 id="data-engineer">Data Engineer<a class="headerlink" href="#data-engineer" title="Permanent link">&para;</a></h3>
+<p>The Data Engineer's outputs are <strong>Delta tables in Unity Catalog</strong> -not files on
+disk. It creates clean, validated, joinable tables from raw data files.</p>
+<pre class="mermaid"><code>flowchart LR
+    RAW[/"6 raw files&lt;br&gt;(CSV, ZIP, Excel)"/] --&gt; ENG["Data Engineer&lt;br&gt;profile → design → load"]
+    ENG --&gt; T1[("silver_daily_weather")]
+    ENG --&gt; T2[("silver_quack_frequency")]
+    ENG --&gt; T3[("silver_feather_fluffing")]
+    ENG --&gt; T4[("silver_ice_cream_sales")]
+
+    style RAW fill:#fff8e1,stroke:#b38600
+    style ENG fill:#e8f0fe,stroke:#4a6f93
+    style T1 fill:#e8f4e8,stroke:#4a8a4a
+    style T2 fill:#e8f4e8,stroke:#4a8a4a
+    style T3 fill:#e8f4e8,stroke:#4a8a4a
+    style T4 fill:#e8f4e8,stroke:#4a8a4a</code></pre>
+<p>Every table includes:</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>source_file_name</code></td>
+<td>Which raw file this row came from (audit trail)</td>
+</tr>
+<tr>
+<td><code>load_timestamp</code></td>
+<td>When this row was loaded (reproducibility)</td>
+</tr>
+<tr>
+<td>Join key (e.g., <code>station_id</code>)</td>
+<td>Links this table to every other table</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>source_file_name</code> column is what enables <strong>smart resume</strong> -on re-run, the
+agent queries the table to see which files are already loaded and skips them.</p>
+<h3 id="data-scientist">Data Scientist<a class="headerlink" href="#data-scientist" title="Permanent link">&para;</a></h3>
+<p>The Data Scientist produces the richest set of artifacts:</p>
+<pre class="mermaid"><code>flowchart LR
+    SCI["Data Scientist&lt;br&gt;ReAct loop"] --&gt; META["run_metadata.json&lt;br&gt;phases + progress"]
+    SCI --&gt; FIND["findings.json&lt;br&gt;14 structured findings"]
+    SCI --&gt; CHARTS[/"charts/&lt;br&gt;9 visualizations"/]
+    SCI --&gt; TABLES[/"tables/&lt;br&gt;6 CSV summaries"/]
+    SCI --&gt; NOTES[/"notes/&lt;br&gt;per-theme reasoning"/]
+
+    style SCI fill:#e8f0fe,stroke:#4a6f93
+    style FIND fill:#e8f4e8,stroke:#4a8a4a
+    style META fill:#f0f0f0,stroke:#999
+    style CHARTS fill:#fef3e0,stroke:#b38600
+    style TABLES fill:#f0f0f0,stroke:#999
+    style NOTES fill:#f0f0f0,stroke:#999</code></pre>
+<h4 id="findingsjson-structured-evidence">findings.json -Structured Evidence<a class="headerlink" href="#findingsjson-structured-evidence" title="Permanent link">&para;</a></h4>
+<p>Every statistical finding the agent discovers is saved as a structured record.
+This is the primary handoff artifact to the StoryTeller.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">[</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="p">{</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">&quot;research_question_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;theme_1&quot;</span><span class="p">,</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Quack-Rain Correlation Confirmed&quot;</span><span class="p">,</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="nt">&quot;finding&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Quack frequency at lag-1 shows Spearman rho=0.42 with next-day precipitation.&quot;</span><span class="p">,</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="nt">&quot;evidence&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Spearman rank correlation: rho=0.42, p&lt;0.001, n=312,847. Effect persists across all seasons (summer rho=0.51, winter rho=0.28). Partial correlation controlling for temperature: rho=0.38, p&lt;0.001.&quot;</span><span class="p">,</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="nt">&quot;significance&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;high&quot;</span><span class="p">,</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="nt">&quot;visualization_path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;charts/theme1_lag_correlation.png&quot;</span><span class="p">,</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-02-23T14:35:22.123456&quot;</span><span class="p">,</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">    </span><span class="nt">&quot;index&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">  </span><span class="p">}</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="p">]</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>research_question_id</code></td>
+<td>Links finding to the research theme that produced it</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>One-line summary for the StoryTeller to reference</td>
+</tr>
+<tr>
+<td><code>finding</code></td>
+<td>The actual discovery in plain language</td>
+</tr>
+<tr>
+<td><code>evidence</code></td>
+<td>Statistical backing -p-values, effect sizes, sample sizes, methods</td>
+</tr>
+<tr>
+<td><code>significance</code></td>
+<td><code>high</code> / <code>medium</code> / <code>low</code> -drives evidence tier classification</td>
+</tr>
+<tr>
+<td><code>visualization_path</code></td>
+<td>Chart that supports this finding</td>
+</tr>
+</tbody>
+</table>
+<h4 id="notes-the-reasoning-log">Notes -The Reasoning Log<a class="headerlink" href="#notes-the-reasoning-log" title="Permanent link">&para;</a></h4>
+<p>Per-theme notes files are the most important artifact for reproducibility.
+They record <strong>everything the agent did and why</strong> -every SQL query, every
+statistical test, every decision.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>--- 2026-02-23 14:25:33 ---
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>Starting Theme 1: Quack Before the Storm.
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>Research question: Is there a significant correlation between quack
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>frequency and next-day rain?
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>Required table: silver_weather_duck_daily
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>Available columns: station_id, observation_date, quack_count,
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>  temp_max_c, temp_min_c, precip_mm, fluff_intensity
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>--- 2026-02-23 14:27:15 ---
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>Step 1: Computing lag-1 correlation.
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>SQL used:
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>  SELECT station_id, observation_date, quack_count,
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>    LEAD(precip_mm, 1) OVER (
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>      PARTITION BY station_id ORDER BY observation_date
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>    ) AS next_day_precip
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>  FROM silver_weather_duck_daily
+<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>  WHERE quack_count IS NOT NULL
+<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>
+<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>Result: 312,847 rows with complete lag-1 pairs.
+<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>
+<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>--- 2026-02-23 14:28:40 ---
+<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>Spearman correlation: rho = 0.42, p &lt; 0.001
+<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>Pearson correlation: r = 0.35, p &lt; 0.001
+<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a>(Spearman higher → relationship is monotonic but not strictly linear)
+<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a>
+<a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a>--- 2026-02-23 14:30:12 | CHART: theme1_lag_correlation.png ---
+<a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a>Type: line
+<a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a>Title: Lag-Correlation: Quack Frequency vs. Precipitation
+<a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a>Path: /Volumes/.../charts/theme1_lag_correlation.png
+<a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a>
+<a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a>SQL Query:
+<a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a>  SELECT lag_days, season,
+<a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a>    CORR(quack_count, precip_at_lag) AS correlation
+<a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a>  FROM lagged_quack_precip
+<a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a>  GROUP BY lag_days, season
+<a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a>
+<a id="__codelineno-3-39" name="__codelineno-3-39" href="#__codelineno-3-39"></a>Interpretation: The lag-1 peak is consistent across all seasons.
+<a id="__codelineno-3-40" name="__codelineno-3-40" href="#__codelineno-3-40"></a>Summer shows the strongest signal (r=0.51), winter the weakest (r=0.28).
+<a id="__codelineno-3-41" name="__codelineno-3-41" href="#__codelineno-3-41"></a>
+<a id="__codelineno-3-42" name="__codelineno-3-42" href="#__codelineno-3-42"></a>--- 2026-02-23 14:32:55 ---
+<a id="__codelineno-3-43" name="__codelineno-3-43" href="#__codelineno-3-43"></a>Step 3: Checking for temperature confound.
+<a id="__codelineno-3-44" name="__codelineno-3-44" href="#__codelineno-3-44"></a>Partial correlation controlling for temp_max_c: rho = 0.38, p &lt; 0.001.
+<a id="__codelineno-3-45" name="__codelineno-3-45" href="#__codelineno-3-45"></a>Temperature explains some variance but the quack signal persists.
+</code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Why notes matter</p>
+<p>If you read a notes file top to bottom, you get a complete lab notebook
+of everything the agent did for that theme. Every SQL query is there.
+Every statistical result is there. You can re-run any of it manually
+without the AI.</p>
+</div>
+<h4 id="chart-metadata">Chart Metadata<a class="headerlink" href="#chart-metadata" title="Permanent link">&para;</a></h4>
+<p>Every chart saved to <code>charts/</code> also has its metadata logged to the notes file.
+This includes the SQL query that produced the data, the render code, and a
+sample of the input data. A human can regenerate any chart from its metadata.</p>
+<h3 id="storyteller">StoryTeller<a class="headerlink" href="#storyteller" title="Permanent link">&para;</a></h3>
+<p>The StoryTeller produces narrative sections and a final assembled report:</p>
+<pre class="mermaid"><code>flowchart LR
+    IN[/"findings.json&lt;br&gt;+ charts + notes"/] --&gt; ST["StoryTeller&lt;br&gt;ReAct loop"]
+    ST --&gt;|"per section"| SEC[/"section_*.md&lt;br&gt;(8 files, saved immediately)"/]
+    SEC --&gt; ASM["Assemble + coherence pass"]
+    ASM --&gt; RPT["narrative_report.md&lt;br&gt;~4,000 words with TOC&lt;br&gt;+ bibliography"]
+
+    style IN fill:#fff8e1,stroke:#b38600
+    style ST fill:#e8f0fe,stroke:#4a6f93
+    style SEC fill:#fef3e0,stroke:#b38600
+    style RPT fill:#e8f4e8,stroke:#4a8a4a</code></pre>
+<p>Each section is <strong>persisted to disk immediately</strong> after the agent writes it.
+If the agent crashes after writing 5 of 8 sections, those 5 sections are
+already on disk and will be loaded on resume.</p>
+<hr />
+<h2 id="smart-resume">Smart Resume<a class="headerlink" href="#smart-resume" title="Permanent link">&para;</a></h2>
+<p>The most practical feature of the run management system: <strong>agents detect what's
+already been done and skip it.</strong></p>
+<h3 id="how-it-works">How It Works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart TD
+    START([Agent starts]) --&gt; CHECK["Load run_metadata.json&lt;br&gt;from latest run"]
+    CHECK --&gt; SCAN["Scan for completed work:&lt;br&gt;• Tables in Unity Catalog&lt;br&gt;• Findings in findings.json&lt;br&gt;• Sections on disk&lt;br&gt;• RunState completed_items"]
+    SCAN --&gt; UNION["Union rule:&lt;br&gt;If ANY source says done → skip"]
+    UNION --&gt; RESUME["Resume from first&lt;br&gt;incomplete item"]
+
+    style START fill:#e8f0fe,stroke:#4a6f93
+    style SCAN fill:#fef3e0,stroke:#b38600
+    style RESUME fill:#e8f4e8,stroke:#4a8a4a</code></pre>
+<h3 id="data-scientist-resume">Data Scientist Resume<a class="headerlink" href="#data-scientist-resume" title="Permanent link">&para;</a></h3>
+<p>The scientist checks <strong>three sources</strong> to determine what's complete:</p>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>What It Checks</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Unity Catalog</strong></td>
+<td>Do the silver tables exist?</td>
+<td><code>silver_weather_duck_daily</code> in catalog → silver phase done</td>
+</tr>
+<tr>
+<td><strong>findings.json</strong></td>
+<td>Which themes have findings?</td>
+<td>Finding with <code>research_question_id: "theme_1"</code> → theme 1 done</td>
+</tr>
+<tr>
+<td><strong>RunState</strong></td>
+<td>What did the run state record?</td>
+<td><code>completed_items.themes: ["theme_0", "theme_1"]</code></td>
+</tr>
+</tbody>
+</table>
+<p>The system uses a <strong>union rule</strong> -if any of these three sources says a piece
+of work is done, it's treated as done.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Pseudocode from _scan_pipeline_state()</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">completed_silver</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># Check 1: Does the table exist in the catalog?</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="k">for</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">silver_datasets</span><span class="p">:</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">catalog_tables</span><span class="p">:</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>        <span class="n">completed_silver</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="c1"># Check 2: Does the run state say it&#39;s done?</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">run_state</span><span class="o">.</span><span class="n">completed_items</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;silver&quot;</span><span class="p">,</span> <span class="p">[]):</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>    <span class="n">completed_silver</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="c1"># Union: skip anything in completed_silver</span>
+</code></pre></div>
+<h3 id="storyteller-resume">StoryTeller Resume<a class="headerlink" href="#storyteller-resume" title="Permanent link">&para;</a></h3>
+<p>The storyteller checks for <strong>section files on disk</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Scan the output directory for existing sections</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">output_path</span><span class="p">):</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;section_&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.md&quot;</span><span class="p">):</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>        <span class="c1"># This section exists -skip it on resume</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>        <span class="n">completed</span><span class="p">[</span><span class="n">section_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">content</span>
+</code></pre></div>
+<p>This is why sections are persisted immediately -each one is a durable
+checkpoint.</p>
+<h3 id="what-resume-looks-like">What Resume Looks Like<a class="headerlink" href="#what-resume-looks-like" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>$ python run_scientist.py
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>Phase 1: Orientation -SKIPPED (already completed)
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>Phase 2: Silver Construction
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>  ├── silver_weather_duck_daily -SKIPPED (exists in catalog)
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>  ├── silver_duck_forecast_comparison -SKIPPED (exists in catalog)
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>  └── silver_ice_cream_weather -RUNNING...
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>Phase 3: Theme Analysis
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>  ├── Theme 0: The Quack Census -SKIPPED (findings exist)
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>  ├── Theme 1: Quack Before the Storm -SKIPPED (findings exist)
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>  ├── Theme 2: The Fluff Factor -SKIPPED (findings exist)
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>  ├── Theme 3: The Ice Cream Confounder -SKIPPED (findings exist)
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>  ├── Theme 4: V-Formation Tornado Warning -RUNNING...  ← picks up here
+<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>  ...
+</code></pre></div>
+<hr />
+<h2 id="run-state-tracking">Run State Tracking<a class="headerlink" href="#run-state-tracking" title="Permanent link">&para;</a></h2>
+<p>The <code>RunState</code> dataclass tracks exactly where the agent is in its pipeline.
+It's persisted to <code>run_metadata.json</code> and updated after every completed item.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p">{</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="nt">&quot;run_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;20260223_143012_a1b2&quot;</span><span class="p">,</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="nt">&quot;agent_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;scientist&quot;</span><span class="p">,</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">  </span><span class="nt">&quot;config_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;global_development&quot;</span><span class="p">,</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">  </span><span class="nt">&quot;started_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-02-23T14:00:00&quot;</span><span class="p">,</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;running&quot;</span><span class="p">,</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">    </span><span class="nt">&quot;entry_point&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;run&quot;</span><span class="p">,</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">    </span><span class="nt">&quot;current_phase&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;theme_analysis&quot;</span><span class="p">,</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">    </span><span class="nt">&quot;current_item&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;theme_4&quot;</span><span class="p">,</span>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="w">    </span><span class="nt">&quot;completed_phases&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;orientation&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;silver&quot;</span><span class="p">],</span>
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="w">    </span><span class="nt">&quot;completed_items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="w">      </span><span class="nt">&quot;silver&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;silver_development_panel&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;silver_development_recent&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;silver_development_long_run&quot;</span><span class="p">],</span>
+<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="w">      </span><span class="nt">&quot;themes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;theme_0&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;theme_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;theme_2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;theme_3&quot;</span><span class="p">]</span>
+<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="w">    </span><span class="p">},</span>
+<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="w">    </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-02-23T15:12:33&quot;</span>
+<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a><span class="w">  </span><span class="p">}</span>
+<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a><span class="p">}</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>status</code></td>
+<td><code>running</code> / <code>completed</code> / <code>failed</code> / <code>interrupted</code></td>
+</tr>
+<tr>
+<td><code>current_phase</code></td>
+<td>What the agent is working on right now</td>
+</tr>
+<tr>
+<td><code>current_item</code></td>
+<td>The specific item within the phase</td>
+</tr>
+<tr>
+<td><code>completed_phases</code></td>
+<td>Phases that are fully done</td>
+</tr>
+<tr>
+<td><code>completed_items</code></td>
+<td>Per-phase list of completed items (for partial progress)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="carryover-context">Carryover Context<a class="headerlink" href="#carryover-context" title="Permanent link">&para;</a></h2>
+<p>When an agent moves between phases, its conversation history is cleared to
+save tokens -but <strong>key knowledge is preserved</strong> via carryover context.</p>
+<pre class="mermaid"><code>flowchart LR
+    P1["Phase 1&lt;br&gt;Orientation"] --&gt;|"extract summaries&lt;br&gt;+ key decisions"| CTX["Carryover&lt;br&gt;Context"]
+    CTX --&gt;|"clear history,&lt;br&gt;inject context"| P2["Phase 2&lt;br&gt;Silver Construction"]
+    P2 --&gt;|"extract summaries&lt;br&gt;+ key decisions"| CTX2["Carryover&lt;br&gt;Context"]
+    CTX2 --&gt;|"clear history,&lt;br&gt;inject context"| P3["Phase 3&lt;br&gt;Theme Analysis"]
+
+    style P1 fill:#e8f0fe,stroke:#4a6f93
+    style CTX fill:#fee,stroke:#c33
+    style P2 fill:#e8f0fe,stroke:#4a6f93
+    style CTX2 fill:#fee,stroke:#c33
+    style P3 fill:#e8f0fe,stroke:#4a6f93</code></pre>
+<p>The <code>AgentMemory</code> class manages this:</p>
+<ul>
+<li><strong><code>reset_for_new_source()</code></strong> -Clears conversation history but preserves
+  source summaries, context notes, and decisions</li>
+<li><strong><code>get_carryover_context()</code></strong> -Builds a markdown summary of everything
+  learned so far (last 10 notes, all source summaries)</li>
+<li><strong><code>log_source_summary()</code></strong> -Records a one-line summary of what was done
+  for a source/phase</li>
+</ul>
+<p>This means the agent in phase 3 knows what happened in phases 1 and 2 —
+without carrying 200 messages of conversation history.</p>
+<hr />
+<h2 id="inter-agent-handoff">Inter-Agent Handoff<a class="headerlink" href="#inter-agent-handoff" title="Permanent link">&para;</a></h2>
+<p>The three agents don't communicate directly. They communicate through
+<strong>structured artifacts on disk.</strong></p>
+<pre class="mermaid"><code>flowchart LR
+    ENG["Data Engineer"] --&gt;|"implicit handoff&lt;br&gt;via Unity Catalog"| SCI["Data Scientist"]
+    SCI --&gt;|"explicit handoff&lt;br&gt;via AgentDependency"| STORY["StoryTeller"]
+
+    ENG -.-&gt;|"Delta tables"| CAT[("Unity Catalog")]
+    CAT -.-&gt;|"SQL queries"| SCI
+    SCI -.-&gt;|"findings + charts + notes"| DISK[/"Run directory"/]
+    DISK -.-&gt;|"resolve latest run"| STORY
+
+    style ENG fill:#e8f0fe,stroke:#4a6f93
+    style SCI fill:#e8f4e8,stroke:#4a8a4a
+    style STORY fill:#fef3e0,stroke:#b38600
+    style CAT fill:#f0f0f0,stroke:#999
+    style DISK fill:#f0f0f0,stroke:#999</code></pre>
+<h3 id="engineer-scientist">Engineer → Scientist<a class="headerlink" href="#engineer-scientist" title="Permanent link">&para;</a></h3>
+<p>The handoff is <strong>implicit</strong> -both agents point to the same Unity Catalog
+schema. The scientist runs <code>list_catalog_tables</code> and sees the tables the
+engineer created.</p>
+<h3 id="scientist-storyteller">Scientist → StoryTeller<a class="headerlink" href="#scientist-storyteller" title="Permanent link">&para;</a></h3>
+<p>The handoff is <strong>explicit</strong> via <code>AgentDependency</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">versifai.core.run_manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">AgentDependency</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="c1"># StoryTeller config declares where to find scientist outputs</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="n">dependency</span> <span class="o">=</span> <span class="n">AgentDependency</span><span class="p">(</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="n">agent_type</span><span class="o">=</span><span class="s2">&quot;scientist&quot;</span><span class="p">,</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>    <span class="n">config_name</span><span class="o">=</span><span class="s2">&quot;global_development&quot;</span><span class="p">,</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>    <span class="n">base_path</span><span class="o">=</span><span class="s2">&quot;/Volumes/.../results&quot;</span><span class="p">,</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>    <span class="n">run_id</span><span class="o">=</span><span class="s2">&quot;&quot;</span>  <span class="c1"># Empty = use latest run</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="p">)</span>
+</code></pre></div>
+<p>The dependency resolver finds the latest scientist run and returns its path.
+The StoryTeller then reads <code>findings.json</code>, scans <code>charts/</code>, <code>tables/</code>, and
+<code>notes/</code> from that directory.</p>
+<hr />
+<h2 id="the-reproducibility-contract">The Reproducibility Contract<a class="headerlink" href="#the-reproducibility-contract" title="Permanent link">&para;</a></h2>
+<p>Every artifact the system produces can be verified by a human without the LLM:</p>
+<table>
+<thead>
+<tr>
+<th>Artifact</th>
+<th>How to Verify</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Delta table</strong></td>
+<td>Run the CREATE TABLE SQL from the schema designer's output</td>
+</tr>
+<tr>
+<td><strong>Statistical finding</strong></td>
+<td>Re-run the SQL query from the notes file, feed results to scipy/statsmodels</td>
+</tr>
+<tr>
+<td><strong>Chart</strong></td>
+<td>Re-run the SQL query + render code from the notes file</td>
+</tr>
+<tr>
+<td><strong>Narrative claim</strong></td>
+<td>Check the finding it cites → check the evidence → check the SQL</td>
+</tr>
+<tr>
+<td><strong>Evidence tier</strong></td>
+<td>Compare the p-value and effect size against the tier criteria</td>
+</tr>
+</tbody>
+</table>
+<p>The chain is always: <strong>Narrative claim → Finding → Evidence → SQL query → Raw data.</strong></p>
+<p>Every link in that chain is recorded as an artifact on disk.</p>
+<pre class="mermaid"><code>flowchart RL
+    CLAIM["Narrative claim:&lt;br&gt;'Ducks quack more&lt;br&gt;before rain'"]
+    FINDING["Finding:&lt;br&gt;Spearman rho=0.42&lt;br&gt;p &lt; 0.001"]
+    EVIDENCE["Evidence:&lt;br&gt;Notes file with full&lt;br&gt;SQL + methodology"]
+    SQL["SQL query:&lt;br&gt;SELECT quack_count,&lt;br&gt;LEAD(precip_mm, 1)..."]
+    DATA["Raw data:&lt;br&gt;silver_weather_duck_daily&lt;br&gt;312,847 rows"]
+
+    CLAIM --&gt; FINDING
+    FINDING --&gt; EVIDENCE
+    EVIDENCE --&gt; SQL
+    SQL --&gt; DATA
+
+    style CLAIM fill:#fef3e0,stroke:#b38600
+    style FINDING fill:#e8f4e8,stroke:#4a8a4a
+    style EVIDENCE fill:#e8f0fe,stroke:#4a6f93
+    style SQL fill:#f0f0f0,stroke:#999
+    style DATA fill:#f0f0f0,stroke:#999</code></pre>
+<p>This is the core design principle: <strong>the AI is there to create artifacts, not
+to be the artifact.</strong> Remove the AI and the work still stands.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/jweinberg-a2a/versifai-data-agents" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.expand", "navigation.top", "content.code.copy", "content.code.annotate", "search.suggest", "search.highlight", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../javascripts/extra.js"></script>
+      
+    
+  </body>
+</html>

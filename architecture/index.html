@@ -1,0 +1,2094 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Agentic AI framework for autonomous data engineering, science, and storytelling.">
+      
+      
+      
+        <link rel="canonical" href="https://docs.versifai.org/architecture/">
+      
+      
+        <link rel="prev" href="../tutorial-world-development/">
+      
+      
+        <link rel="next" href="../run-management/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/IconOnly_NoBuffer.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
+    
+    
+      
+        <title>Architecture - Versifai</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#architecture" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Versifai" class="md-header__button md-logo" aria-label="Versifai" data-md-component="logo">
+      
+  <img src="../assets/FullLogo_Transparent_NoBuffer.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Versifai
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Architecture
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jweinberg-a2a/versifai-data-agents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jweinberg-a2a/versifai-data-agents
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Versifai" class="md-nav__button md-logo" aria-label="Versifai" data-md-component="logo">
+      
+  <img src="../assets/FullLogo_Transparent_NoBuffer.png" alt="logo">
+
+    </a>
+    Versifai
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jweinberg-a2a/versifai-data-agents" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jweinberg-a2a/versifai-data-agents
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial-world-development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial: World Development
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-abstractions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Abstractions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Core Abstractions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-react-loop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The ReAct Loop
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tools-the-unit-of-capability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tools -The Unit of Capability
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-tools-are-registered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How Tools Are Registered
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#toolresult-the-standard-return-type" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ToolResult -The Standard Return Type
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#agentmemory-context-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AgentMemory -Context Management
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tool-inventory-by-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tool Inventory by Agent
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-engineer-agent-deep-dive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Engineer Agent -Deep Dive
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Engineer Agent -Deep Dive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phases
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tool-level-walkthrough" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tool-Level Walkthrough
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-behaviors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Behaviors
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-scientist-agent-deep-dive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Scientist Agent -Deep Dive
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Scientist Agent -Deep Dive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phases_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phases
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tool-level-walkthrough_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tool-Level Walkthrough
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-behaviors_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Behaviors
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#storyteller-agent-deep-dive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        StoryTeller Agent -Deep Dive
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="StoryTeller Agent -Deep Dive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phases_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phases
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tool-level-walkthrough_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tool-Level Walkthrough
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-behaviors_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Behaviors
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#config-driven-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Config-Driven Design
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#llm-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LLM Client
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#databricks-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Databricks Integration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Databricks Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#unity-catalog" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Unity Catalog
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#volumes-fuse-mount" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Volumes (FUSE Mount)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sql-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SQL Execution
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#safety-limits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Safety Limits
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../run-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Run Management & Reproducibility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-engineer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Engineer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-scientist/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Scientist
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storyteller/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    StoryTeller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../custom-agents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Building Custom Agents
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tool-inventory/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tool Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Framework
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/data-agents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Agents
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/science-agents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Science Agents
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/story-agents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Story Agents
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-abstractions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Abstractions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Core Abstractions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-react-loop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The ReAct Loop
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tools-the-unit-of-capability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tools -The Unit of Capability
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-tools-are-registered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How Tools Are Registered
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#toolresult-the-standard-return-type" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ToolResult -The Standard Return Type
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#agentmemory-context-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AgentMemory -Context Management
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tool-inventory-by-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tool Inventory by Agent
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-engineer-agent-deep-dive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Engineer Agent -Deep Dive
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Engineer Agent -Deep Dive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phases
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tool-level-walkthrough" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tool-Level Walkthrough
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-behaviors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Behaviors
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-scientist-agent-deep-dive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Scientist Agent -Deep Dive
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Scientist Agent -Deep Dive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phases_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phases
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tool-level-walkthrough_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tool-Level Walkthrough
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-behaviors_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Behaviors
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#storyteller-agent-deep-dive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        StoryTeller Agent -Deep Dive
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="StoryTeller Agent -Deep Dive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phases_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phases
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tool-level-walkthrough_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tool-Level Walkthrough
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-behaviors_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Behaviors
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#config-driven-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Config-Driven Design
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#llm-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LLM Client
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#databricks-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Databricks Integration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Databricks Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#unity-catalog" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Unity Catalog
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#volumes-fuse-mount" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Volumes (FUSE Mount)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sql-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SQL Execution
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#safety-limits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Safety Limits
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h1>
+<p>Versifai is an autonomous, LLM-powered framework with three specialized AI agents that discover, engineer, validate, and analyze data on Databricks Unity Catalog -then write a narrative report from the results.</p>
+<p>This page walks through the architecture from the top down: the overall pipeline, the core abstractions, how tools work, and finally a complete tool-level walkthrough of a real run.</p>
+<hr />
+<h2 id="the-pipeline">The Pipeline<a class="headerlink" href="#the-pipeline" title="Permanent link">&para;</a></h2>
+<p>Three agents run in sequence. Each one reads from what the previous agent produced.</p>
+<pre class="mermaid"><code>flowchart LR
+    RAW[/"Raw files"/] --&gt; DE["Data Engineer"]
+    DE --&gt; DT[("Delta Tables")]
+    DT --&gt; DS["Data Scientist"]
+    DS --&gt; FO[/"findings + charts&lt;br&gt;+ notes"/]
+    FO --&gt; ST["StoryTeller"]
+    ST --&gt; RPT[/"Narrative report"/]
+
+    style DE fill:#e8f0fe,stroke:#4a6f93
+    style DS fill:#e8f4e8,stroke:#4a8a4a
+    style ST fill:#fef3e0,stroke:#b38600</code></pre>
+<p>Each stage has exactly three moving parts:</p>
+<table>
+<thead>
+<tr>
+<th>Part</th>
+<th>What It Is</th>
+<th>What Changes Between Projects</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Config</strong></td>
+<td>A Python dataclass holding all domain knowledge</td>
+<td>Everything -this is where your project lives</td>
+</tr>
+<tr>
+<td><strong>Agent</strong></td>
+<td>A generic Python class that reads the config and does work</td>
+<td>Nothing -agents are reusable across projects</td>
+</tr>
+<tr>
+<td><strong>Notebook</strong></td>
+<td>A Databricks notebook that creates the agent and runs it</td>
+<td>Just the import path to your config</td>
+</tr>
+</tbody>
+</table>
+<p>The agents are generic. <strong>All domain-specific knowledge lives in configs.</strong> You never modify agent code -you write new configs.</p>
+<hr />
+<h2 id="core-abstractions">Core Abstractions<a class="headerlink" href="#core-abstractions" title="Permanent link">&para;</a></h2>
+<p>Before diving into how each agent works, here are the building blocks everything is built on.</p>
+<h3 id="the-react-loop">The ReAct Loop<a class="headerlink" href="#the-react-loop" title="Permanent link">&para;</a></h3>
+<p>Every agent runs using the same execution pattern: <strong>Reason → Act → Observe → Repeat.</strong></p>
+<pre class="mermaid"><code>flowchart TD
+    START([Agent receives prompt]) --&gt; REASON["**Reason**&lt;br&gt;LLM reads context and&lt;br&gt;decides what to do next"]
+    REASON --&gt; TOOL{"Tool call?"}
+    TOOL --&gt;|"Yes"| ACT["**Act**&lt;br&gt;ToolRegistry executes&lt;br&gt;the requested tool"]
+    ACT --&gt; OBSERVE["**Observe**&lt;br&gt;Tool returns ToolResult&lt;br&gt;stored in AgentMemory"]
+    OBSERVE --&gt; REASON
+
+    TOOL --&gt;|"No -done"| END([Agent returns final answer])
+
+    style REASON fill:#e8f0fe,stroke:#4a6f93
+    style ACT fill:#e8f4e8,stroke:#4a8a4a
+    style OBSERVE fill:#fef3e0,stroke:#b38600</code></pre>
+<p>The agent never executes arbitrary code. It reasons about what to do, calls a tool, observes the result, and reasons again. This loop continues until the agent decides it's done or hits a turn limit.</p>
+<h3 id="tools-the-unit-of-capability">Tools -The Unit of Capability<a class="headerlink" href="#tools-the-unit-of-capability" title="Permanent link">&para;</a></h3>
+<p>Tools are how agents interact with the world. Every tool follows the same contract:</p>
+<pre class="mermaid"><code>flowchart LR
+    LLM["LLM Agent"] --&gt;|"tool_use block"| REG["ToolRegistry&lt;br&gt;lookup + validate"]
+    REG --&gt;|"_execute()"| TOOL["BaseTool"]
+    TOOL --&gt;|"ToolResult"| MEM["AgentMemory"]
+    MEM --&gt;|"next turn"| LLM
+
+    style LLM fill:#e8f0fe,stroke:#4a6f93
+    style TOOL fill:#e8f4e8,stroke:#4a8a4a
+    style MEM fill:#fef3e0,stroke:#b38600</code></pre>
+<p>Every tool:</p>
+<ul>
+<li>Has a <strong>name</strong>, <strong>description</strong>, and <strong>parameter schema</strong> (JSON Schema)</li>
+<li>Implements <code>_execute()</code> which does the work and returns a <code>ToolResult</code></li>
+<li>Is registered in a <code>ToolRegistry</code> at agent construction time</li>
+<li>Can be tested in isolation -no LLM needed for unit tests</li>
+</ul>
+<h3 id="how-tools-are-registered">How Tools Are Registered<a class="headerlink" href="#how-tools-are-registered" title="Permanent link">&para;</a></h3>
+<p>At construction time, each agent builds a <code>ToolRegistry</code> with the tools it needs. The registry handles dispatch and generates the tool definitions the LLM sees.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">versifai.core.tools.registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">ToolRegistry</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># Each agent builds its own registry</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">registry</span> <span class="o">=</span> <span class="n">ToolRegistry</span><span class="p">()</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">VolumeExplorerTool</span><span class="p">(</span><span class="n">cfg</span><span class="o">=</span><span class="n">cfg</span><span class="p">))</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">DataProfilerTool</span><span class="p">(</span><span class="n">cfg</span><span class="o">=</span><span class="n">cfg</span><span class="p">))</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">SchemaDesignerTool</span><span class="p">(</span><span class="n">cfg</span><span class="o">=</span><span class="n">cfg</span><span class="p">))</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># ... more tools</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="c1"># The registry generates the schema the LLM sees</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">tool_definitions</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">to_claude_tools</span><span class="p">()</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="c1"># When the LLM calls a tool, the registry dispatches it</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="n">result</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">tool_name</span><span class="o">=</span><span class="s2">&quot;profile_data&quot;</span><span class="p">,</span> <span class="n">tool_input</span><span class="o">=</span><span class="p">{</span><span class="o">...</span><span class="p">})</span>
+</code></pre></div>
+<h3 id="toolresult-the-standard-return-type">ToolResult -The Standard Return Type<a class="headerlink" href="#toolresult-the-standard-return-type" title="Permanent link">&para;</a></h3>
+<p>Every tool returns a <code>ToolResult</code>. This is the only way tools communicate back to the agent:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>success</code></td>
+<td><code>bool</code></td>
+<td>Did the operation complete?</td>
+</tr>
+<tr>
+<td><code>data</code></td>
+<td><code>Any</code></td>
+<td>Result payload (dict, list, string)</td>
+</tr>
+<tr>
+<td><code>error</code></td>
+<td><code>str</code></td>
+<td>Error message if <code>success=False</code></td>
+</tr>
+<tr>
+<td><code>summary</code></td>
+<td><code>str</code></td>
+<td>Human-readable summary for the agent</td>
+</tr>
+<tr>
+<td><code>image_path</code></td>
+<td><code>str</code></td>
+<td>Path to PNG for inline display</td>
+</tr>
+</tbody>
+</table>
+<p>Tools never raise exceptions. They always return a <code>ToolResult</code>, even on failure. This keeps the ReAct loop stable -the agent sees the error and can reason about what to do next.</p>
+<h3 id="agentmemory-context-management">AgentMemory -Context Management<a class="headerlink" href="#agentmemory-context-management" title="Permanent link">&para;</a></h3>
+<p>The <code>AgentMemory</code> class manages conversation history and prevents context overflow:</p>
+<ul>
+<li><strong>Auto-summarization</strong> -at 30 messages, older messages are compressed</li>
+<li><strong>Tool result trimming</strong> -large results older than 10 messages are truncated to 300 chars</li>
+<li><strong>Per-source reset</strong> -history clears between sources, but decisions carry forward</li>
+</ul>
+<hr />
+<h2 id="tool-inventory-by-agent">Tool Inventory by Agent<a class="headerlink" href="#tool-inventory-by-agent" title="Permanent link">&para;</a></h2>
+<p>Each agent has a specialized toolkit. Some tools are shared across agents.</p>
+<pre class="mermaid"><code>flowchart TD
+    SHARED["Shared tools (4)&lt;br&gt;execute_sql, list_catalog_tables,&lt;br&gt;web_search, create_custom_tool"] --- ENG &amp; SCI &amp; STORY
+    SHARED2["Shared -Sci + Story (4)&lt;br&gt;create_visualization, view_chart,&lt;br&gt;save_note, scrape_web"] --- SCI &amp; STORY
+
+    ENG["Data Engineer&lt;br&gt;10 specialized tools"]
+    SCI["Data Scientist&lt;br&gt;7 specialized tools"]
+    STORY["StoryTeller&lt;br&gt;6 specialized tools"]
+
+    style SHARED fill:#f0f0f0,stroke:#999
+    style SHARED2 fill:#f0f0f0,stroke:#999
+    style ENG fill:#e8f0fe,stroke:#4a6f93
+    style SCI fill:#e8f4e8,stroke:#4a8a4a
+    style STORY fill:#fef3e0,stroke:#b38600</code></pre>
+<div class="admonition note">
+<p class="admonition-title">SQL Write Protection</p>
+<p>The Data Engineer gets full SQL access (<code>ExecuteSQLTool</code>). The Data Scientist and StoryTeller get a write-protected variant (<code>SilverOnlyExecuteSQLTool</code>) that blocks DDL/DML on anything except <code>silver_*</code> tables. SELECT queries are unrestricted for everyone.</p>
+</div>
+<p>For the complete parameter and return type reference for every tool, see the <a href="../tool-inventory/">Tool Inventory</a>.</p>
+<hr />
+<h2 id="data-engineer-agent-deep-dive">Data Engineer Agent -Deep Dive<a class="headerlink" href="#data-engineer-agent-deep-dive" title="Permanent link">&para;</a></h2>
+<p>The Data Engineer is the first agent in the pipeline. It takes a directory of raw files and turns them into clean, validated Delta tables in Unity Catalog.</p>
+<h3 id="phases">Phases<a class="headerlink" href="#phases" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart LR
+    P1["Discovery&lt;br&gt;explore volume, find docs"] --&gt; P2["Processing&lt;br&gt;profile → schema → load"]
+    P2 --&gt; P3["Acceptance&lt;br&gt;analyst validates, engineer fixes"]
+
+    style P1 fill:#e8f0fe,stroke:#4a6f93
+    style P2 fill:#dce8f5,stroke:#4a6f93
+    style P3 fill:#d0e0f0,stroke:#4a6f93</code></pre>
+<h3 id="tool-level-walkthrough">Tool-Level Walkthrough<a class="headerlink" href="#tool-level-walkthrough" title="Permanent link">&para;</a></h3>
+<p>Imagine a Volume containing weather CSVs, a zipped duck observation archive, and an Excel file of ice cream sales. Here's exactly what the agent does:</p>
+<pre class="mermaid"><code>flowchart TD
+    EV["explore_volume&lt;br&gt;scan directories, map files"] --&gt; SFD["scan_for_documentation&lt;br&gt;find READMEs, data dicts"]
+    SFD --&gt; RFH["read_file_header&lt;br&gt;peek at columns per file"]
+    RFH --&gt; PD["profile_data&lt;br&gt;nulls, types, join keys"]
+    PD --&gt; DS["design_schema&lt;br&gt;generate CREATE TABLE SQL"]
+    DS --&gt; TL["transform_and_load&lt;br&gt;rename, cast, batch process"]
+    TL --&gt; WTC["write_to_catalog&lt;br&gt;Delta table in Unity Catalog"]
+    WTC --&gt; ANALYST["Analyst validates via SQL&lt;br&gt;join keys, nulls, ranges"]
+    ANALYST --&gt; V{Accepted?}
+    V --&gt;|Yes| DONE(["Tables validated"])
+    V --&gt;|Needs fix| TL
+
+    style EV fill:#e8f0fe,stroke:#4a6f93
+    style PD fill:#e8f0fe,stroke:#4a6f93
+    style DS fill:#e8f0fe,stroke:#4a6f93
+    style TL fill:#e8f0fe,stroke:#4a6f93
+    style WTC fill:#e8f4e8,stroke:#4a8a4a
+    style ANALYST fill:#fef3e0,stroke:#b38600
+    style DONE fill:#e8f4e8,stroke:#4a8a4a</code></pre>
+<h3 id="key-behaviors">Key Behaviors<a class="headerlink" href="#key-behaviors" title="Permanent link">&para;</a></h3>
+<p><strong>Smart resume</strong> -If the notebook crashes after loading 2 of 4 sources, re-running skips the completed sources. The agent queries Unity Catalog for existing tables and compares loaded files (via <code>source_file_name</code> metadata) against current directory contents. See <a href="../run-management/">Run Management &amp; Reproducibility</a> for the full resume system.</p>
+<p><strong>Batch transform</strong> -For sources with many files (e.g., 45 monthly CSVs), <code>transform_and_load</code> supports batch mode -pass a <code>files</code> array to process everything in one tool call.</p>
+<p><strong>Auto-flush</strong> -When staged data exceeds 30M rows, the tool auto-flushes to parquet on the staging volume and clears memory. The final <code>write_to_catalog</code> creates the Delta table from all accumulated parquet batches.</p>
+<p><strong>Three-tier write strategy:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Data Size</th>
+<th>Method</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>≤ 2M rows</td>
+<td><code>spark.createDataFrame()</code></td>
+<td>Fast, in-memory</td>
+</tr>
+<tr>
+<td>&gt; 2M rows</td>
+<td>Pandas → temp parquet → Spark SQL</td>
+<td>Avoids gRPC protobuf limits</td>
+</tr>
+<tr>
+<td>Auto-flushed</td>
+<td>Spark reads parquet directory</td>
+<td>Already on disk</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="data-scientist-agent-deep-dive">Data Scientist Agent -Deep Dive<a class="headerlink" href="#data-scientist-agent-deep-dive" title="Permanent link">&para;</a></h2>
+<p>The Data Scientist reads from the Delta tables the engineer created, builds analytical datasets, runs statistics, fits models, and saves structured findings.</p>
+<h3 id="phases_1">Phases<a class="headerlink" href="#phases_1" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart LR
+    P1["Orientation&lt;br&gt;inventory tables, assess quality"] --&gt; P2["Silver Construction&lt;br&gt;join into analytical datasets"]
+    P2 --&gt; P3["Theme Analysis&lt;br&gt;stats, models, findings × N"]
+    P3 --&gt; P4["Synthesis&lt;br&gt;cross-validate, flag gaps"]
+
+    style P1 fill:#e8f4e8,stroke:#4a8a4a
+    style P2 fill:#dcefd8,stroke:#4a8a4a
+    style P3 fill:#d0ead0,stroke:#4a8a4a
+    style P4 fill:#c4e5c4,stroke:#4a8a4a</code></pre>
+<h3 id="tool-level-walkthrough_1">Tool-Level Walkthrough<a class="headerlink" href="#tool-level-walkthrough_1" title="Permanent link">&para;</a></h3>
+<p>Here's what the agent does for a single research theme -"Does quack frequency correlate with next-day rain?"</p>
+<pre class="mermaid"><code>flowchart TD
+    LIST["list_catalog_tables"] --&gt; SQL1["execute_sql&lt;br&gt;assess row counts, date ranges"]
+    SQL1 --&gt; SQL2["execute_sql&lt;br&gt;CREATE TABLE with JOINs"]
+    SQL2 --&gt; VS["validate_silver&lt;br&gt;grain, nulls, join rates"]
+    VS --&gt; SQL3["execute_sql&lt;br&gt;extract features for theme"]
+    SQL3 --&gt; STAT["statistical_analysis&lt;br&gt;correlations, hypothesis tests"]
+    STAT --&gt; CONF["check_confounders&lt;br&gt;Simpson's Paradox check"]
+    CONF --&gt; VSTAT["validate_statistics&lt;br&gt;multiple comparison correction"]
+    VSTAT --&gt; VIZ["create_visualization&lt;br&gt;chart saved to disk"]
+    VIZ --&gt; NOTE["save_note&lt;br&gt;SQL + reasoning logged"]
+    NOTE --&gt; SF["save_finding&lt;br&gt;structured evidence → findings.json"]
+
+    style LIST fill:#e8f4e8,stroke:#4a8a4a
+    style VS fill:#fef3e0,stroke:#b38600
+    style STAT fill:#e8f0fe,stroke:#4a6f93
+    style CONF fill:#fef3e0,stroke:#b38600
+    style SF fill:#e8f4e8,stroke:#4a8a4a</code></pre>
+<h3 id="key-behaviors_1">Key Behaviors<a class="headerlink" href="#key-behaviors_1" title="Permanent link">&para;</a></h3>
+<p><strong>Theme-driven analysis</strong> -Each theme in the <code>ResearchConfig</code> is a self-contained research question with methodology steps, required tables, expected outputs, and a signature visualization. The agent executes themes in sequence order.</p>
+<p><strong>Evidence tiers</strong> -Every finding is classified by statistical strength:</p>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Criteria</th>
+<th>Used For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DEFINITIVE</td>
+<td>p &lt; 0.001, large effect size</td>
+<td>Primary conclusions</td>
+</tr>
+<tr>
+<td>STRONG</td>
+<td>p &lt; 0.01, medium+ effect</td>
+<td>Leading findings</td>
+</tr>
+<tr>
+<td>SUGGESTIVE</td>
+<td>p &lt; 0.05</td>
+<td>Supporting evidence</td>
+</tr>
+<tr>
+<td>CONTEXTUAL</td>
+<td>Descriptive, no hypothesis test</td>
+<td>Background context</td>
+</tr>
+<tr>
+<td>WEAK</td>
+<td>p ≥ 0.05, negligible effect</td>
+<td>Limitations, caveats</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Confounder detection</strong> -<code>check_confounders</code> decomposes aggregate relationships into subgroups to detect Simpson's Paradox -where the overall trend reverses within every subgroup.</p>
+<p><strong>Reproducibility</strong> -Every SQL query, statistical test, and chart is logged to per-theme notes files via <code>save_note</code>. A human can follow the exact reasoning path without the AI. See <a href="../run-management/">Run Management &amp; Reproducibility</a> for the full artifact and notes system.</p>
+<hr />
+<h2 id="storyteller-agent-deep-dive">StoryTeller Agent -Deep Dive<a class="headerlink" href="#storyteller-agent-deep-dive" title="Permanent link">&para;</a></h2>
+<p>The StoryTeller reads the scientist's outputs (findings, charts, tables, notes) and produces a narrative report grounded in statistical evidence.</p>
+<h3 id="phases_2">Phases<a class="headerlink" href="#phases_2" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart LR
+    P1["Inventory&lt;br&gt;scan all findings + charts"] --&gt; P2["Evidence Eval&lt;br&gt;score strength, curate"]
+    P2 --&gt; P3["Section Writing&lt;br&gt;narrative per section"]
+    P3 --&gt; P4["Coherence&lt;br&gt;fix transitions"]
+    P4 --&gt; P5["Finalize&lt;br&gt;TOC + bibliography"]
+
+    style P1 fill:#fef9f0,stroke:#b38600
+    style P2 fill:#fef3e0,stroke:#b38600
+    style P3 fill:#fdecd0,stroke:#b38600
+    style P4 fill:#fce6c0,stroke:#b38600
+    style P5 fill:#fbe0b0,stroke:#b38600</code></pre>
+<h3 id="tool-level-walkthrough_2">Tool-Level Walkthrough<a class="headerlink" href="#tool-level-walkthrough_2" title="Permanent link">&para;</a></h3>
+<p>Here's how the StoryTeller writes one section of the report -the "Duck vs. Doppler" showdown:</p>
+<pre class="mermaid"><code>flowchart TD
+    RF["read_findings&lt;br&gt;inventory all evidence"] --&gt; EE["evaluate_evidence&lt;br&gt;score strength per finding"]
+    EE --&gt; RC["read_chart + read_table&lt;br&gt;gather supporting artifacts"]
+    RC --&gt; WN["write_narrative&lt;br&gt;draft section with citations"]
+    WN --&gt; CS["cite_source&lt;br&gt;add to bibliography"]
+    CS --&gt; COH["write_narrative&lt;br&gt;coherence pass across sections"]
+    COH --&gt; ASM["write_narrative&lt;br&gt;assemble TOC + bibliography"]
+    ASM --&gt; RPT[/"final report"/]
+
+    style RF fill:#fef3e0,stroke:#b38600
+    style EE fill:#fef3e0,stroke:#b38600
+    style WN fill:#fef3e0,stroke:#b38600
+    style ASM fill:#fef3e0,stroke:#b38600
+    style RPT fill:#e8f4e8,stroke:#4a8a4a</code></pre>
+<h3 id="key-behaviors_2">Key Behaviors<a class="headerlink" href="#key-behaviors_2" title="Permanent link">&para;</a></h3>
+<p><strong>Evidence-grounded writing</strong> -The StoryTeller cannot make claims that aren't backed by findings. <code>evaluate_evidence</code> scores each finding's statistical strength and <code>curate</code> ranks them for each section's purpose.</p>
+<p><strong>Narrative text must match statistics</strong> -If a finding has p=0.73, it's classified as WEAK evidence regardless of how the text describes it. The evidence threshold config controls what's allowed as a lead finding vs. supporting evidence.</p>
+<p><strong>Citation management</strong> -<code>cite_source</code> maintains a bibliography. The <code>assemble</code> operation generates formatted references at the end of the report.</p>
+<p><strong>Editorial review</strong> -After the initial write, <code>run_editor()</code> enables a human-in-the-loop pass where the operator can give specific rewrite instructions (e.g., "simplify the methodology for a policymaker audience").</p>
+<hr />
+<h2 id="config-driven-design">Config-Driven Design<a class="headerlink" href="#config-driven-design" title="Permanent link">&para;</a></h2>
+<p>The agents are generic -the intelligence about <em>your</em> data lives in config dataclasses.</p>
+<pre class="mermaid"><code>flowchart LR
+    PC["ProjectConfig&lt;br&gt;catalog, volume, sources"] --&gt; DEA["DataEngineerAgent"]
+    RC["ResearchConfig&lt;br&gt;thesis, themes, datasets"] --&gt; DSA["DataScientistAgent"]
+    SC["StorytellerConfig&lt;br&gt;sections, style, thresholds"] --&gt; STA["StoryTellerAgent"]
+
+    style PC fill:#fff8e1,stroke:#b38600
+    style RC fill:#fff8e1,stroke:#b38600
+    style SC fill:#fff8e1,stroke:#b38600
+    style DEA fill:#e8f0fe,stroke:#4a6f93
+    style DSA fill:#e8f4e8,stroke:#4a8a4a
+    style STA fill:#fef3e0,stroke:#b38600</code></pre>
+<table>
+<thead>
+<tr>
+<th>Config</th>
+<th>Controls</th>
+<th>Key Fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ProjectConfig</code></td>
+<td>What data to ingest and how</td>
+<td><code>catalog</code>, <code>schema</code>, <code>volume_path</code>, <code>join_key</code>, <code>known_sources</code>, <code>source_processing_hints</code>, <code>column_naming_examples</code>, <code>grain_detection_guidance</code></td>
+</tr>
+<tr>
+<td><code>ResearchConfig</code></td>
+<td>What questions to investigate</td>
+<td><code>thesis</code>, <code>analysis_themes</code>, <code>silver_datasets</code>, <code>research_references</code>, <code>agent_role</code>, <code>domain_context</code>, <code>analysis_method_guidance</code>, <code>visualization_guidance</code></td>
+</tr>
+<tr>
+<td><code>StorytellerConfig</code></td>
+<td>How to write the report</td>
+<td><code>narrative_sections</code>, <code>style_guide</code>, <code>evidence_thresholds</code>, <code>output_format</code>, <code>domain_writing_rules</code>, <code>citation_source_guidance</code></td>
+</tr>
+</tbody>
+</table>
+<p>To start a new project, copy an example config, change the domain-specific fields, and run the same agents. See the <a href="../tutorial-world-development/">Tutorial</a> for a complete walkthrough, or browse the <a href="https://github.com/jweinberg-a2a/versifai-data-agents/tree/main/examples" target="_blank"><code>examples/</code></a> directory on GitHub.</p>
+<hr />
+<h2 id="llm-client">LLM Client<a class="headerlink" href="#llm-client" title="Permanent link">&para;</a></h2>
+<p>The <code>LLMClient</code> wraps <a href="https://docs.litellm.ai/">LiteLLM</a> for multi-provider support:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">versifai.core.llm</span><span class="w"> </span><span class="kn">import</span> <span class="n">LLMClient</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1"># Any LiteLLM-supported provider</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">llm</span> <span class="o">=</span> <span class="n">LLMClient</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;claude-sonnet-4-6&quot;</span><span class="p">)</span>      <span class="c1"># Anthropic</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">llm</span> <span class="o">=</span> <span class="n">LLMClient</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4o&quot;</span><span class="p">)</span>                  <span class="c1"># OpenAI</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">llm</span> <span class="o">=</span> <span class="n">LLMClient</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;azure/gpt-4o&quot;</span><span class="p">)</span>            <span class="c1"># Azure</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">llm</span> <span class="o">=</span> <span class="n">LLMClient</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;gemini/gemini-1.5-pro&quot;</span><span class="p">)</span>   <span class="c1"># Google</span>
+</code></pre></div>
+<p>Key features:</p>
+<ul>
+<li><strong>Prompt caching</strong> -system prompt and tool definitions use <code>cache_control</code> to avoid re-billing static tokens each turn</li>
+<li><strong>Retry logic</strong> -exponential backoff on rate limits, connection errors, 5xx errors</li>
+<li><strong>Usage tracking</strong> -input/output/cache-read/cache-creation token counts per call</li>
+</ul>
+<hr />
+<h2 id="databricks-integration">Databricks Integration<a class="headerlink" href="#databricks-integration" title="Permanent link">&para;</a></h2>
+<h3 id="unity-catalog">Unity Catalog<a class="headerlink" href="#unity-catalog" title="Permanent link">&para;</a></h3>
+<p>All tables live in a three-level namespace: <code>catalog.schema.table</code>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>my_catalog.world_development.silver_gdp_per_capita
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>│          │              │
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>│          │              └── Table name (silver_ prefix = processed)
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>│          └── Schema (one per project)
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>└── Catalog (org-level grouping)
+</code></pre></div>
+<h3 id="volumes-fuse-mount">Volumes (FUSE Mount)<a class="headerlink" href="#volumes-fuse-mount" title="Permanent link">&para;</a></h3>
+<p>Raw data files are accessed via Databricks Volumes at <code>/Volumes/catalog/schema/volume/</code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">No file append on FUSE</p>
+<p>Databricks FUSE mounts don't support file append mode. Versifai uses a read-then-write pattern everywhere:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">existing</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span> <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">existing</span> <span class="o">+</span> <span class="n">new_content</span><span class="p">)</span>
+</code></pre></div></p>
+</div>
+<h3 id="sql-execution">SQL Execution<a class="headerlink" href="#sql-execution" title="Permanent link">&para;</a></h3>
+<p>Tools that run SQL follow a two-tier pattern:</p>
+<ol>
+<li><strong>Try Spark first</strong> -faster, native in Databricks notebooks</li>
+<li><strong>Fall back to Databricks SDK</strong> -works outside notebooks, uses async polling</li>
+</ol>
+<hr />
+<h2 id="safety-limits">Safety Limits<a class="headerlink" href="#safety-limits" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Limit</th>
+<th>Value</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Max agent turns (global)</td>
+<td>200</td>
+<td>Prevent infinite loops</td>
+</tr>
+<tr>
+<td>Max turns per source</td>
+<td>120</td>
+<td>Allow batch processing of large file sets</td>
+</tr>
+<tr>
+<td>Max acceptance iterations</td>
+<td>3</td>
+<td>Engineer-analyst feedback cycles</td>
+</tr>
+<tr>
+<td>Max consecutive tool errors</td>
+<td>5</td>
+<td>Trigger error escalation</td>
+</tr>
+<tr>
+<td>Memory summarization trigger</td>
+<td>30 messages</td>
+<td>Keep context window manageable</td>
+</tr>
+<tr>
+<td>Auto-flush threshold</td>
+<td>30M rows</td>
+<td>Prevent OOM during staging</td>
+</tr>
+<tr>
+<td>Direct write threshold</td>
+<td>2M rows</td>
+<td>Above this, route through parquet</td>
+</tr>
+<tr>
+<td>LLM retry attempts</td>
+<td>3</td>
+<td>Exponential backoff for API resilience</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/jweinberg-a2a/versifai-data-agents" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.expand", "navigation.top", "content.code.copy", "content.code.annotate", "search.suggest", "search.highlight", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../javascripts/extra.js"></script>
+      
+    
+  </body>
+</html>
