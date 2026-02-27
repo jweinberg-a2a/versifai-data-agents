@@ -23,6 +23,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
+from versifai.core.config import LLMConfig
+
 if TYPE_CHECKING:
     from versifai.core.run_manager import AgentDependency
     from versifai.data_agents.engineer.config import ProjectConfig
@@ -132,6 +134,9 @@ class ResearchConfig:
     # ── Research identity ────────────────────────────────────────
     name: str = ""
     thesis: str = ""
+
+    # ── LLM configuration ────────────────────────────────────────
+    llm: LLMConfig = field(default_factory=LLMConfig)
 
     # ── Agent identity & domain framing ──────────────────────────
     agent_role: str = "Data Scientist"  # e.g. "Data Scientist and Health Policy Researcher"

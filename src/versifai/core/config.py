@@ -36,6 +36,36 @@ class CatalogConfig:
 
 
 @dataclass
+class LLMConfig:
+    """LLM provider configuration.
+
+    Groups model selection and authentication settings into a single
+    composable building block. Embed this in any agent config to make
+    the LLM provider configurable.
+
+    Examples::
+
+        # Anthropic Claude (default)
+        LLMConfig()
+
+        # Databricks-hosted Claude
+        LLMConfig(model="databricks/databricks-claude-sonnet-4-6")
+
+        # OpenAI
+        LLMConfig(model="gpt-4o")
+
+        # Azure OpenAI
+        LLMConfig(model="azure/gpt-4o", api_base="https://my.openai.azure.com")
+    """
+
+    model: str = "claude-sonnet-4-6"
+    max_tokens: int = 8192
+    api_key: str = ""
+    api_base: str = ""
+    extended_context: bool = True
+
+
+@dataclass
 class AgentSettings:
     """Tunable parameters for agent behaviour.
 

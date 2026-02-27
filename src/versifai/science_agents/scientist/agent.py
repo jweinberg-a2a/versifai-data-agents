@@ -89,7 +89,13 @@ class DataScientistAgent(BaseAgent):
 
         display = AgentDisplay(dbutils=dbutils)
         memory = AgentMemory()
-        llm = LLMClient()
+        llm = LLMClient(
+            model=cfg.llm.model,
+            max_tokens=cfg.llm.max_tokens,
+            api_key=cfg.llm.api_key or None,
+            api_base=cfg.llm.api_base or None,
+            extended_context=cfg.llm.extended_context,
+        )
         registry = ToolRegistry()
 
         super().__init__(display=display, memory=memory, llm=llm, registry=registry)

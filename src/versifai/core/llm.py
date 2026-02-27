@@ -91,7 +91,7 @@ class LLMClient:
         self._model = model
         self._max_tokens = max_tokens
         self._api_key = api_key
-        self._api_base = api_base
+        self._api_base = self._normalize_api_base(model, api_base)
         self._retry_attempts = retry_attempts
         self._retry_base_delay = retry_base_delay
         self._extended_context = extended_context
@@ -103,9 +103,50 @@ class LLMClient:
         self._total_cache_creation_tokens = 0
         self._call_count = 0
 
+    # Provider prefixes that proxy through non-Anthropic endpoints.
+    # Even if the underlying model is Claude, Anthropic-specific features
+    # (prompt caching, extended context headers) only work on the direct API.
+    _PROXY_PREFIXES = (
+        "databricks/",
+        "bedrock/",
+        "azure/",
+        "vertex_ai/",
+        "vertex_ai_beta/",
+        "sagemaker/",
+        "ollama/",
+        "openrouter/",
+    )
+
+    @staticmethod
+    def _normalize_api_base(model: str, api_base: str | None) -> str | None:
+        """Ensure Databricks api_base includes ``/serving-endpoints``.
+
+        LiteLLM's ``databricks/`` provider expects the base URL to end with
+        ``/serving-endpoints`` (e.g.
+        ``https://adb-xxx.azuredatabricks.net/serving-endpoints``).  The
+        Databricks SDK convention (``DATABRICKS_HOST``) omits this suffix.
+        This helper appends it automatically when needed so callers can pass
+        either form.
+        """
+        if not api_base or not model.lower().startswith("databricks/"):
+            return api_base
+        base = api_base.rstrip("/")
+        if not base.endswith("/serving-endpoints"):
+            base += "/serving-endpoints"
+        return base
+
     @property
-    def _is_anthropic(self) -> bool:
-        return "claude" in self._model.lower()
+    def _is_direct_anthropic(self) -> bool:
+        """True only when hitting Anthropic's API directly.
+
+        Returns False for Databricks-hosted Claude, Bedrock, Azure, and
+        other proxy providers — even though the underlying model may be
+        Claude.
+        """
+        model_lower = self._model.lower()
+        if any(model_lower.startswith(p) for p in self._PROXY_PREFIXES):
+            return False
+        return "claude" in model_lower
 
     # ------------------------------------------------------------------
     # Message format conversion
@@ -239,7 +280,7 @@ class LLMClient:
             kwargs["api_base"] = self._api_base
 
         # Provider-specific optimizations
-        if self._is_anthropic:
+        if self._is_direct_anthropic:
             # Anthropic prompt caching: mark system + last tool for caching
             kwargs["messages"] = [{"role": "system", "content": system}] + converted_messages
             if tools:

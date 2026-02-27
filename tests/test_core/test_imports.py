@@ -57,6 +57,24 @@ def test_agent_settings_defaults():
     assert s.max_turns_per_source == 120
 
 
+def test_llm_config_defaults():
+    from versifai.core import LLMConfig
+
+    cfg = LLMConfig()
+    assert cfg.model == "claude-sonnet-4-6"
+    assert cfg.max_tokens == 8192
+    assert cfg.api_key == ""
+    assert cfg.api_base == ""
+    assert cfg.extended_context is True
+
+
+def test_llm_config_databricks():
+    from versifai.core.config import LLMConfig
+
+    cfg = LLMConfig(model="databricks/databricks-claude-sonnet-4-6")
+    assert cfg.model == "databricks/databricks-claude-sonnet-4-6"
+
+
 def test_llm_response_dataclass():
     from versifai.core import LLMResponse
 

@@ -1,7 +1,7 @@
 """Core agentic framework: BaseAgent, LLMClient, tools, memory, and display."""
 
 from versifai.core.agent import BaseAgent
-from versifai.core.config import AgentSettings, CatalogConfig
+from versifai.core.config import AgentSettings, CatalogConfig, LLMConfig
 from versifai.core.display import AgentDisplay
 from versifai.core.llm import LLMClient, LLMResponse
 from versifai.core.memory import AgentMemory
@@ -16,6 +16,7 @@ __all__ = [
     "AgentDisplay",
     "AgentSettings",
     "CatalogConfig",
+    "LLMConfig",
     "BaseTool",
     "ToolResult",
     "ToolRegistry",

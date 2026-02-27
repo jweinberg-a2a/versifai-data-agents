@@ -114,10 +114,40 @@ llm = LLMClient(
 # Google Gemini
 llm = LLMClient(model="gemini/gemini-1.5-pro")
 
-# Pass the LLM to any agent
-agent = DataEngineerAgent(cfg=cfg, dbutils=dbutils)
-agent._llm = llm  # Override the default
+# Databricks-hosted Claude
+llm = LLMClient(model="databricks/databricks-claude-sonnet-4-6")
 ```
+
+### Configuring via Agent Config (Recommended)
+
+Instead of overriding `agent._llm` after construction, use `LLMConfig` in your
+config dataclass. This is the cleanest approach:
+
+```python
+from versifai.core.config import LLMConfig
+from versifai.data_agents.engineer.config import ProjectConfig
+
+cfg = ProjectConfig(
+    name="My Project",
+    catalog="my_catalog",
+    schema="my_schema",
+    volume_path="/Volumes/my_catalog/my_schema/raw_data",
+    llm=LLMConfig(model="databricks/databricks-claude-sonnet-4-6"),
+)
+agent = DataEngineerAgent(cfg=cfg, dbutils=dbutils)
+```
+
+All three agent configs (`ProjectConfig`, `ResearchConfig`, `StorytellerConfig`)
+accept an `llm` field. When omitted, it defaults to `claude-sonnet-4-6`.
+
+### Databricks Environment Variables
+
+When using Databricks-hosted models, set these environment variables:
+
+| Variable | Purpose |
+|----------|---------|
+| `DATABRICKS_API_KEY` | Databricks API key for model serving |
+| `DATABRICKS_API_BASE` | Databricks serving endpoint URL |
 
 ## Smart Resume
 

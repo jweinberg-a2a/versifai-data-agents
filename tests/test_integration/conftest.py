@@ -39,9 +39,33 @@ CMS_CITATION = {
 # Skip marker — tests require an LLM API key
 # ---------------------------------------------------------------------------
 
+
+def _has_databricks_creds() -> bool:
+    """Check for Databricks credentials (either LiteLLM or SDK env var names)."""
+    return bool(
+        (os.environ.get("DATABRICKS_API_KEY") and os.environ.get("DATABRICKS_API_BASE"))
+        or (os.environ.get("DATABRICKS_TOKEN") and os.environ.get("DATABRICKS_HOST"))
+    )
+
+
 requires_llm = pytest.mark.skipif(
-    not (os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("OPENAI_API_KEY")),
-    reason="No LLM API key set (ANTHROPIC_API_KEY or OPENAI_API_KEY required)",
+    not (
+        os.environ.get("ANTHROPIC_API_KEY")
+        or os.environ.get("OPENAI_API_KEY")
+        or _has_databricks_creds()
+    ),
+    reason=(
+        "No LLM API key set (ANTHROPIC_API_KEY, OPENAI_API_KEY, "
+        "or DATABRICKS_TOKEN + DATABRICKS_HOST required)"
+    ),
+)
+
+requires_databricks_llm = pytest.mark.skipif(
+    not _has_databricks_creds(),
+    reason=(
+        "Databricks LLM credentials not set "
+        "(DATABRICKS_TOKEN + DATABRICKS_HOST or DATABRICKS_API_KEY + DATABRICKS_API_BASE required)"
+    ),
 )
 
 

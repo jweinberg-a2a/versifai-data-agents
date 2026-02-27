@@ -24,6 +24,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
+from versifai.core.config import LLMConfig
+
 # ---------------------------------------------------------------------------
 # Building blocks — standalone Lego pieces
 # ---------------------------------------------------------------------------
@@ -124,6 +126,9 @@ class ProjectConfig:
     # ── Unity Catalog target ────────────────────────────────────
     catalog: str = ""
     schema: str = ""
+
+    # ── LLM configuration ────────────────────────────────────────
+    llm: LLMConfig = field(default_factory=LLMConfig)
 
     # ── Data source location ────────────────────────────────────
     volume_path: str = ""

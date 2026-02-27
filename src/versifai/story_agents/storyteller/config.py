@@ -23,6 +23,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
+from versifai.core.config import LLMConfig
+
 if TYPE_CHECKING:
     from versifai.core.run_manager import AgentDependency
     from versifai.data_agents.engineer.config import ProjectConfig
@@ -109,6 +111,9 @@ class StorytellerConfig:
     # ── Report identity ────────────────────────────────────────
     name: str = ""
     thesis: str = ""
+
+    # ── LLM configuration ────────────────────────────────────────
+    llm: LLMConfig = field(default_factory=LLMConfig)
 
     # ── Paths — where DataScientist outputs live and where narrative goes
     research_results_path: str = ""

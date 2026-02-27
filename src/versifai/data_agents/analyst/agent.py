@@ -65,7 +65,13 @@ class DataAnalystAgent:
 
         self._display = AgentDisplay(dbutils=dbutils)
         self._memory = AgentMemory()
-        self._llm = LLMClient()
+        self._llm = LLMClient(
+            model=cfg.llm.model,
+            max_tokens=cfg.llm.max_tokens,
+            api_key=cfg.llm.api_key or None,
+            api_base=cfg.llm.api_base or None,
+            extended_context=cfg.llm.extended_context,
+        )
         self._max_turns = max_turns
         self._dbutils = dbutils
 
