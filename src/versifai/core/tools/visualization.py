@@ -40,6 +40,7 @@ class CreateVisualizationTool(BaseTool):
         cfg: ResearchConfig | None = None,
         display: AgentDisplay | None = None,
         notes_path: str = "",
+        results_path: str = "",
     ) -> None:
         super().__init__()
         if cfg is None:
@@ -48,6 +49,9 @@ class CreateVisualizationTool(BaseTool):
         self._display = display or AgentDisplay()
         self._charts_created: list[str] = []
         self._notes_path = notes_path
+        # When results_path is set (e.g. run-isolated directory), use it
+        # for charts/ and tables/ instead of cfg.results_volume_path.
+        self._results_path = results_path or cfg.results_volume_path
 
     def _fetch_sql_data(self, sql: str) -> pd.DataFrame | None:
         """Execute a SQL query and return ALL rows as a DataFrame.
@@ -787,7 +791,7 @@ class CreateVisualizationTool(BaseTool):
         # Save to results volume
         if not filename.endswith(".png"):
             filename += ".png"
-        charts_dir = os.path.join(cfg.results_volume_path, "charts")
+        charts_dir = os.path.join(self._results_path, "charts")
         os.makedirs(charts_dir, exist_ok=True)
         save_path = os.path.join(charts_dir, filename)
         fig.savefig(save_path, dpi=cfg.chart_dpi, bbox_inches="tight")
@@ -1129,7 +1133,7 @@ class CreateVisualizationTool(BaseTool):
             # Matplotlib path — save PNG
             if not filename.endswith(".png"):
                 filename += ".png"
-            charts_dir = os.path.join(cfg.results_volume_path, "charts")
+            charts_dir = os.path.join(self._results_path, "charts")
             os.makedirs(charts_dir, exist_ok=True)
             save_path = os.path.join(charts_dir, filename)
             mpl_fig.savefig(save_path, dpi=cfg.chart_dpi, bbox_inches="tight")
@@ -1246,8 +1250,7 @@ class CreateVisualizationTool(BaseTool):
         row_count: int,
     ) -> ToolResult:
         """Save a plotly figure as PNG (or HTML fallback) and display inline."""
-        cfg = self._cfg
-        charts_dir = os.path.join(cfg.results_volume_path, "charts")
+        charts_dir = os.path.join(self._results_path, "charts")
         os.makedirs(charts_dir, exist_ok=True)
 
         # Try PNG export via kaleido, fall back to HTML
@@ -1319,12 +1322,10 @@ class CreateVisualizationTool(BaseTool):
     ) -> ToolResult:
         import html as html_mod
 
-        cfg = self._cfg
-
         # Save as CSV
         if not filename.endswith(".csv"):
             filename += ".csv"
-        tables_dir = os.path.join(cfg.results_volume_path, "tables")
+        tables_dir = os.path.join(self._results_path, "tables")
         os.makedirs(tables_dir, exist_ok=True)
         save_path = os.path.join(tables_dir, filename)
         df.to_csv(save_path, index=False)

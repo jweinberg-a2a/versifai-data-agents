@@ -28,7 +28,7 @@
 
 # COMMAND ----------
 
-# MAGIC %pip install -e ../../.. python-dotenv --quiet
+# MAGIC %pip install ../../.. python-dotenv --quiet
 
 # COMMAND ----------
 

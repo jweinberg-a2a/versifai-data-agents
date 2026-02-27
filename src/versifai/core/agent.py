@@ -340,7 +340,7 @@ class BaseAgent:
     # ------------------------------------------------------------------
 
     @staticmethod
-    def _read_chart_image(image_path: str, max_width: int = 400) -> str:
+    def _read_chart_image(image_path: str, max_width: int = 800) -> str:
         """Read a chart PNG and return a resized base64 string for Claude vision.
 
         Resizes to max_width to keep token costs reasonable. Returns empty

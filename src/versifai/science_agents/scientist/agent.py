@@ -124,6 +124,7 @@ class DataScientistAgent(BaseAgent):
             cfg=cfg,
             display=self._display,
             notes_path=os.path.join(self._run_path, "notes"),
+            results_path=self._run_path,
         )
         self._view_chart_tool = ViewChartTool(
             charts_path=os.path.join(self._run_path, "charts"),
