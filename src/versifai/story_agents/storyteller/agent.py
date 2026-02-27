@@ -25,6 +25,7 @@ from versifai.core.run_manager import (
     init_run_directory,
     load_run_state,
     resolve_dependency,
+    resolve_run_path,
     save_run_state,
     write_run_metadata,
 )
@@ -89,6 +90,7 @@ class StoryTellerAgent(BaseAgent):
         self,
         cfg: StorytellerConfig | None = None,
         dbutils=None,
+        resume: bool = False,
     ) -> None:
         if cfg is None:
             raise ValueError(
@@ -113,7 +115,22 @@ class StoryTellerAgent(BaseAgent):
         self._dbutils = dbutils
 
         # Resolve run paths — always isolated
-        self._run_id = cfg.run_id or generate_run_id()
+        if cfg.run_id:
+            # Explicit run_id: reuse that exact run directory
+            self._run_id = cfg.run_id
+        elif resume:
+            # Resume: find the latest existing run
+            try:
+                latest_path = resolve_run_path(cfg.narrative_output_path)
+                self._run_id = os.path.basename(latest_path)
+                logger.info("Resuming previous run: %s", self._run_id)
+            except FileNotFoundError:
+                self._run_id = generate_run_id()
+                logger.info("No previous run found — starting new run: %s", self._run_id)
+        else:
+            # Fresh run
+            self._run_id = generate_run_id()
+
         self._narrative_run_path = init_run_directory(cfg.narrative_output_path, self._run_id)
         write_run_metadata(
             self._narrative_run_path,
@@ -218,7 +235,7 @@ class StoryTellerAgent(BaseAgent):
 
     def _save_state(self) -> None:
         """Persist ``self._run_state`` to ``run_metadata.json`` if active."""
-        if self._run_state and self._cfg.run_id:
+        if self._run_state:
             save_run_state(self._narrative_run_path, self._run_state)
 
     def _dump_progress_on_crash(self) -> None:
@@ -368,8 +385,7 @@ class StoryTellerAgent(BaseAgent):
         self._display.step(f"Sections: {len(cfg.narrative_sections)}")
         self._display.step(f"Results source: {self._research_path}")
         self._display.step(f"Output: {self._narrative_run_path}")
-        if cfg.run_id:
-            self._display.step(f"Run ID: {cfg.run_id}")
+        self._display.step(f"Run ID: {self._run_id}")
         self._display.step(f"Tools: {self._registry.tool_names + ['ask_human']}")
         if focus_visuals:
             self._display.step(f"Focus visuals: {len(focus_visuals)} pre-selected")
@@ -384,27 +400,17 @@ class StoryTellerAgent(BaseAgent):
         os.makedirs(os.path.join(self._research_path, "tables"), exist_ok=True)
         os.makedirs(os.path.join(self._research_path, "notes"), exist_ok=True)
 
-        # Write run metadata if using run isolation
-        if cfg.run_id:
-            write_run_metadata(
-                self._narrative_run_path,
-                cfg.name,
-                cfg.run_id,
-                agent_type="storyteller",
-            )
-
         # Initialise or resume run state
-        if cfg.run_id:
-            if not rerun:
-                existing = load_run_state(self._narrative_run_path)
-                if existing and existing.status in ("running", "interrupted", "failed"):
-                    self._run_state = existing
-                    self._run_state.status = "running"
-                    self._display.step(f"Resuming previous run (was {existing.status})")
-                    self._display.step(f"  Completed phases: {existing.completed_phases}")
-            if self._run_state is None:
-                self._run_state = RunState(entry_point="run")
-            self._save_state()
+        if not rerun:
+            existing = load_run_state(self._narrative_run_path)
+            if existing and existing.status in ("running", "interrupted", "failed"):
+                self._run_state = existing
+                self._run_state.status = "running"
+                self._display.step(f"Resuming previous run (was {existing.status})")
+                self._display.step(f"  Completed phases: {existing.completed_phases}")
+        if self._run_state is None:
+            self._run_state = RunState(entry_point="run")
+        self._save_state()
 
         try:
             # ── Pre-flight: scan research outputs ─────────────────────
@@ -573,18 +579,17 @@ class StoryTellerAgent(BaseAgent):
             self._dump_progress_on_crash()
 
         # Update run metadata on completion
-        if cfg.run_id:
-            write_run_metadata(
-                self._narrative_run_path,
-                cfg.name,
-                cfg.run_id,
-                agent_type="storyteller",
-                extra={
-                    "completed_at": datetime.now().isoformat(),
-                    "sections_written": self._write_narrative_tool.sections_written,
-                    "citations": len(self._cite_source_tool._citations),
-                },
-            )
+        write_run_metadata(
+            self._narrative_run_path,
+            cfg.name,
+            self._run_id,
+            agent_type="storyteller",
+            extra={
+                "completed_at": datetime.now().isoformat(),
+                "sections_written": self._write_narrative_tool.sections_written,
+                "citations": len(self._cite_source_tool._citations),
+            },
+        )
 
         summary = self._build_summary()
         self._display.phase("STORYTELLER COMPLETE")
@@ -629,9 +634,8 @@ class StoryTellerAgent(BaseAgent):
         os.makedirs(os.path.join(self._research_path, "notes"), exist_ok=True)
 
         # Fresh run state for this entry point
-        if cfg.run_id:
-            self._run_state = RunState(entry_point="run_sections")
-            self._save_state()
+        self._run_state = RunState(entry_point="run_sections")
+        self._save_state()
 
         try:
             inventory = self._scan_research_outputs()
@@ -791,9 +795,8 @@ class StoryTellerAgent(BaseAgent):
         os.makedirs(os.path.join(self._research_path, "notes"), exist_ok=True)
 
         # Fresh run state for this entry point
-        if cfg.run_id:
-            self._run_state = RunState(entry_point="run_editor")
-            self._save_state()
+        self._run_state = RunState(entry_point="run_editor")
+        self._save_state()
 
         try:
             # ── Pre-flight: scan research outputs ─────────────────
@@ -905,6 +908,6 @@ class StoryTellerAgent(BaseAgent):
             "citations": len(self._cite_source_tool._citations),
             "notes": len(self._note_tool._notes),
             "output_path": self._narrative_run_path,
-            "run_id": self._cfg.run_id or "",
+            "run_id": self._run_id,
             "llm_usage": self._llm.usage_summary,
         }

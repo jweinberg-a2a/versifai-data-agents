@@ -26,6 +26,7 @@ from versifai.core.run_manager import (
     init_run_directory,
     load_run_state,
     resolve_dependency,
+    resolve_run_path,
     save_run_state,
     write_run_metadata,
 )
@@ -83,6 +84,7 @@ class DataScientistAgent(BaseAgent):
         self,
         cfg: ResearchConfig | None = None,
         dbutils=None,
+        resume: bool = False,
     ) -> None:
         if cfg is None:
             raise ValueError("cfg is required. See examples/ for sample configurations.")
@@ -104,7 +106,22 @@ class DataScientistAgent(BaseAgent):
         self._dbutils = dbutils
 
         # Resolve run path — always isolated
-        self._run_id = cfg.run_id or generate_run_id()
+        if cfg.run_id:
+            # Explicit run_id: reuse that exact run directory
+            self._run_id = cfg.run_id
+        elif resume:
+            # Resume: find the latest existing run
+            try:
+                latest_path = resolve_run_path(cfg.results_volume_path)
+                self._run_id = os.path.basename(latest_path)
+                logger.info("Resuming previous run: %s", self._run_id)
+            except FileNotFoundError:
+                self._run_id = generate_run_id()
+                logger.info("No previous run found — starting new run: %s", self._run_id)
+        else:
+            # Fresh run
+            self._run_id = generate_run_id()
+
         self._run_path = init_run_directory(cfg.results_volume_path, self._run_id)
         write_run_metadata(
             self._run_path, config_name=cfg.name, run_id=self._run_id, agent_type="scientist"
@@ -301,8 +318,7 @@ class DataScientistAgent(BaseAgent):
         self._display.step(f"Thesis: {cfg.thesis[:100]}...")
         self._display.step(f"Analysis themes: {len(cfg.analysis_themes)}")
         self._display.step(f"Results: {self._run_path}")
-        if cfg.run_id:
-            self._display.step(f"Run ID: {cfg.run_id}")
+        self._display.step(f"Run ID: {self._run_id}")
         self._display.step(f"Tools: {self._registry.tool_names + ['ask_human']}")
         if rerun_analysis:
             self._display.step("Mode: FULL RE-RUN (ignoring existing state)")
@@ -314,22 +330,17 @@ class DataScientistAgent(BaseAgent):
         os.makedirs(os.path.join(self._run_path, "tables"), exist_ok=True)
         os.makedirs(os.path.join(self._run_path, "notes"), exist_ok=True)
 
-        # Write run metadata if using run isolation
-        if cfg.run_id:
-            write_run_metadata(self._run_path, cfg.name, cfg.run_id, agent_type="scientist")
-
         # Initialise or resume run state
-        if cfg.run_id:
-            if not rerun_analysis:
-                existing = load_run_state(self._run_path)
-                if existing and existing.status in ("running", "interrupted", "failed"):
-                    self._run_state = existing
-                    self._run_state.status = "running"
-                    self._display.step(f"Resuming previous run (was {existing.status})")
-                    self._display.step(f"  Completed phases: {existing.completed_phases}")
-            if self._run_state is None:
-                self._run_state = RunState(entry_point="run")
-            save_run_state(self._run_path, self._run_state)
+        if not rerun_analysis:
+            existing = load_run_state(self._run_path)
+            if existing and existing.status in ("running", "interrupted", "failed"):
+                self._run_state = existing
+                self._run_state.status = "running"
+                self._display.step(f"Resuming previous run (was {existing.status})")
+                self._display.step(f"  Completed phases: {existing.completed_phases}")
+        if self._run_state is None:
+            self._run_state = RunState(entry_point="run")
+        save_run_state(self._run_path, self._run_state)
 
         # Resolve dependencies
         self._resolved_deps: dict[str, str] = {}
@@ -617,17 +628,16 @@ class DataScientistAgent(BaseAgent):
                 self._display.warning(f"Could not export findings: {export_err}")
 
         # Update run metadata on completion
-        if cfg.run_id:
-            write_run_metadata(
-                self._run_path,
-                cfg.name,
-                cfg.run_id,
-                extra={
-                    "completed_at": datetime.now().isoformat(),
-                    "total_findings": len(self._finding_tool.findings),
-                    "total_charts": len(self._viz_tool.charts_created),
-                },
-            )
+        write_run_metadata(
+            self._run_path,
+            cfg.name,
+            self._run_id,
+            extra={
+                "completed_at": datetime.now().isoformat(),
+                "total_findings": len(self._finding_tool.findings),
+                "total_charts": len(self._viz_tool.charts_created),
+            },
+        )
 
         # Final summary
         summary = self._build_summary()
@@ -681,9 +691,8 @@ class DataScientistAgent(BaseAgent):
         os.makedirs(os.path.join(self._run_path, "notes"), exist_ok=True)
 
         # Fresh run state for this entry point
-        if cfg.run_id:
-            self._run_state = RunState(entry_point="run_visualizations")
-            self._save_state()
+        self._run_state = RunState(entry_point="run_visualizations")
+        self._save_state()
 
         try:
             # ── Pre-scan ──────────────────────────────────────────────
@@ -984,9 +993,8 @@ rebuild silver tables, do NOT save findings. Just create the charts and tables.
         os.makedirs(os.path.join(self._run_path, "notes"), exist_ok=True)
 
         # Fresh run state for this entry point
-        if cfg.run_id:
-            self._run_state = RunState(entry_point="run_themes")
-            self._save_state()
+        self._run_state = RunState(entry_point="run_themes")
+        self._save_state()
 
         try:
             # ── Pre-flight (still needed for schemas + data catalog) ──
@@ -1168,9 +1176,8 @@ rebuild silver tables, do NOT save findings. Just create the charts and tables.
         os.makedirs(os.path.join(self._run_path, "notes"), exist_ok=True)
 
         # Fresh run state for this entry point
-        if cfg.run_id:
-            self._run_state = RunState(entry_point="run_validation")
-            self._save_state()
+        self._run_state = RunState(entry_point="run_validation")
+        self._save_state()
 
         try:
             # ── Pre-flight ────────────────────────────────────────────
@@ -1491,7 +1498,7 @@ rebuild silver tables, do NOT save findings. Just create the charts and tables.
 
     def _save_state(self) -> None:
         """Persist ``self._run_state`` to ``run_metadata.json`` if active."""
-        if self._run_state and self._cfg.run_id:
+        if self._run_state:
             save_run_state(self._run_path, self._run_state)
 
     def _dump_progress_on_crash(self) -> None:
@@ -1581,5 +1588,5 @@ rebuild silver tables, do NOT save findings. Just create the charts and tables.
             "total_note_files": len(existing_notes),
             "llm_usage": self._llm.usage_summary,
             "results_path": self._run_path,
-            "run_id": self._cfg.run_id or "",
+            "run_id": self._run_id,
         }

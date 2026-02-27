@@ -116,7 +116,19 @@ logger.info("Narrative complete. Result: %s", results)
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Option B: Run Specific Sections or Editor Pass
+# MAGIC ## Option B: Resume a Crashed Run
+# MAGIC
+# MAGIC Pass `resume=True` to pick up the latest run where it left off.
+
+# COMMAND ----------
+
+# agent = StoryTellerAgent(cfg=cfg, dbutils=dbutils, resume=True)
+# results = agent.run()
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Option C: Run Specific Sections or Editor Pass
 
 # COMMAND ----------
 

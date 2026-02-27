@@ -89,8 +89,11 @@ logger.info("Run path: %s", agent._run_path)
 # MAGIC %md
 # MAGIC ## Option A: Run the Full Pipeline
 # MAGIC
-# MAGIC Runs ALL 6 themes end-to-end. The agent has **smart resume** —
-# MAGIC if it crashes midway, re-running will skip completed themes.
+# MAGIC Runs ALL 6 themes end-to-end. Each run creates an isolated directory
+# MAGIC under `results/runs/{run_id}/`.
+# MAGIC
+# MAGIC If a run crashes midway, use `resume=True` when creating the agent
+# MAGIC to continue the latest run instead of starting a new one.
 
 # COMMAND ----------
 
@@ -100,7 +103,19 @@ logger.info("Full pipeline complete. Result: %s", results)
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Option B: Run Specific Themes
+# MAGIC ## Option B: Resume a Crashed Run
+# MAGIC
+# MAGIC Pass `resume=True` to pick up the latest run where it left off.
+
+# COMMAND ----------
+
+# agent = DataScientistAgent(cfg=cfg, dbutils=dbutils, resume=True)
+# results = agent.run()
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Option C: Run Specific Themes
 
 # COMMAND ----------
 
