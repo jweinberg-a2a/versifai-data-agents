@@ -17,6 +17,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from versifai._utils.sql_data import fetch_sql_data
 from versifai.core.tools.base import BaseTool, ToolResult
 
 
@@ -49,7 +50,8 @@ class ModelFittingTool(BaseTool):
             "probability of direction for each predictor, and posterior predictive checks. "
             "Uses PyMC (MCMC) when available, falls back to sklearn BayesianRidge. "
             "Specify informative priors via parameters.prior (from published research).\n\n"
-            "Data should be a list of row dicts from SQL results. "
+            "ALWAYS use sql_query to provide data — pass a SELECT statement and the "
+            "tool fetches ALL rows directly. Do NOT call execute_sql first.\n\n"
             "Returns model metrics, coefficients, feature importance, and predictions."
         )
 
@@ -66,10 +68,13 @@ class ModelFittingTool(BaseTool):
                         "'cross_validate', 'bayesian_regression'."
                     ),
                 },
-                "data": {
-                    "type": "array",
-                    "items": {"type": "object"},
-                    "description": "Data as list of row dicts from SQL query results.",
+                "sql_query": {
+                    "type": "string",
+                    "description": (
+                        "A SELECT SQL query to fetch the data. The tool executes it "
+                        "directly and retrieves ALL rows — no row limit. "
+                        "Example: 'SELECT gdp, life_expectancy FROM catalog.schema.table'"
+                    ),
                 },
                 "target_column": {
                     "type": "string",
@@ -94,12 +99,13 @@ class ModelFittingTool(BaseTool):
                     ),
                 },
             },
-            "required": ["model_type", "data"],
+            "required": ["model_type", "sql_query"],
         }
 
     def _execute(
         self,
         model_type: str = "",
+        sql_query: str = "",
         data: list[dict] | None = None,
         target_column: str = "",
         feature_columns: list[str] | None = None,
@@ -109,10 +115,22 @@ class ModelFittingTool(BaseTool):
     ) -> ToolResult:
         if not model_type:
             return ToolResult(success=False, error="Missing 'model_type'.")
-        if not data:
-            return ToolResult(success=False, error="Missing 'data'.")
 
-        df = pd.DataFrame(data)
+        # Resolve data from SQL query (preferred) or inline data (backward compat / tests)
+        if sql_query:
+            df = fetch_sql_data(sql_query)
+            if df is None:
+                return ToolResult(
+                    success=False,
+                    error="sql_query execution failed — check the SQL syntax.",
+                )
+        elif data:
+            df = pd.DataFrame(data)
+        else:
+            return ToolResult(
+                success=False,
+                error="Provide 'sql_query' (a SELECT statement) to fetch data.",
+            )
         if df.empty:
             return ToolResult(success=False, error="Data is empty.")
 

@@ -640,7 +640,7 @@ Perform statistical analysis with 8 analysis types.
 | Parameter | Type | Required | Description |
 |-----------|------|:---:|-------------|
 | `analysis_type` | string | Y | `describe`, `distribution`, `hypothesis_test`, `correlation`, `effect_size`, `data_quality`, `assumption_check`, `bayesian_test` |
-| `data` | list[dict] | Y | Data rows from SQL results |
+| `sql_query` | string | Y | SELECT query — tool fetches all rows directly |
 | `columns` | list[str] | - | Columns to analyze (default: all numeric) |
 | `group_column` | string | - | Grouping column (hypothesis_test, effect_size) |
 | `value_column` | string | - | Value column (hypothesis_test, effect_size) |
@@ -684,7 +684,7 @@ Fit statistical and ML models with 9 model types.
 | Parameter | Type | Required | Description |
 |-----------|------|:---:|-------------|
 | `model_type` | string | Y | `linear_regression`, `logistic_regression`, `random_forest`, `gradient_boosting`, `kmeans`, `time_series`, `counterfactual`, `cross_validate`, `bayesian_regression` |
-| `data` | list[dict] | Y | Data rows |
+| `sql_query` | string | Y | SELECT statement — tool fetches all rows via Spark/SDK |
 | `target_column` | string | - | Target variable |
 | `feature_columns` | list[str] | - | Feature variables |
 | `time_column` | string | - | Time column (time_series only) |
@@ -705,6 +705,7 @@ Fit statistical and ML models with 9 model types.
 | `bayesian_regression` | `coefficients` (mean/std), `credible_intervals`, `probability_direction` |
 
 **Notes:**
+- **Always use `sql_query`** — the tool fetches all rows directly via Spark/SDK. Do not serialize data inline.
 - VIF (Variance Inflation Factor) computed automatically for linear regression to detect multicollinearity
 - `counterfactual` enables what-if scenario analysis
 - `bayesian_regression` supports informative priors from published research
@@ -721,7 +722,7 @@ Detect Simpson's Paradox by decomposing aggregate relationships into subgroups.
 
 | Parameter | Type | Required | Description |
 |-----------|------|:---:|-------------|
-| `data` | list[dict] | Y | Data rows |
+| `sql_query` | string | Y | SELECT statement — tool fetches all rows via Spark/SDK |
 | `outcome_column` | string | Y | Outcome/dependent variable |
 | `predictor_column` | string | Y | Predictor/independent variable |
 | `grouping_columns` | list[str] | Y | Potential confounder columns to stratify by |

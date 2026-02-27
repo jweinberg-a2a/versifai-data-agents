@@ -19,6 +19,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from versifai._utils.sql_data import fetch_sql_data
 from versifai.core.tools.base import BaseTool, ToolResult
 
 
@@ -53,7 +54,8 @@ class StatisticalAnalysisTool(BaseTool):
             "bayesian_correlation. USE THIS when sample sizes are small, when you have "
             "informative priors from published research, or when you need probability "
             "statements rather than p-values.\n\n"
-            "Data should be a list of row dicts from SQL results. "
+            "ALWAYS use sql_query to provide data — pass a SELECT statement and the "
+            "tool fetches ALL rows directly. Do NOT call execute_sql first.\n\n"
             "Returns structured results with statistics, p-values, and interpretations."
         )
 
@@ -69,10 +71,13 @@ class StatisticalAnalysisTool(BaseTool):
                         "'correlation', 'effect_size', 'data_quality', 'assumption_check'."
                     ),
                 },
-                "data": {
-                    "type": "array",
-                    "items": {"type": "object"},
-                    "description": "Data as list of row dicts from SQL query results.",
+                "sql_query": {
+                    "type": "string",
+                    "description": (
+                        "A SELECT SQL query to fetch the data. The tool executes it "
+                        "directly and retrieves ALL rows — no row limit. "
+                        "Example: 'SELECT col_a, col_b FROM catalog.schema.table'"
+                    ),
                 },
                 "columns": {
                     "type": "array",
@@ -123,12 +128,13 @@ class StatisticalAnalysisTool(BaseTool):
                     ),
                 },
             },
-            "required": ["analysis_type", "data"],
+            "required": ["analysis_type", "sql_query"],
         }
 
     def _execute(
         self,
         analysis_type: str = "",
+        sql_query: str = "",
         data: list[dict] | None = None,
         columns: list[str] | None = None,
         group_column: str = "",
@@ -141,10 +147,22 @@ class StatisticalAnalysisTool(BaseTool):
     ) -> ToolResult:
         if not analysis_type:
             return ToolResult(success=False, error="Missing 'analysis_type'.")
-        if not data:
-            return ToolResult(success=False, error="Missing 'data'.")
 
-        df = pd.DataFrame(data)
+        # Resolve data from SQL query (preferred) or inline data (backward compat / tests)
+        if sql_query:
+            df = fetch_sql_data(sql_query)
+            if df is None:
+                return ToolResult(
+                    success=False,
+                    error="sql_query execution failed — check the SQL syntax.",
+                )
+        elif data:
+            df = pd.DataFrame(data)
+        else:
+            return ToolResult(
+                success=False,
+                error="Provide 'sql_query' (a SELECT statement) to fetch data.",
+            )
         if df.empty:
             return ToolResult(success=False, error="Data is empty.")
 

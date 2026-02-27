@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import pandas as pd
 
+from versifai._utils.sql_data import fetch_sql_data
 from versifai.core.tools.base import BaseTool, ToolResult
 
 
@@ -68,6 +69,8 @@ class CheckConfoundersTool(BaseTool):
             "Returns structured results including: aggregate stats, per-subgroup "
             "stats, whether paradox was detected, which grouping variable "
             "matters most, and a recommended visualization approach.\n\n"
+            "ALWAYS use sql_query to provide data — pass a SELECT statement and the "
+            "tool fetches ALL rows directly. Do NOT call execute_sql first.\n\n"
             "IMPORTANT: Keep grouping_columns to 1-2 variables — the most likely "
             "confounders based on domain knowledge. Do not decompose by everything."
         )
@@ -77,10 +80,12 @@ class CheckConfoundersTool(BaseTool):
         return {
             "type": "object",
             "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {"type": "object"},
-                    "description": "Data as list of row dicts from SQL query results.",
+                "sql_query": {
+                    "type": "string",
+                    "description": (
+                        "A SELECT SQL query to fetch the data. The tool executes it "
+                        "directly and retrieves ALL rows — no row limit."
+                    ),
                 },
                 "outcome_column": {
                     "type": "string",
@@ -107,19 +112,18 @@ class CheckConfoundersTool(BaseTool):
                     ),
                 },
             },
-            "required": ["data", "outcome_column", "predictor_column", "grouping_columns"],
+            "required": ["sql_query", "outcome_column", "predictor_column", "grouping_columns"],
         }
 
     def _execute(
         self,
+        sql_query: str = "",
         data: list[dict] | None = None,
         outcome_column: str = "",
         predictor_column: str = "",
         grouping_columns: list[str] | None = None,
         **kwargs,
     ) -> ToolResult:
-        if not data:
-            return ToolResult(success=False, error="Missing 'data'.")
         if not outcome_column:
             return ToolResult(success=False, error="Missing 'outcome_column'.")
         if not predictor_column:
@@ -127,7 +131,21 @@ class CheckConfoundersTool(BaseTool):
         if not grouping_columns:
             return ToolResult(success=False, error="Missing 'grouping_columns'.")
 
-        df = pd.DataFrame(data)
+        # Resolve data from SQL query (preferred) or inline data (backward compat / tests)
+        if sql_query:
+            df = fetch_sql_data(sql_query)
+            if df is None:
+                return ToolResult(
+                    success=False,
+                    error="sql_query execution failed — check the SQL syntax.",
+                )
+        elif data:
+            df = pd.DataFrame(data)
+        else:
+            return ToolResult(
+                success=False,
+                error="Provide 'sql_query' (a SELECT statement) to fetch data.",
+            )
         if df.empty:
             return ToolResult(success=False, error="Data is empty.")
 

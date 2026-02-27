@@ -321,6 +321,43 @@ registry = ToolRegistry()
 registry.register(MyNewTool(cfg=self._cfg))
 ```
 
+### Data Input: Always Use `sql_query`, Never Inline Data
+
+Tools that consume tabular data **must** accept a `sql_query` parameter and execute SQL directly via Spark or the Databricks SDK. **Never** expose a `data` (list of dicts) parameter in the tool schema.
+
+**Why:** LLM output tokens are limited. When the agent tries to serialize a large dataset inline (e.g., 10K rows × 20 columns), the JSON payload gets silently truncated and the parameter is dropped entirely. A `sql_query` string is ~100 bytes vs. ~500KB+ for inline data.
+
+**Pattern:**
+
+```python
+from versifai._utils.sql_data import fetch_sql_data
+
+@property
+def parameters_schema(self) -> dict:
+    return {
+        "type": "object",
+        "properties": {
+            "sql_query": {
+                "type": "string",
+                "description": (
+                    "A SELECT SQL query to fetch the data. The tool executes it "
+                    "directly and retrieves ALL rows — no row limit."
+                ),
+            },
+            # ... other params
+        },
+        "required": ["sql_query"],
+    }
+
+def _execute(self, sql_query: str = "", **kwargs) -> ToolResult:
+    df = fetch_sql_data(sql_query)
+    if df is None:
+        return ToolResult(success=False, error="sql_query execution failed.")
+    # ... use df
+```
+
+The shared `fetch_sql_data()` utility in `src/versifai/_utils/sql_data.py` handles Spark → SDK fallback. All analysis tools (`statistical_analysis`, `fit_model`, `check_confounders`, `create_visualization`) use this pattern.
+
 ---
 
 ## Agent Architecture

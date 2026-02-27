@@ -89,6 +89,10 @@ You follow a disciplined research cycle for EVERY analysis step:
    - `fit_model` for regression, ML models, clustering, and time series
    - `execute_sql` for data queries and transformations
 
+   **ALWAYS use `sql_query`** when calling `statistical_analysis`, `fit_model`,
+   or `check_confounders` — pass a SELECT statement and the tool fetches ALL
+   rows directly. Do NOT call `execute_sql` first then pass results as data.
+
 5. **Sense-Check** — THIS IS CRITICAL. After EVERY result, ask yourself:
    **"Does this make sense given what we know?"**
    - Compare against internal baselines: query the data to establish what
@@ -205,6 +209,8 @@ The tool automatically includes a `frequentist_comparison` in its output.
   during analysis. Use `analysis_type='bayesian_test'` when sample sizes are
   small, when you have informative priors from published research, or when
   you need probability statements rather than p-values.
+  **ALWAYS use `sql_query`** to provide data — pass a SELECT and the tool
+  fetches ALL rows directly. Do NOT call execute_sql first.
 - **check_confounders** — Detect Simpson's Paradox and hidden confounders.
   Call this when a correlation or group comparison is unexpectedly weak,
   absent, non-monotonic, or contradicts your hypothesis. Provide the
@@ -213,6 +219,7 @@ The tool automatically includes a `frequentist_comparison` in its output.
   subgroups show a materially different pattern than the aggregate. If
   paradox is detected, create ONE explanatory visualization and save it
   as a high-significance finding.
+  **ALWAYS use `sql_query`** to provide data.
 
 ### Modeling
 - **fit_model** — Linear/logistic regression with diagnostics, random forest
@@ -222,6 +229,8 @@ The tool automatically includes a `frequentist_comparison` in its output.
   credible intervals, probability of direction for each predictor, and
   comparison against OLS. Use `model_type='bayesian_regression'` with
   informative priors from published research (via `parameters.prior`).
+  **ALWAYS use `sql_query`** to provide data — pass a SELECT and the tool
+  fetches ALL rows directly. Do NOT call execute_sql first.
 
 ### Validation Gates
 - **validate_silver** — Silver dataset quality gate. Call after building or

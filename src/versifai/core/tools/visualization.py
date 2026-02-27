@@ -15,6 +15,7 @@ from typing import TYPE_CHECKING, Any
 
 import pandas as pd
 
+from versifai._utils.sql_data import fetch_sql_data
 from versifai.core.display import AgentDisplay
 from versifai.core.tools.base import BaseTool, ToolResult
 
@@ -53,59 +54,14 @@ class CreateVisualizationTool(BaseTool):
         # for charts/ and tables/ instead of cfg.results_volume_path.
         self._results_path = results_path or cfg.results_volume_path
 
-    def _fetch_sql_data(self, sql: str) -> pd.DataFrame | None:
+    @staticmethod
+    def _fetch_sql_data(sql: str) -> pd.DataFrame | None:
         """Execute a SQL query and return ALL rows as a DataFrame.
 
-        Tries Spark first (native in Databricks), then falls back to the
-        Databricks SDK. Unlike execute_sql, there is no 100-row cap — this
-        fetches the complete result set for visualization.
+        Delegates to the shared ``fetch_sql_data`` utility which tries
+        Spark first, then falls back to the Databricks SDK.
         """
-        # Try Spark first
-        try:
-            from pyspark.sql import SparkSession
-
-            spark = SparkSession.getActiveSession()
-            if spark:
-                sdf = spark.sql(sql)
-                return sdf.toPandas()
-        except ImportError:
-            pass
-        except Exception as e:
-            self._display.warning(f"Spark SQL failed: {e}")
-
-        # Fallback to SDK
-        try:
-            import os
-
-            from databricks.sdk import WorkspaceClient
-
-            client = WorkspaceClient(
-                host=os.environ.get("DATABRICKS_HOST", ""),
-                token=os.environ.get("DATABRICKS_TOKEN", ""),
-            )
-            warehouses = list(client.warehouses.list())
-            warehouse_id = warehouses[0].id if warehouses else None
-            if not warehouse_id:
-                return None
-
-            result = client.statement_execution.execute_statement(
-                warehouse_id=warehouse_id,
-                statement=sql,
-                wait_timeout="120s",
-            )
-
-            if result.result and result.result.data_array:
-                col_names = (
-                    [c.name for c in result.manifest.schema.columns] if result.manifest else []  # type: ignore[union-attr]
-                )
-                rows = result.result.data_array
-                if col_names:
-                    return pd.DataFrame(rows, columns=col_names)
-                return pd.DataFrame(rows)
-        except Exception as e:
-            self._display.warning(f"SDK SQL failed: {e}")
-
-        return None
+        return fetch_sql_data(sql)
 
     def _append_chart_metadata(
         self,
@@ -260,15 +216,6 @@ class CreateVisualizationTool(BaseTool):
                         "PREFERRED way to provide data. Do NOT call execute_sql first. "
                         "Example: 'SELECT county_fips_code, ma_penetration "
                         "FROM catalog.schema.silver_county_master'"
-                    ),
-                },
-                "data": {
-                    "type": "array",
-                    "items": {"type": "object"},
-                    "description": (
-                        "Fallback: pre-computed data as a list of row dicts. "
-                        "Only use if you have already transformed data in Python "
-                        "and cannot express it as SQL. Prefer sql_query."
                     ),
                 },
                 "x_column": {
