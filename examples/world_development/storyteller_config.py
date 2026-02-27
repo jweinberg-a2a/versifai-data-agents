@@ -14,6 +14,7 @@ Usage in a Databricks notebook::
 
 from __future__ import annotations
 
+from versifai.core.run_manager import AgentDependency
 from versifai.data_agents.engineer.config import ProjectConfig
 from versifai.story_agents.storyteller.config import (
     EvidenceThreshold,
@@ -309,5 +310,14 @@ WORLD_DEVELOPMENT_STORY = StorytellerConfig(
         "https://en.wikipedia.org/wiki/Convergence_(economics)",
         "https://en.wikipedia.org/wiki/Kuznets_curve",
         "https://ourworldindata.org/",
+    ],
+    # Declare dependency on the DataScientist's outputs so the storyteller
+    # automatically discovers the latest scientist run under results/runs/.
+    dependencies=[
+        AgentDependency(
+            agent_type="scientist",
+            config_name="global_development",
+            base_path=f"/Volumes/{CATALOG}/{SCHEMA}/results",
+        ),
     ],
 )

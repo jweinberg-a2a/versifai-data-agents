@@ -33,7 +33,7 @@
 
 # COMMAND ----------
 
-# MAGIC %pip install versifai python-dotenv --quiet
+# MAGIC %pip install -e ../../.. python-dotenv --quiet
 
 # COMMAND ----------
 
@@ -81,6 +81,9 @@ from versifai.science_agents.scientist.agent import DataScientistAgent
 
 agent = DataScientistAgent(cfg=cfg, dbutils=dbutils)
 
+logger.info("Run ID: %s", agent._run_id)
+logger.info("Run path: %s", agent._run_path)
+
 # COMMAND ----------
 
 # MAGIC %md
@@ -122,7 +125,7 @@ logger.info("Full pipeline complete. Result: %s", results)
 
 import json
 
-results_path = cfg.results_volume_path
+results_path = agent._run_path  # Run-isolated output directory
 
 # List output files
 for f in dbutils.fs.ls(results_path):

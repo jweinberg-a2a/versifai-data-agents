@@ -28,7 +28,7 @@
 
 # COMMAND ----------
 
-# MAGIC %pip install versifai python-dotenv --quiet
+# MAGIC %pip install -e ../../.. python-dotenv --quiet
 
 # COMMAND ----------
 
@@ -70,12 +70,19 @@ logger.info("Writing to: %s", cfg.narrative_output_path)
 # COMMAND ----------
 
 # ── Verify Prerequisites ─────────────────────────────────────────────
+# The storyteller resolves the scientist's run directory automatically
+# via its dependency config. Check that findings exist.
 
-findings_path = f"{cfg.research_results_path}/findings.json"
-charts_dir = f"{cfg.research_results_path}/charts"
-tables_dir = f"{cfg.research_results_path}/tables"
+from versifai.core.run_manager import resolve_dependency
 
-for path in [findings_path, charts_dir, tables_dir]:
+try:
+    scientist_path = resolve_dependency(cfg.dependencies[0])
+    logger.info("Found scientist run at: %s", scientist_path)
+except (FileNotFoundError, IndexError) as e:
+    logger.warning("Scientist run not found: %s — run 02_run_scientist.py first!", e)
+
+for subdir in ["findings.json", "charts", "tables"]:
+    path = f"{cfg.research_results_path}/{subdir}"
     try:
         info = dbutils.fs.ls(path)
         print(
@@ -91,6 +98,10 @@ for path in [findings_path, charts_dir, tables_dir]:
 from versifai.story_agents.storyteller.agent import StoryTellerAgent
 
 agent = StoryTellerAgent(cfg=cfg, dbutils=dbutils)
+
+logger.info("Run ID: %s", agent._run_id)
+logger.info("Narrative run path: %s", agent._narrative_run_path)
+logger.info("Reading scientist results from: %s", agent._research_path)
 
 # COMMAND ----------
 
@@ -125,7 +136,7 @@ logger.info("Narrative complete. Result: %s", results)
 
 # COMMAND ----------
 
-report_path = f"{cfg.narrative_output_path}/{cfg.output_format.filename}"
+report_path = f"{agent._narrative_run_path}/{cfg.output_format.filename}"
 try:
     report_text = dbutils.fs.head(report_path, 10000)
     print(report_text)

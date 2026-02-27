@@ -28,7 +28,7 @@
 
 # COMMAND ----------
 
-# MAGIC %pip install versifai python-dotenv --quiet
+# MAGIC %pip install -e ../../.. python-dotenv --quiet
 
 # COMMAND ----------
 

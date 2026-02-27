@@ -22,6 +22,7 @@ from versifai.core.llm import LLMClient
 from versifai.core.memory import AgentMemory
 from versifai.core.run_manager import (
     RunState,
+    generate_run_id,
     init_run_directory,
     load_run_state,
     resolve_dependency,
@@ -102,11 +103,14 @@ class DataScientistAgent(BaseAgent):
 
         self._dbutils = dbutils
 
-        # Resolve run path (isolated or direct)
-        if cfg.run_id:
-            self._run_path = init_run_directory(cfg.results_volume_path, cfg.run_id)
-        else:
-            self._run_path = cfg.results_volume_path
+        # Resolve run path — always isolated
+        self._run_id = cfg.run_id or generate_run_id()
+        self._run_path = init_run_directory(cfg.results_volume_path, self._run_id)
+        write_run_metadata(
+            self._run_path, config_name=cfg.name, run_id=self._run_id, agent_type="scientist"
+        )
+        logger.info("Run ID: %s", self._run_id)
+        logger.info("Run path: %s", self._run_path)
 
         # Run state — initialised per entry point, persisted for resume
         self._run_state: RunState | None = None

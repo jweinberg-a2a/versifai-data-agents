@@ -21,6 +21,7 @@ from versifai.core.llm import LLMClient
 from versifai.core.memory import AgentMemory
 from versifai.core.run_manager import (
     RunState,
+    generate_run_id,
     init_run_directory,
     load_run_state,
     resolve_dependency,
@@ -111,11 +112,17 @@ class StoryTellerAgent(BaseAgent):
 
         self._dbutils = dbutils
 
-        # Resolve run paths (isolated or direct)
-        if cfg.run_id:
-            self._narrative_run_path = init_run_directory(cfg.narrative_output_path, cfg.run_id)
-        else:
-            self._narrative_run_path = cfg.narrative_output_path
+        # Resolve run paths — always isolated
+        self._run_id = cfg.run_id or generate_run_id()
+        self._narrative_run_path = init_run_directory(cfg.narrative_output_path, self._run_id)
+        write_run_metadata(
+            self._narrative_run_path,
+            config_name=cfg.name,
+            run_id=self._run_id,
+            agent_type="storyteller",
+        )
+        logger.info("Run ID: %s", self._run_id)
+        logger.info("Narrative run path: %s", self._narrative_run_path)
 
         # Resolve research results path from dependencies
         self._research_path = cfg.research_results_path
